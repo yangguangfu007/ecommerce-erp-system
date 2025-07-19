@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ERP User Service</a> &gt; <a href="index.source.html" class="el_package">com.erp.user.dto</a> &gt; <span class="el_source">UserDTO.java</span></div><h1>UserDTO.java</h1><pre class="source lang-java linenums">package com.erp.user.dto;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * 用户信息DTO
+ *
+ * @author ERP System
+ */
+<span class="fc" id="L14">public class UserDTO implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 用户ID
+     */
+    private Long id;
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 真实姓名
+     */
+    private String realName;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 手机号
+     */
+    private String phone;
+
+    /**
+     * 头像URL
+     */
+    private String avatar;
+
+    /**
+     * 用户状态：0-禁用，1-启用
+     */
+    private Integer status;
+
+    /**
+     * 账户锁定状态：0-未锁定，1-已锁定
+     */
+    private Integer locked;
+
+    /**
+     * 最后登录时间
+     */
+    @JsonFormat(pattern = &quot;yyyy-MM-dd HH:mm:ss&quot;)
+    private LocalDateTime lastLoginTime;
+
+    /**
+     * 最后登录IP
+     */
+    private String lastLoginIp;
+
+    /**
+     * 角色列表
+     */
+    private List&lt;String&gt; roles;
+
+    /**
+     * 权限列表
+     */
+    private List&lt;String&gt; permissions;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = &quot;yyyy-MM-dd HH:mm:ss&quot;)
+    private LocalDateTime createTime;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    public Long getId() {
+<span class="nc" id="L91">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="fc" id="L95">        this.id = id;</span>
+<span class="fc" id="L96">    }</span>
+
+    public String getUsername() {
+<span class="fc" id="L99">        return username;</span>
+    }
+
+    public void setUsername(String username) {
+<span class="fc" id="L103">        this.username = username;</span>
+<span class="fc" id="L104">    }</span>
+
+    public String getRealName() {
+<span class="nc" id="L107">        return realName;</span>
+    }
+
+    public void setRealName(String realName) {
+<span class="fc" id="L111">        this.realName = realName;</span>
+<span class="fc" id="L112">    }</span>
+
+    public String getEmail() {
+<span class="nc" id="L115">        return email;</span>
+    }
+
+    public void setEmail(String email) {
+<span class="fc" id="L119">        this.email = email;</span>
+<span class="fc" id="L120">    }</span>
+
+    public String getPhone() {
+<span class="nc" id="L123">        return phone;</span>
+    }
+
+    public void setPhone(String phone) {
+<span class="fc" id="L127">        this.phone = phone;</span>
+<span class="fc" id="L128">    }</span>
+
+    public String getAvatar() {
+<span class="nc" id="L131">        return avatar;</span>
+    }
+
+    public void setAvatar(String avatar) {
+<span class="fc" id="L135">        this.avatar = avatar;</span>
+<span class="fc" id="L136">    }</span>
+
+    public Integer getStatus() {
+<span class="nc" id="L139">        return status;</span>
+    }
+
+    public void setStatus(Integer status) {
+<span class="fc" id="L143">        this.status = status;</span>
+<span class="fc" id="L144">    }</span>
+
+    public Integer getLocked() {
+<span class="nc" id="L147">        return locked;</span>
+    }
+
+    public void setLocked(Integer locked) {
+<span class="fc" id="L151">        this.locked = locked;</span>
+<span class="fc" id="L152">    }</span>
+
+    public LocalDateTime getLastLoginTime() {
+<span class="nc" id="L155">        return lastLoginTime;</span>
+    }
+
+    public void setLastLoginTime(LocalDateTime lastLoginTime) {
+<span class="fc" id="L159">        this.lastLoginTime = lastLoginTime;</span>
+<span class="fc" id="L160">    }</span>
+
+    public String getLastLoginIp() {
+<span class="nc" id="L163">        return lastLoginIp;</span>
+    }
+
+    public void setLastLoginIp(String lastLoginIp) {
+<span class="fc" id="L167">        this.lastLoginIp = lastLoginIp;</span>
+<span class="fc" id="L168">    }</span>
+
+    public List&lt;String&gt; getRoles() {
+<span class="nc" id="L171">        return roles;</span>
+    }
+
+    public void setRoles(List&lt;String&gt; roles) {
+<span class="fc" id="L175">        this.roles = roles;</span>
+<span class="fc" id="L176">    }</span>
+
+    public List&lt;String&gt; getPermissions() {
+<span class="nc" id="L179">        return permissions;</span>
+    }
+
+    public void setPermissions(List&lt;String&gt; permissions) {
+<span class="fc" id="L183">        this.permissions = permissions;</span>
+<span class="fc" id="L184">    }</span>
+
+    public LocalDateTime getCreateTime() {
+<span class="nc" id="L187">        return createTime;</span>
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+<span class="fc" id="L191">        this.createTime = createTime;</span>
+<span class="fc" id="L192">    }</span>
+
+    public String getRemark() {
+<span class="nc" id="L195">        return remark;</span>
+    }
+
+    public void setRemark(String remark) {
+<span class="fc" id="L199">        this.remark = remark;</span>
+<span class="fc" id="L200">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L204">        return &quot;UserDTO{&quot; +</span>
+                &quot;id=&quot; + id +
+                &quot;, username='&quot; + username + '\'' +
+                &quot;, realName='&quot; + realName + '\'' +
+                &quot;, email='&quot; + email + '\'' +
+                &quot;, phone='&quot; + phone + '\'' +
+                &quot;, avatar='&quot; + avatar + '\'' +
+                &quot;, status=&quot; + status +
+                &quot;, locked=&quot; + locked +
+                &quot;, lastLoginTime=&quot; + lastLoginTime +
+                &quot;, lastLoginIp='&quot; + lastLoginIp + '\'' +
+                &quot;, roles=&quot; + roles +
+                &quot;, permissions=&quot; + permissions +
+                &quot;, createTime=&quot; + createTime +
+                &quot;, remark='&quot; + remark + '\'' +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

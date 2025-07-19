@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ERP User Service</a> &gt; <a href="index.source.html" class="el_package">com.erp.user.entity</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.erp.user.entity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.erp.common.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.time.LocalDateTime;
+
+/**
+ * 用户实体类
+ *
+ * @author ERP System
+ */
+@TableName(&quot;sys_user&quot;)
+<span class="fc" id="L15">public class User extends BaseEntity {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    @JsonIgnore
+    private String password;
+
+    /**
+     * 真实姓名
+     */
+    private String realName;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 手机号
+     */
+    private String phone;
+
+    /**
+     * 头像URL
+     */
+    private String avatar;
+
+    /**
+     * 用户状态：0-禁用，1-启用
+     */
+    private Integer status;
+
+    /**
+     * 账户锁定状态：0-未锁定，1-已锁定
+     */
+    private Integer locked;
+
+    /**
+     * 密码错误次数
+     */
+    private Integer passwordErrorCount;
+
+    /**
+     * 账户锁定时间
+     */
+    private LocalDateTime lockTime;
+
+    /**
+     * 最后登录时间
+     */
+    private LocalDateTime lastLoginTime;
+
+    /**
+     * 最后登录IP
+     */
+    private String lastLoginIp;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    public String getUsername() {
+<span class="fc" id="L86">        return username;</span>
+    }
+
+    public void setUsername(String username) {
+<span class="fc" id="L90">        this.username = username;</span>
+<span class="fc" id="L91">    }</span>
+
+    public String getPassword() {
+<span class="fc" id="L94">        return password;</span>
+    }
+
+    public void setPassword(String password) {
+<span class="fc" id="L98">        this.password = password;</span>
+<span class="fc" id="L99">    }</span>
+
+    public String getRealName() {
+<span class="fc" id="L102">        return realName;</span>
+    }
+
+    public void setRealName(String realName) {
+<span class="fc" id="L106">        this.realName = realName;</span>
+<span class="fc" id="L107">    }</span>
+
+    public String getEmail() {
+<span class="fc" id="L110">        return email;</span>
+    }
+
+    public void setEmail(String email) {
+<span class="fc" id="L114">        this.email = email;</span>
+<span class="fc" id="L115">    }</span>
+
+    public String getPhone() {
+<span class="fc" id="L118">        return phone;</span>
+    }
+
+    public void setPhone(String phone) {
+<span class="fc" id="L122">        this.phone = phone;</span>
+<span class="fc" id="L123">    }</span>
+
+    public String getAvatar() {
+<span class="fc" id="L126">        return avatar;</span>
+    }
+
+    public void setAvatar(String avatar) {
+<span class="nc" id="L130">        this.avatar = avatar;</span>
+<span class="nc" id="L131">    }</span>
+
+    public Integer getStatus() {
+<span class="fc" id="L134">        return status;</span>
+    }
+
+    public void setStatus(Integer status) {
+<span class="fc" id="L138">        this.status = status;</span>
+<span class="fc" id="L139">    }</span>
+
+    public Integer getLocked() {
+<span class="fc" id="L142">        return locked;</span>
+    }
+
+    public void setLocked(Integer locked) {
+<span class="fc" id="L146">        this.locked = locked;</span>
+<span class="fc" id="L147">    }</span>
+
+    public Integer getPasswordErrorCount() {
+<span class="nc" id="L150">        return passwordErrorCount;</span>
+    }
+
+    public void setPasswordErrorCount(Integer passwordErrorCount) {
+<span class="fc" id="L154">        this.passwordErrorCount = passwordErrorCount;</span>
+<span class="fc" id="L155">    }</span>
+
+    public LocalDateTime getLockTime() {
+<span class="nc" id="L158">        return lockTime;</span>
+    }
+
+    public void setLockTime(LocalDateTime lockTime) {
+<span class="nc" id="L162">        this.lockTime = lockTime;</span>
+<span class="nc" id="L163">    }</span>
+
+    public LocalDateTime getLastLoginTime() {
+<span class="fc" id="L166">        return lastLoginTime;</span>
+    }
+
+    public void setLastLoginTime(LocalDateTime lastLoginTime) {
+<span class="nc" id="L170">        this.lastLoginTime = lastLoginTime;</span>
+<span class="nc" id="L171">    }</span>
+
+    public String getLastLoginIp() {
+<span class="fc" id="L174">        return lastLoginIp;</span>
+    }
+
+    public void setLastLoginIp(String lastLoginIp) {
+<span class="nc" id="L178">        this.lastLoginIp = lastLoginIp;</span>
+<span class="nc" id="L179">    }</span>
+
+    public String getRemark() {
+<span class="fc" id="L182">        return remark;</span>
+    }
+
+    public void setRemark(String remark) {
+<span class="nc" id="L186">        this.remark = remark;</span>
+<span class="nc" id="L187">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L191">        return &quot;User{&quot; +</span>
+                &quot;username='&quot; + username + '\'' +
+                &quot;, realName='&quot; + realName + '\'' +
+                &quot;, email='&quot; + email + '\'' +
+                &quot;, phone='&quot; + phone + '\'' +
+                &quot;, avatar='&quot; + avatar + '\'' +
+                &quot;, status=&quot; + status +
+                &quot;, locked=&quot; + locked +
+                &quot;, passwordErrorCount=&quot; + passwordErrorCount +
+                &quot;, lockTime=&quot; + lockTime +
+                &quot;, lastLoginTime=&quot; + lastLoginTime +
+                &quot;, lastLoginIp='&quot; + lastLoginIp + '\'' +
+                &quot;, remark='&quot; + remark + '\'' +
+<span class="nc" id="L204">                &quot;} &quot; + super.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

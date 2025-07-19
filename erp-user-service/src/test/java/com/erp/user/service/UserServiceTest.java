@@ -41,6 +41,9 @@ class UserServiceTest {
     @Mock
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Mock
+    private SecurityAuditService securityAuditService;
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -76,6 +79,8 @@ class UserServiceTest {
     @Test
     void testLoginSuccess() {
         // Given
+        when(securityAuditService.detectAbnormalLogin(anyString(), anyString())).thenReturn(false);
+        when(securityAuditService.recordLoginLog(any())).thenReturn(true);
         when(redisTemplate.hasKey(anyString())).thenReturn(false);
         when(userMapper.selectByUsername("testuser")).thenReturn(testUser);
         when(passwordEncoder.matches("password123", "$2a$10$encodedPassword")).thenReturn(true);
@@ -83,6 +88,7 @@ class UserServiceTest {
         when(jwtUtil.generateRefreshToken(anyString())).thenReturn("refresh-token");
         when(userMapper.selectRoleCodesByUserId(1L)).thenReturn(java.util.Arrays.asList("USER"));
         when(userMapper.selectPermissionCodesByUserId(1L)).thenReturn(java.util.Arrays.asList("user:view"));
+        when(userMapper.updateLoginInfo(anyLong(), anyString(), anyString())).thenReturn(1);
 
         // When
         LoginResponse response = userService.login(loginRequest);
@@ -93,6 +99,7 @@ class UserServiceTest {
         assertEquals("refresh-token", response.getRefreshToken());
         assertNotNull(response.getUserInfo());
         assertEquals("testuser", response.getUserInfo().getUsername());
+        verify(securityAuditService, times(1)).recordLoginLog(any());
     }
 
     @Test

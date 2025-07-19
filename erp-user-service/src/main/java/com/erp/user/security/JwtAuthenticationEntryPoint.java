@@ -28,7 +28,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         
-        Result<Void> result = Result.error(ResultCode.UNAUTHORIZED, "未认证或认证已过期");
-        response.getWriter().write(JsonUtils.toJson(result));
+        Result<String> result = Result.error(ResultCode.UNAUTHORIZED, "未认证或认证已过期");
+        response.getWriter().write(JsonUtils.toJsonString(result));
     }
 }

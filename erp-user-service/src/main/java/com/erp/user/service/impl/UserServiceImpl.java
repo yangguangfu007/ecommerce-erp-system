@@ -8,8 +8,10 @@ import com.erp.user.entity.User;
 import com.erp.user.entity.UserRole;
 import com.erp.user.mapper.UserMapper;
 import com.erp.user.mapper.UserRoleMapper;
+import com.erp.user.service.SecurityAuditService;
 import com.erp.user.service.UserService;
 import com.erp.user.util.JwtUtil;
+import com.erp.user.entity.LoginLog;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +35,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserMapper userMapper;
@@ -47,6 +53,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    private SecurityAuditService securityAuditService;
+
     private static final String LOGIN_ERROR_COUNT_KEY = "login:error:count:";
     private static final String USER_LOCK_KEY = "user:lock:";
     private static final int MAX_LOGIN_ERROR_COUNT = 5;
@@ -56,57 +65,106 @@ public class UserServiceImpl implements UserService {
     public LoginResponse login(LoginRequest loginRequest) {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
+        String clientIp = getClientIp();
+        
+        LoginLog loginLog = new LoginLog();
+        loginLog.setUsername(username);
+        loginLog.setLoginIp(clientIp);
+        loginLog.setLoginTime(LocalDateTime.now());
+        loginLog.setLoginType(1); // 正常登录
+        loginLog.setUserAgent("Unknown"); // 简化实现
 
-        // 检查用户是否被锁定
-        if (isUserLocked(username)) {
-            throw new BusinessException("账户已被锁定，请稍后再试");
+        try {
+            // 检测异常登录
+            boolean isAbnormal = securityAuditService.detectAbnormalLogin(username, clientIp);
+            if (isAbnormal) {
+                loginLog.setStatus(0);
+                loginLog.setFailureReason("异常登录检测");
+                securityAuditService.recordLoginLog(loginLog);
+                throw new BusinessException("检测到异常登录行为，请稍后再试");
+            }
+
+            // 检查用户是否被锁定
+            if (isUserLocked(username)) {
+                loginLog.setStatus(0);
+                loginLog.setFailureReason("账户已被锁定");
+                securityAuditService.recordLoginLog(loginLog);
+                throw new BusinessException("账户已被锁定，请稍后再试");
+            }
+
+            // 查询用户
+            User user = userMapper.selectByUsername(username);
+            if (user == null) {
+                incrementLoginErrorCount(username);
+                loginLog.setStatus(0);
+                loginLog.setFailureReason("用户不存在");
+                securityAuditService.recordLoginLog(loginLog);
+                throw new BusinessException("用户名或密码错误");
+            }
+
+            loginLog.setUserId(user.getId());
+
+            // 检查用户状态
+            if (user.getStatus() == 0) {
+                loginLog.setStatus(0);
+                loginLog.setFailureReason("账户已被禁用");
+                securityAuditService.recordLoginLog(loginLog);
+                throw new BusinessException("账户已被禁用");
+            }
+
+            if (user.getLocked() == 1) {
+                loginLog.setStatus(0);
+                loginLog.setFailureReason("账户已被锁定");
+                securityAuditService.recordLoginLog(loginLog);
+                throw new BusinessException("账户已被锁定");
+            }
+
+            // 验证密码
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                incrementLoginErrorCount(username);
+                loginLog.setStatus(0);
+                loginLog.setFailureReason("密码错误");
+                securityAuditService.recordLoginLog(loginLog);
+                throw new BusinessException("用户名或密码错误");
+            }
+
+            // 清除登录错误次数
+            clearLoginErrorCount(username);
+
+            // 更新登录信息
+            updateLoginInfo(user.getId(), clientIp);
+
+            // 记录成功登录日志
+            loginLog.setStatus(1);
+            securityAuditService.recordLoginLog(loginLog);
+
+            // 生成JWT令牌
+            String accessToken = jwtUtil.generateTokenWithUserId(username, user.getId());
+            String refreshToken = jwtUtil.generateRefreshToken(username);
+
+            // 构建用户信息
+            UserDTO userDTO = convertToUserDTO(user);
+            userDTO.setRoles(getUserRoles(user.getId()));
+            userDTO.setPermissions(getUserPermissions(user.getId()));
+
+            // 构建登录响应
+            LoginResponse response = new LoginResponse();
+            response.setAccessToken(accessToken);
+            response.setRefreshToken(refreshToken);
+            response.setExpiresIn(86400L); // 24小时
+            response.setUserInfo(userDTO);
+
+            return response;
+            
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            loginLog.setStatus(0);
+            loginLog.setFailureReason("系统异常");
+            securityAuditService.recordLoginLog(loginLog);
+            logger.error("登录异常", e);
+            throw new BusinessException("登录失败，请稍后再试");
         }
-
-        // 查询用户
-        User user = userMapper.selectByUsername(username);
-        if (user == null) {
-            incrementLoginErrorCount(username);
-            throw new BusinessException("用户名或密码错误");
-        }
-
-        // 检查用户状态
-        if (user.getStatus() == 0) {
-            throw new BusinessException("账户已被禁用");
-        }
-
-        if (user.getLocked() == 1) {
-            throw new BusinessException("账户已被锁定");
-        }
-
-        // 验证密码
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            incrementLoginErrorCount(username);
-            throw new BusinessException("用户名或密码错误");
-        }
-
-        // 清除登录错误次数
-        clearLoginErrorCount(username);
-
-        // 更新登录信息
-        updateLoginInfo(user.getId(), getClientIp());
-
-        // 生成JWT令牌
-        String accessToken = jwtUtil.generateTokenWithUserId(username, user.getId());
-        String refreshToken = jwtUtil.generateRefreshToken(username);
-
-        // 构建用户信息
-        UserDTO userDTO = convertToUserDTO(user);
-        userDTO.setRoles(getUserRoles(user.getId()));
-        userDTO.setPermissions(getUserPermissions(user.getId()));
-
-        // 构建登录响应
-        LoginResponse response = new LoginResponse();
-        response.setAccessToken(accessToken);
-        response.setRefreshToken(refreshToken);
-        response.setExpiresIn(86400L); // 24小时
-        response.setUserInfo(userDTO);
-
-        return response;
     }
 
     @Override

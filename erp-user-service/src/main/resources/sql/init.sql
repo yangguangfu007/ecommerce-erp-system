@@ -186,3 +186,67 @@ ON DUPLICATE KEY UPDATE real_name = VALUES(real_name);
 INSERT INTO sys_user_role (id, user_id, role_id, create_by) VALUES
 (1, 1, 1, 1)
 ON DUPLICATE KEY UPDATE user_id = VALUES(user_id);
+
+-- 登录日志表
+CREATE TABLE IF NOT EXISTS sys_login_log (
+    id BIGINT PRIMARY KEY COMMENT '日志ID',
+    user_id BIGINT COMMENT '用户ID',
+    username VARCHAR(50) NOT NULL COMMENT '用户名',
+    login_ip VARCHAR(50) COMMENT '登录IP',
+    login_location VARCHAR(100) COMMENT '登录地址',
+    browser VARCHAR(50) COMMENT '浏览器类型',
+    os VARCHAR(50) COMMENT '操作系统',
+    status TINYINT DEFAULT 1 COMMENT '登录状态：0-失败，1-成功',
+    login_type TINYINT DEFAULT 1 COMMENT '登录类型：1-正常登录，2-记住我登录',
+    login_time DATETIME NOT NULL COMMENT '登录时间',
+    logout_time DATETIME COMMENT '登出时间',
+    failure_reason VARCHAR(200) COMMENT '失败原因',
+    user_agent VARCHAR(500) COMMENT '用户代理',
+    remark VARCHAR(500) COMMENT '备注',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    create_by BIGINT COMMENT '创建人ID',
+    update_by BIGINT COMMENT '更新人ID',
+    deleted TINYINT DEFAULT 0 COMMENT '逻辑删除标志：0-未删除，1-已删除',
+    version INT DEFAULT 0 COMMENT '版本号',
+    INDEX idx_user_id (user_id),
+    INDEX idx_username (username),
+    INDEX idx_login_ip (login_ip),
+    INDEX idx_login_time (login_time),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='登录日志表';
+
+-- 审计日志表
+CREATE TABLE IF NOT EXISTS sys_audit_log (
+    id BIGINT PRIMARY KEY COMMENT '日志ID',
+    user_id BIGINT COMMENT '用户ID',
+    username VARCHAR(50) COMMENT '用户名',
+    module VARCHAR(50) COMMENT '操作模块',
+    operation_type VARCHAR(20) COMMENT '操作类型：CREATE-创建，UPDATE-更新，DELETE-删除，QUERY-查询',
+    operation_desc VARCHAR(200) COMMENT '操作描述',
+    method VARCHAR(10) COMMENT '请求方法',
+    request_url VARCHAR(500) COMMENT '请求URL',
+    request_params TEXT COMMENT '请求参数',
+    response TEXT COMMENT '响应结果',
+    operation_ip VARCHAR(50) COMMENT '操作IP',
+    operation_location VARCHAR(100) COMMENT '操作地址',
+    browser VARCHAR(50) COMMENT '浏览器类型',
+    os VARCHAR(50) COMMENT '操作系统',
+    status TINYINT DEFAULT 1 COMMENT '操作状态：0-失败，1-成功',
+    error_msg VARCHAR(500) COMMENT '错误信息',
+    operation_time DATETIME NOT NULL COMMENT '操作时间',
+    duration BIGINT COMMENT '执行时长（毫秒）',
+    user_agent VARCHAR(500) COMMENT '用户代理',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    create_by BIGINT COMMENT '创建人ID',
+    update_by BIGINT COMMENT '更新人ID',
+    deleted TINYINT DEFAULT 0 COMMENT '逻辑删除标志：0-未删除，1-已删除',
+    version INT DEFAULT 0 COMMENT '版本号',
+    INDEX idx_user_id (user_id),
+    INDEX idx_username (username),
+    INDEX idx_module (module),
+    INDEX idx_operation_type (operation_type),
+    INDEX idx_operation_time (operation_time),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='审计日志表';

@@ -137,11 +137,11 @@ public class JwtUtil {
      */
     public String refreshToken(String token) {
         final Claims claims = getAllClaimsFromToken(token);
-        claims.setIssuedAt(new Date());
-        claims.setExpiration(new Date(System.currentTimeMillis() + expiration));
         
         return Jwts.builder()
                 .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }

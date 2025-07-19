@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityAuditService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ERP User Service</a> &gt; <a href="index.source.html" class="el_package">com.erp.user.service</a> &gt; <span class="el_source">SecurityAuditService.java</span></div><h1>SecurityAuditService.java</h1><pre class="source lang-java linenums">package com.erp.user.service;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.erp.user.entity.AuditLog;
+import com.erp.user.entity.LoginLog;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * 安全审计服务接口
+ *
+ * @author ERP System
+ */
+public interface SecurityAuditService {
+
+    /**
+     * 记录登录日志
+     *
+     * @param loginLog 登录日志
+     * @return 记录结果
+     */
+    boolean recordLoginLog(LoginLog loginLog);
+
+    /**
+     * 记录审计日志
+     *
+     * @param auditLog 审计日志
+     * @return 记录结果
+     */
+    boolean recordAuditLog(AuditLog auditLog);
+
+    /**
+     * 检测异常登录
+     *
+     * @param username 用户名
+     * @param loginIp 登录IP
+     * @return 是否异常
+     */
+    boolean detectAbnormalLogin(String username, String loginIp);
+
+    /**
+     * 获取用户登录历史
+     *
+     * @param userId 用户ID
+     * @param limit 限制条数
+     * @return 登录历史
+     */
+    List&lt;LoginLog&gt; getUserLoginHistory(Long userId, Integer limit);
+
+    /**
+     * 分页查询登录日志
+     *
+     * @param page 页码
+     * @param size 每页大小
+     * @param username 用户名（可选）
+     * @param loginIp 登录IP（可选）
+     * @param status 状态（可选）
+     * @param startTime 开始时间（可选）
+     * @param endTime 结束时间（可选）
+     * @return 登录日志列表
+     */
+    Page&lt;LoginLog&gt; getLoginLogList(int page, int size, String username, String loginIp, 
+                                 Integer status, LocalDateTime startTime, LocalDateTime endTime);
+
+    /**
+     * 分页查询审计日志
+     *
+     * @param page 页码
+     * @param size 每页大小
+     * @param username 用户名（可选）
+     * @param module 模块（可选）
+     * @param operationType 操作类型（可选）
+     * @param startTime 开始时间（可选）
+     * @param endTime 结束时间（可选）
+     * @return 审计日志列表
+     */
+    Page&lt;AuditLog&gt; getAuditLogList(int page, int size, String username, String module, 
+                                 String operationType, LocalDateTime startTime, LocalDateTime endTime);
+
+    /**
+     * 获取异常登录记录
+     *
+     * @param hours 时间范围（小时）
+     * @return 异常登录记录
+     */
+    List&lt;LoginLog&gt; getAbnormalLogins(Integer hours);
+
+    /**
+     * 清理过期日志
+     *
+     * @param days 保留天数
+     * @return 清理结果
+     */
+    boolean cleanExpiredLogs(Integer days);
+
+    /**
+     * 统计登录数据
+     *
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 统计数据
+     */
+    LoginStatistics getLoginStatistics(LocalDateTime startTime, LocalDateTime endTime);
+
+    /**
+     * 登录统计数据
+     */
+<span class="nc" id="L109">    class LoginStatistics {</span>
+        private long totalLogins;
+        private long successLogins;
+        private long failedLogins;
+        private long uniqueUsers;
+        private long uniqueIps;
+
+        public long getTotalLogins() {
+<span class="nc" id="L117">            return totalLogins;</span>
+        }
+
+        public void setTotalLogins(long totalLogins) {
+<span class="nc" id="L121">            this.totalLogins = totalLogins;</span>
+<span class="nc" id="L122">        }</span>
+
+        public long getSuccessLogins() {
+<span class="nc" id="L125">            return successLogins;</span>
+        }
+
+        public void setSuccessLogins(long successLogins) {
+<span class="nc" id="L129">            this.successLogins = successLogins;</span>
+<span class="nc" id="L130">        }</span>
+
+        public long getFailedLogins() {
+<span class="nc" id="L133">            return failedLogins;</span>
+        }
+
+        public void setFailedLogins(long failedLogins) {
+<span class="nc" id="L137">            this.failedLogins = failedLogins;</span>
+<span class="nc" id="L138">        }</span>
+
+        public long getUniqueUsers() {
+<span class="nc" id="L141">            return uniqueUsers;</span>
+        }
+
+        public void setUniqueUsers(long uniqueUsers) {
+<span class="nc" id="L145">            this.uniqueUsers = uniqueUsers;</span>
+<span class="nc" id="L146">        }</span>
+
+        public long getUniqueIps() {
+<span class="nc" id="L149">            return uniqueIps;</span>
+        }
+
+        public void setUniqueIps(long uniqueIps) {
+<span class="nc" id="L153">            this.uniqueIps = uniqueIps;</span>
+<span class="nc" id="L154">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
