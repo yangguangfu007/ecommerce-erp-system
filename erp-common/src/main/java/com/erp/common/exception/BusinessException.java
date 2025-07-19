@@ -1,41 +1,37 @@
 package com.erp.common.exception;
 
-import com.erp.common.response.ResultCode;
-
 /**
  * 业务异常类
  *
  * @author ERP System
  */
-public class BusinessException extends BaseException {
-
-    private static final long serialVersionUID = 1L;
-
-    public BusinessException() {
-        super();
-    }
-
+public class BusinessException extends RuntimeException {
+    
+    private String code;
+    
     public BusinessException(String message) {
-        super(ResultCode.BUSINESS_ERROR.getCode(), message);
+        super(message);
     }
-
-    public BusinessException(Integer code, String message) {
-        super(code, message);
+    
+    public BusinessException(String code, String message) {
+        super(message);
+        this.code = code;
     }
-
-    public BusinessException(ResultCode resultCode) {
-        super(resultCode);
-    }
-
+    
     public BusinessException(String message, Throwable cause) {
-        super(ResultCode.BUSINESS_ERROR.getCode(), message, cause);
+        super(message, cause);
     }
-
-    public BusinessException(Integer code, String message, Throwable cause) {
-        super(code, message, cause);
+    
+    public BusinessException(String code, String message, Throwable cause) {
+        super(message, cause);
+        this.code = code;
     }
-
-    public BusinessException(ResultCode resultCode, Throwable cause) {
-        super(resultCode, cause);
+    
+    public String getCode() {
+        return code;
+    }
+    
+    public void setCode(String code) {
+        this.code = code;
     }
 }

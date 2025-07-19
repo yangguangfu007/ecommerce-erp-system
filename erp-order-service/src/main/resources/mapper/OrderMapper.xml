@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.order.mapper.OrderMapper">
+
+    <!-- 订单结果映射 -->
+    <resultMap id="BaseResultMap" type="com.erp.order.entity.Order">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="order_id" property="orderId" jdbcType="VARCHAR"/>
+        <result column="platform_order_id" property="platformOrderId" jdbcType="VARCHAR"/>
+        <result column="store_id" property="storeId" jdbcType="BIGINT"/>
+        <result column="customer_name" property="customerName" jdbcType="VARCHAR"/>
+        <result column="customer_email" property="customerEmail" jdbcType="VARCHAR"/>
+        <result column="customer_phone" property="customerPhone" jdbcType="VARCHAR"/>
+        <result column="shipping_address" property="shippingAddress" jdbcType="VARCHAR"/>
+        <result column="billing_address" property="billingAddress" jdbcType="VARCHAR"/>
+        <result column="total_amount" property="totalAmount" jdbcType="DECIMAL"/>
+        <result column="currency" property="currency" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="platform_status" property="platformStatus" jdbcType="VARCHAR"/>
+        <result column="order_date" property="orderDate" jdbcType="TIMESTAMP"/>
+        <result column="confirm_date" property="confirmDate" jdbcType="TIMESTAMP"/>
+        <result column="ship_date" property="shipDate" jdbcType="TIMESTAMP"/>
+        <result column="delivery_date" property="deliveryDate" jdbcType="TIMESTAMP"/>
+        <result column="tracking_number" property="trackingNumber" jdbcType="VARCHAR"/>
+        <result column="shipping_method" property="shippingMethod" jdbcType="VARCHAR"/>
+        <result column="payment_method" property="paymentMethod" jdbcType="VARCHAR"/>
+        <result column="payment_status" property="paymentStatus" jdbcType="VARCHAR"/>
+        <result column="notes" property="notes" jdbcType="LONGVARCHAR"/>
+        <result column="created_at" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="created_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="updated_by" property="updateBy" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 订单详情结果映射（包含订单明细） -->
+    <resultMap id="OrderWithItemsResultMap" type="com.erp.order.entity.Order" extends="BaseResultMap">
+        <collection property="orderItems" ofType="com.erp.order.entity.OrderItem">
+            <id column="item_id" property="id" jdbcType="BIGINT"/>
+            <result column="item_order_id" property="orderId" jdbcType="BIGINT"/>
+            <result column="item_sku" property="sku" jdbcType="VARCHAR"/>
+            <result column="item_product_title" property="productTitle" jdbcType="VARCHAR"/>
+            <result column="item_product_image" property="productImage" jdbcType="VARCHAR"/>
+            <result column="item_quantity" property="quantity" jdbcType="INTEGER"/>
+            <result column="item_unit_price" property="unitPrice" jdbcType="DECIMAL"/>
+            <result column="item_total_price" property="totalPrice" jdbcType="DECIMAL"/>
+            <result column="item_discount_amount" property="discountAmount" jdbcType="DECIMAL"/>
+            <result column="item_tax_amount" property="taxAmount" jdbcType="DECIMAL"/>
+            <result column="item_platform_item_id" property="platformItemId" jdbcType="VARCHAR"/>
+            <result column="item_attributes" property="attributes" jdbcType="VARCHAR"/>
+            <result column="item_created_at" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="item_updated_at" property="updateTime" jdbcType="TIMESTAMP"/>
+        </collection>
+    </resultMap>
+
+    <!-- 分页查询订单 -->
+    <select id="selectOrderPage" resultMap="BaseResultMap">
+        SELECT * FROM orders
+        <where>
+            <if test="query.storeId != null">
+                AND store_id = #{query.storeId}
+            </if>
+            <if test="query.orderId != null and query.orderId != ''">
+                AND order_id LIKE CONCAT('%', #{query.orderId}, '%')
+            </if>
+            <if test="query.platformOrderId != null and query.platformOrderId != ''">
+                AND platform_order_id LIKE CONCAT('%', #{query.platformOrderId}, '%')
+            </if>
+            <if test="query.customerName != null and query.customerName != ''">
+                AND customer_name LIKE CONCAT('%', #{query.customerName}, '%')
+            </if>
+            <if test="query.customerEmail != null and query.customerEmail != ''">
+                AND customer_email LIKE CONCAT('%', #{query.customerEmail}, '%')
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND status = #{query.status}
+            </if>
+            <if test="query.paymentStatus != null and query.paymentStatus != ''">
+                AND payment_status = #{query.paymentStatus}
+            </if>
+            <if test="query.trackingNumber != null and query.trackingNumber != ''">
+                AND tracking_number LIKE CONCAT('%', #{query.trackingNumber}, '%')
+            </if>
+            <if test="query.startDate != null">
+                AND order_date >= #{query.startDate}
+            </if>
+            <if test="query.endDate != null">
+                AND order_date &lt;= #{query.endDate}
+            </if>
+            <if test="query.minAmount != null">
+                AND total_amount >= #{query.minAmount}
+            </if>
+            <if test="query.maxAmount != null">
+                AND total_amount &lt;= #{query.maxAmount}
+            </if>
+        </where>
+        ORDER BY 
+        <choose>
+            <when test="query.orderBy != null and query.orderBy != ''">
+                ${query.orderBy}
+                <if test="query.orderDirection != null and query.orderDirection != ''">
+                    ${query.orderDirection}
+                </if>
+            </when>
+            <otherwise>
+                order_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 查询订单列表 -->
+    <select id="selectOrderList" resultMap="BaseResultMap">
+        SELECT * FROM orders
+        <where>
+            <if test="query.storeId != null">
+                AND store_id = #{query.storeId}
+            </if>
+            <if test="query.orderId != null and query.orderId != ''">
+                AND order_id LIKE CONCAT('%', #{query.orderId}, '%')
+            </if>
+            <if test="query.platformOrderId != null and query.platformOrderId != ''">
+                AND platform_order_id LIKE CONCAT('%', #{query.platformOrderId}, '%')
+            </if>
+            <if test="query.customerName != null and query.customerName != ''">
+                AND customer_name LIKE CONCAT('%', #{query.customerName}, '%')
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND status = #{query.status}
+            </if>
+            <if test="query.startDate != null">
+                AND order_date >= #{query.startDate}
+            </if>
+            <if test="query.endDate != null">
+                AND order_date &lt;= #{query.endDate}
+            </if>
+        </where>
+        ORDER BY order_date DESC
+        <if test="query.limit != null and query.limit > 0">
+            LIMIT #{query.limit}
+        </if>
+    </select>
+
+    <!-- 根据订单ID查询订单详情（包含订单明细） -->
+    <select id="selectOrderWithItems" resultMap="OrderWithItemsResultMap">
+        SELECT 
+            o.*,
+            oi.id as item_id,
+            oi.order_id as item_order_id,
+            oi.sku as item_sku,
+            oi.product_title as item_product_title,
+            oi.product_image as item_product_image,
+            oi.quantity as item_quantity,
+            oi.unit_price as item_unit_price,
+            oi.total_price as item_total_price,
+            oi.discount_amount as item_discount_amount,
+            oi.tax_amount as item_tax_amount,
+            oi.platform_item_id as item_platform_item_id,
+            oi.attributes as item_attributes,
+            oi.created_at as item_created_at,
+            oi.updated_at as item_updated_at
+        FROM orders o
+        LEFT JOIN order_items oi ON o.id = oi.order_id
+        WHERE o.id = #{orderId}
+        ORDER BY oi.id
+    </select>
+
+    <!-- 根据平台订单ID查询订单 -->
+    <select id="selectByPlatformOrderId" resultMap="BaseResultMap">
+        SELECT * FROM orders 
+        WHERE platform_order_id = #{platformOrderId} 
+        AND store_id = #{storeId}
+        LIMIT 1
+    </select>
+
+    <!-- 批量更新订单状态 -->
+    <update id="batchUpdateStatus">
+        UPDATE orders 
+        SET status = #{status}, 
+            updated_at = NOW()
+            <if test="updatedBy != null and updatedBy != ''">
+                , updated_by = #{updatedBy}
+            </if>
+        WHERE id IN
+        <foreach collection="orderIds" item="orderId" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </update>
+
+    <!-- 统计订单数量按状态分组 -->
+    <select id="countOrdersByStatus" resultType="com.erp.order.mapper.OrderMapper$OrderStatusCount">
+        SELECT 
+            status,
+            COUNT(*) as count
+        FROM orders
+        <where>
+            <if test="storeIds != null and storeIds.size() > 0">
+                AND store_id IN
+                <foreach collection="storeIds" item="storeId" open="(" separator="," close=")">
+                    #{storeId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY status
+        ORDER BY status
+    </select>
+
+    <!-- 查询需要自动取消的订单 -->
+    <select id="selectOrdersForAutoCancel" resultMap="BaseResultMap">
+        SELECT * FROM orders 
+        WHERE status = 'PENDING' 
+        AND order_date &lt; DATE_SUB(NOW(), INTERVAL #{hours} HOUR)
+        ORDER BY order_date ASC
+        LIMIT 100
+    </select>
+
+</mapper>

@@ -230,8 +230,7 @@ class WalmartProductServiceTest {
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(any(ParameterizedTypeReference.class)))
                 .thenReturn(Mono.error(WebClientResponseException.create(400, "Bad Request", null, null, null)));
-        when(responseSpec.timeout(any(Duration.class)))
-                .thenReturn(Mono.error(WebClientResponseException.create(400, "Bad Request", null, null, null)));
+        // timeout is handled at the Mono level, not ResponseSpec level
 
         // When
         Map<String, Object> result = walmartProductService.uploadProduct("store123", validProductData);
@@ -302,7 +301,7 @@ class WalmartProductServiceTest {
         when(requestBodySpec.bodyValue(any())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("success"));
-        when(responseSpec.timeout(any(Duration.class))).thenReturn(Mono.just("success"));
+        // timeout is handled at the Mono level, not ResponseSpec level
 
         // When
         boolean result = walmartProductService.updateProductStatus("store123", "TEST-SKU-001", "ACTIVE");
@@ -322,8 +321,7 @@ class WalmartProductServiceTest {
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(String.class))
                 .thenReturn(Mono.error(WebClientResponseException.create(500, "Internal Server Error", null, null, null)));
-        when(responseSpec.timeout(any(Duration.class)))
-                .thenReturn(Mono.error(WebClientResponseException.create(500, "Internal Server Error", null, null, null)));
+        // timeout is handled at the Mono level, not ResponseSpec level
 
         // When
         boolean result = walmartProductService.updateProductStatus("store123", "TEST-SKU-001", "ACTIVE");
