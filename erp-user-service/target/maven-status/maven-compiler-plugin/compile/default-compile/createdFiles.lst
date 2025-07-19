@@ -1,0 +1,8 @@
+com/erp/user/entity/User.class
+com/erp/user/mapper/UserMapper.class
+com/erp/user/service/UserService.class
+com/erp/user/mapper/UserRoleMapper.class
+com/erp/user/service/impl/UserServiceImpl.class
+com/erp/user/dto/UserDTO.class
+com/erp/user/entity/Permission.class
+com/erp/user/entity/UserRole.class

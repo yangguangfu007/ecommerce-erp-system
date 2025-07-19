@@ -1,0 +1,161 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: erp-gateway
+  
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: erp-system
+        group: DEFAULT_GROUP
+        metadata:
+          version: 1.0.0
+          zone: default
+    
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      
+      # 全局过滤器配置
+      default-filters:
+        - name: Retry
+          args:
+            retries: 3
+            statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+            methods: GET,POST
+        - name: CircuitBreaker
+          args:
+            name: default-circuit-breaker
+            fallback-uri: forward:/fallback
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenish-rate: 10
+            redis-rate-limiter.burst-capacity: 20
+            redis-rate-limiter.requested-tokens: 1
+            key-resolver: "#{@ipKeyResolver}"
+      
+      # 路由配置
+      routes:
+        # 用户服务
+        - id: user-service
+          uri: lb://erp-user-service
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=2
+            - name: AuthenticationFilter
+        
+        # 商品服务
+        - id: product-service
+          uri: lb://erp-product-service
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - StripPrefix=2
+            - name: AuthenticationFilter
+        
+        # 订单服务
+        - id: order-service
+          uri: lb://erp-order-service
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - StripPrefix=2
+            - name: AuthenticationFilter
+        
+        # 库存服务
+        - id: inventory-service
+          uri: lb://erp-inventory-service
+          predicates:
+            - Path=/api/inventory/**
+          filters:
+            - StripPrefix=2
+            - name: AuthenticationFilter
+        
+        # 平台服务
+        - id: platform-service
+          uri: lb://erp-platform-service
+          predicates:
+            - Path=/api/platforms/**
+          filters:
+            - StripPrefix=2
+            - name: AuthenticationFilter
+        
+        # 物流服务
+        - id: logistics-service
+          uri: lb://erp-logistics-service
+          predicates:
+            - Path=/api/logistics/**
+          filters:
+            - StripPrefix=2
+            - name: AuthenticationFilter
+        
+        # 通知服务
+        - id: notification-service
+          uri: lb://erp-notification-service
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - StripPrefix=2
+            - name: AuthenticationFilter
+
+  # Redis配置（用于限流）
+  redis:
+    host: localhost
+    port: 6379
+    password: redis123
+    database: 0
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 20
+        max-idle: 10
+        min-idle: 5
+
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,gateway
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+# 日志配置
+logging:
+  level:
+    com.erp.gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.reactive: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{traceId},%X{spanId}] %logger{36} - %msg%n"
+
+# 熔断器配置
+resilience4j:
+  circuitbreaker:
+    instances:
+      default-circuit-breaker:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+
+# 重试配置
+  retry:
+    instances:
+      default-retry:
+        max-attempts: 3
+        wait-duration: 1s
+        retry-exceptions:
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException

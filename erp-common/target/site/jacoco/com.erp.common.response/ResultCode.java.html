@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ResultCode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ERP Common</a> &gt; <a href="index.source.html" class="el_package">com.erp.common.response</a> &gt; <span class="el_source">ResultCode.java</span></div><h1>ResultCode.java</h1><pre class="source lang-java linenums">package com.erp.common.response;
+
+/**
+ * 响应状态码枚举
+ *
+ * @author ERP System
+ */
+<span class="fc" id="L8">public enum ResultCode {</span>
+
+    // 成功
+<span class="fc" id="L11">    SUCCESS(200, &quot;操作成功&quot;),</span>
+
+    // 客户端错误 4xx
+<span class="fc" id="L14">    BAD_REQUEST(400, &quot;请求参数错误&quot;),</span>
+<span class="fc" id="L15">    UNAUTHORIZED(401, &quot;未授权访问&quot;),</span>
+<span class="fc" id="L16">    FORBIDDEN(403, &quot;禁止访问&quot;),</span>
+<span class="fc" id="L17">    NOT_FOUND(404, &quot;资源不存在&quot;),</span>
+<span class="fc" id="L18">    METHOD_NOT_ALLOWED(405, &quot;请求方法不允许&quot;),</span>
+<span class="fc" id="L19">    CONFLICT(409, &quot;资源冲突&quot;),</span>
+<span class="fc" id="L20">    VALIDATION_ERROR(422, &quot;参数校验失败&quot;),</span>
+<span class="fc" id="L21">    TOO_MANY_REQUESTS(429, &quot;请求过于频繁&quot;),</span>
+
+    // 服务器错误 5xx
+<span class="fc" id="L24">    INTERNAL_SERVER_ERROR(500, &quot;系统内部错误&quot;),</span>
+<span class="fc" id="L25">    BAD_GATEWAY(502, &quot;网关错误&quot;),</span>
+<span class="fc" id="L26">    SERVICE_UNAVAILABLE(503, &quot;服务不可用&quot;),</span>
+<span class="fc" id="L27">    GATEWAY_TIMEOUT(504, &quot;网关超时&quot;),</span>
+
+    // 业务错误 6xxx
+<span class="fc" id="L30">    BUSINESS_ERROR(6000, &quot;业务处理失败&quot;),</span>
+    
+    // 用户相关错误 61xx
+<span class="fc" id="L33">    USER_NOT_FOUND(6101, &quot;用户不存在&quot;),</span>
+<span class="fc" id="L34">    USER_ALREADY_EXISTS(6102, &quot;用户已存在&quot;),</span>
+<span class="fc" id="L35">    INVALID_PASSWORD(6103, &quot;密码错误&quot;),</span>
+<span class="fc" id="L36">    USER_DISABLED(6104, &quot;用户已被禁用&quot;),</span>
+<span class="fc" id="L37">    TOKEN_EXPIRED(6105, &quot;令牌已过期&quot;),</span>
+<span class="fc" id="L38">    TOKEN_INVALID(6106, &quot;令牌无效&quot;),</span>
+
+    // 商品相关错误 62xx
+<span class="fc" id="L41">    PRODUCT_NOT_FOUND(6201, &quot;商品不存在&quot;),</span>
+<span class="fc" id="L42">    PRODUCT_ALREADY_EXISTS(6202, &quot;商品已存在&quot;),</span>
+<span class="fc" id="L43">    PRODUCT_SKU_DUPLICATE(6203, &quot;商品SKU重复&quot;),</span>
+<span class="fc" id="L44">    PRODUCT_CATEGORY_NOT_FOUND(6204, &quot;商品分类不存在&quot;),</span>
+
+    // 订单相关错误 63xx
+<span class="fc" id="L47">    ORDER_NOT_FOUND(6301, &quot;订单不存在&quot;),</span>
+<span class="fc" id="L48">    ORDER_STATUS_ERROR(6302, &quot;订单状态错误&quot;),</span>
+<span class="fc" id="L49">    ORDER_CANNOT_CANCEL(6303, &quot;订单无法取消&quot;),</span>
+<span class="fc" id="L50">    ORDER_ALREADY_PAID(6304, &quot;订单已支付&quot;),</span>
+
+    // 库存相关错误 64xx
+<span class="fc" id="L53">    INVENTORY_NOT_FOUND(6401, &quot;库存不存在&quot;),</span>
+<span class="fc" id="L54">    INVENTORY_INSUFFICIENT(6402, &quot;库存不足&quot;),</span>
+<span class="fc" id="L55">    INVENTORY_LOCKED(6403, &quot;库存已锁定&quot;),</span>
+<span class="fc" id="L56">    INVENTORY_ALLOCATION_FAILED(6404, &quot;库存分配失败&quot;),</span>
+
+    // 平台相关错误 65xx
+<span class="fc" id="L59">    PLATFORM_API_ERROR(6501, &quot;平台API调用失败&quot;),</span>
+<span class="fc" id="L60">    PLATFORM_AUTH_ERROR(6502, &quot;平台认证失败&quot;),</span>
+<span class="fc" id="L61">    PLATFORM_RATE_LIMIT(6503, &quot;平台API限流&quot;),</span>
+<span class="fc" id="L62">    PLATFORM_CONFIG_ERROR(6504, &quot;平台配置错误&quot;),</span>
+
+    // 物流相关错误 66xx
+<span class="fc" id="L65">    LOGISTICS_API_ERROR(6601, &quot;物流API调用失败&quot;),</span>
+<span class="fc" id="L66">    LOGISTICS_CREATE_ORDER_FAILED(6602, &quot;创建物流订单失败&quot;),</span>
+<span class="fc" id="L67">    LOGISTICS_TRACKING_ERROR(6603, &quot;物流跟踪失败&quot;),</span>
+<span class="fc" id="L68">    LOGISTICS_LABEL_GENERATE_FAILED(6604, &quot;面单生成失败&quot;),</span>
+
+    // 通知相关错误 67xx
+<span class="fc" id="L71">    NOTIFICATION_SEND_FAILED(6701, &quot;通知发送失败&quot;),</span>
+<span class="fc" id="L72">    NOTIFICATION_TEMPLATE_NOT_FOUND(6702, &quot;通知模板不存在&quot;),</span>
+<span class="fc" id="L73">    NOTIFICATION_CONFIG_ERROR(6703, &quot;通知配置错误&quot;);</span>
+
+    private final Integer code;
+    private final String message;
+
+<span class="fc" id="L78">    ResultCode(Integer code, String message) {</span>
+<span class="fc" id="L79">        this.code = code;</span>
+<span class="fc" id="L80">        this.message = message;</span>
+<span class="fc" id="L81">    }</span>
+
+    public Integer getCode() {
+<span class="fc" id="L84">        return code;</span>
+    }
+
+    public String getMessage() {
+<span class="fc" id="L88">        return message;</span>
+    }
+
+    /**
+     * 根据状态码获取枚举
+     */
+    public static ResultCode getByCode(Integer code) {
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        for (ResultCode resultCode : values()) {</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (resultCode.getCode().equals(code)) {</span>
+<span class="nc" id="L97">                return resultCode;</span>
+            }
+        }
+<span class="nc" id="L100">        return INTERNAL_SERVER_ERROR;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

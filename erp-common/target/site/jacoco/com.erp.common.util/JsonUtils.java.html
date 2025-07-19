@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ERP Common</a> &gt; <a href="index.source.html" class="el_package">com.erp.common.util</a> &gt; <span class="el_source">JsonUtils.java</span></div><h1>JsonUtils.java</h1><pre class="source lang-java linenums">package com.erp.common.util;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONException;
+import com.alibaba.fastjson2.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * JSON工具类
+ *
+ * @author ERP System
+ */
+public class JsonUtils {
+
+<span class="nc" id="L19">    private static final Logger logger = LoggerFactory.getLogger(JsonUtils.class);</span>
+
+    private JsonUtils() {
+        // 工具类不允许实例化
+    }
+
+    /**
+     * 对象转JSON字符串
+     *
+     * @param object 对象
+     * @return JSON字符串
+     */
+    public static String toJsonString(Object object) {
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        if (object == null) {</span>
+<span class="nc" id="L33">            return null;</span>
+        }
+        try {
+<span class="nc" id="L36">            return JSON.toJSONString(object);</span>
+<span class="nc" id="L37">        } catch (JSONException e) {</span>
+<span class="nc" id="L38">            logger.error(&quot;对象转JSON字符串失败&quot;, e);</span>
+<span class="nc" id="L39">            return null;</span>
+        }
+    }
+
+    /**
+     * JSON字符串转对象
+     *
+     * @param jsonString JSON字符串
+     * @param clazz      目标类型
+     * @param &lt;T&gt;        泛型
+     * @return 对象
+     */
+    public static &lt;T&gt; T parseObject(String jsonString, Class&lt;T&gt; clazz) {
+<span class="nc bnc" id="L52" title="All 4 branches missed.">        if (jsonString == null || jsonString.trim().isEmpty()) {</span>
+<span class="nc" id="L53">            return null;</span>
+        }
+        try {
+<span class="nc" id="L56">            return JSON.parseObject(jsonString, clazz);</span>
+<span class="nc" id="L57">        } catch (JSONException e) {</span>
+<span class="nc" id="L58">            logger.error(&quot;JSON字符串转对象失败: {}&quot;, jsonString, e);</span>
+<span class="nc" id="L59">            return null;</span>
+        }
+    }
+
+    /**
+     * JSON字符串转对象（支持泛型）
+     *
+     * @param jsonString    JSON字符串
+     * @param typeReference 类型引用
+     * @param &lt;T&gt;           泛型
+     * @return 对象
+     */
+    public static &lt;T&gt; T parseObject(String jsonString, TypeReference&lt;T&gt; typeReference) {
+<span class="nc bnc" id="L72" title="All 4 branches missed.">        if (jsonString == null || jsonString.trim().isEmpty()) {</span>
+<span class="nc" id="L73">            return null;</span>
+        }
+        try {
+<span class="nc" id="L76">            return JSON.parseObject(jsonString, typeReference);</span>
+<span class="nc" id="L77">        } catch (JSONException e) {</span>
+<span class="nc" id="L78">            logger.error(&quot;JSON字符串转对象失败: {}&quot;, jsonString, e);</span>
+<span class="nc" id="L79">            return null;</span>
+        }
+    }
+
+    /**
+     * JSON字符串转List
+     *
+     * @param jsonString JSON字符串
+     * @param clazz      元素类型
+     * @param &lt;T&gt;        泛型
+     * @return List对象
+     */
+    public static &lt;T&gt; List&lt;T&gt; parseArray(String jsonString, Class&lt;T&gt; clazz) {
+<span class="nc bnc" id="L92" title="All 4 branches missed.">        if (jsonString == null || jsonString.trim().isEmpty()) {</span>
+<span class="nc" id="L93">            return null;</span>
+        }
+        try {
+<span class="nc" id="L96">            return JSON.parseArray(jsonString, clazz);</span>
+<span class="nc" id="L97">        } catch (JSONException e) {</span>
+<span class="nc" id="L98">            logger.error(&quot;JSON字符串转List失败: {}&quot;, jsonString, e);</span>
+<span class="nc" id="L99">            return null;</span>
+        }
+    }
+
+    /**
+     * JSON字符串转Map
+     *
+     * @param jsonString JSON字符串
+     * @return Map对象
+     */
+    public static Map&lt;String, Object&gt; parseMap(String jsonString) {
+<span class="nc bnc" id="L110" title="All 4 branches missed.">        if (jsonString == null || jsonString.trim().isEmpty()) {</span>
+<span class="nc" id="L111">            return null;</span>
+        }
+        try {
+<span class="nc" id="L114">            return JSON.parseObject(jsonString, new TypeReference&lt;Map&lt;String, Object&gt;&gt;() {});</span>
+<span class="nc" id="L115">        } catch (JSONException e) {</span>
+<span class="nc" id="L116">            logger.error(&quot;JSON字符串转Map失败: {}&quot;, jsonString, e);</span>
+<span class="nc" id="L117">            return null;</span>
+        }
+    }
+
+    /**
+     * 判断字符串是否为有效的JSON
+     *
+     * @param jsonString JSON字符串
+     * @return 是否有效
+     */
+    public static boolean isValidJson(String jsonString) {
+<span class="nc bnc" id="L128" title="All 4 branches missed.">        if (jsonString == null || jsonString.trim().isEmpty()) {</span>
+<span class="nc" id="L129">            return false;</span>
+        }
+        try {
+<span class="nc" id="L132">            JSON.parse(jsonString);</span>
+<span class="nc" id="L133">            return true;</span>
+<span class="nc" id="L134">        } catch (JSONException e) {</span>
+<span class="nc" id="L135">            return false;</span>
+        }
+    }
+
+    /**
+     * 格式化JSON字符串（美化输出）
+     *
+     * @param jsonString JSON字符串
+     * @return 格式化后的JSON字符串
+     */
+    public static String formatJson(String jsonString) {
+<span class="nc bnc" id="L146" title="All 4 branches missed.">        if (jsonString == null || jsonString.trim().isEmpty()) {</span>
+<span class="nc" id="L147">            return jsonString;</span>
+        }
+        try {
+<span class="nc" id="L150">            Object object = JSON.parse(jsonString);</span>
+<span class="nc" id="L151">            return JSON.toJSONString(object, com.alibaba.fastjson2.JSONWriter.Feature.PrettyFormat);</span>
+<span class="nc" id="L152">        } catch (JSONException e) {</span>
+<span class="nc" id="L153">            logger.error(&quot;JSON格式化失败: {}&quot;, jsonString, e);</span>
+<span class="nc" id="L154">            return jsonString;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

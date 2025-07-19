@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DateUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ERP Common</a> &gt; <a href="index.source.html" class="el_package">com.erp.common.util</a> &gt; <span class="el_source">DateUtils.java</span></div><h1>DateUtils.java</h1><pre class="source lang-java linenums">package com.erp.common.util;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+/**
+ * 日期工具类
+ *
+ * @author ERP System
+ */
+public class DateUtils {
+
+    /**
+     * 默认日期时间格式
+     */
+    public static final String DEFAULT_DATETIME_PATTERN = &quot;yyyy-MM-dd HH:mm:ss&quot;;
+
+    /**
+     * 默认日期格式
+     */
+    public static final String DEFAULT_DATE_PATTERN = &quot;yyyy-MM-dd&quot;;
+
+    /**
+     * 默认时间格式
+     */
+    public static final String DEFAULT_TIME_PATTERN = &quot;HH:mm:ss&quot;;
+
+    private DateUtils() {
+        // 工具类不允许实例化
+    }
+
+    /**
+     * 格式化日期时间
+     *
+     * @param dateTime 日期时间
+     * @param pattern  格式
+     * @return 格式化后的字符串
+     */
+    public static String format(LocalDateTime dateTime, String pattern) {
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (dateTime == null) {</span>
+<span class="nc" id="L43">            return null;</span>
+        }
+<span class="nc" id="L45">        return dateTime.format(DateTimeFormatter.ofPattern(pattern));</span>
+    }
+
+    /**
+     * 格式化日期时间（使用默认格式）
+     *
+     * @param dateTime 日期时间
+     * @return 格式化后的字符串
+     */
+    public static String format(LocalDateTime dateTime) {
+<span class="nc" id="L55">        return format(dateTime, DEFAULT_DATETIME_PATTERN);</span>
+    }
+
+    /**
+     * 格式化日期
+     *
+     * @param date    日期
+     * @param pattern 格式
+     * @return 格式化后的字符串
+     */
+    public static String format(LocalDate date, String pattern) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (date == null) {</span>
+<span class="nc" id="L67">            return null;</span>
+        }
+<span class="nc" id="L69">        return date.format(DateTimeFormatter.ofPattern(pattern));</span>
+    }
+
+    /**
+     * 格式化日期（使用默认格式）
+     *
+     * @param date 日期
+     * @return 格式化后的字符串
+     */
+    public static String format(LocalDate date) {
+<span class="nc" id="L79">        return format(date, DEFAULT_DATE_PATTERN);</span>
+    }
+
+    /**
+     * 解析日期时间字符串
+     *
+     * @param dateTimeStr 日期时间字符串
+     * @param pattern     格式
+     * @return LocalDateTime对象
+     */
+    public static LocalDateTime parseDateTime(String dateTimeStr, String pattern) {
+<span class="nc bnc" id="L90" title="All 4 branches missed.">        if (dateTimeStr == null || dateTimeStr.trim().isEmpty()) {</span>
+<span class="nc" id="L91">            return null;</span>
+        }
+<span class="nc" id="L93">        return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(pattern));</span>
+    }
+
+    /**
+     * 解析日期时间字符串（使用默认格式）
+     *
+     * @param dateTimeStr 日期时间字符串
+     * @return LocalDateTime对象
+     */
+    public static LocalDateTime parseDateTime(String dateTimeStr) {
+<span class="nc" id="L103">        return parseDateTime(dateTimeStr, DEFAULT_DATETIME_PATTERN);</span>
+    }
+
+    /**
+     * 解析日期字符串
+     *
+     * @param dateStr 日期字符串
+     * @param pattern 格式
+     * @return LocalDate对象
+     */
+    public static LocalDate parseDate(String dateStr, String pattern) {
+<span class="nc bnc" id="L114" title="All 4 branches missed.">        if (dateStr == null || dateStr.trim().isEmpty()) {</span>
+<span class="nc" id="L115">            return null;</span>
+        }
+<span class="nc" id="L117">        return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(pattern));</span>
+    }
+
+    /**
+     * 解析日期字符串（使用默认格式）
+     *
+     * @param dateStr 日期字符串
+     * @return LocalDate对象
+     */
+    public static LocalDate parseDate(String dateStr) {
+<span class="nc" id="L127">        return parseDate(dateStr, DEFAULT_DATE_PATTERN);</span>
+    }
+
+    /**
+     * 获取当前日期时间
+     *
+     * @return 当前日期时间
+     */
+    public static LocalDateTime now() {
+<span class="nc" id="L136">        return LocalDateTime.now();</span>
+    }
+
+    /**
+     * 获取当前日期
+     *
+     * @return 当前日期
+     */
+    public static LocalDate today() {
+<span class="nc" id="L145">        return LocalDate.now();</span>
+    }
+
+    /**
+     * 计算两个日期时间之间的天数差
+     *
+     * @param start 开始日期时间
+     * @param end   结束日期时间
+     * @return 天数差
+     */
+    public static long daysBetween(LocalDateTime start, LocalDateTime end) {
+<span class="nc bnc" id="L156" title="All 4 branches missed.">        if (start == null || end == null) {</span>
+<span class="nc" id="L157">            return 0;</span>
+        }
+<span class="nc" id="L159">        return ChronoUnit.DAYS.between(start.toLocalDate(), end.toLocalDate());</span>
+    }
+
+    /**
+     * 计算两个日期之间的天数差
+     *
+     * @param start 开始日期
+     * @param end   结束日期
+     * @return 天数差
+     */
+    public static long daysBetween(LocalDate start, LocalDate end) {
+<span class="nc bnc" id="L170" title="All 4 branches missed.">        if (start == null || end == null) {</span>
+<span class="nc" id="L171">            return 0;</span>
+        }
+<span class="nc" id="L173">        return ChronoUnit.DAYS.between(start, end);</span>
+    }
+
+    /**
+     * 判断日期是否在指定范围内
+     *
+     * @param date  要判断的日期
+     * @param start 开始日期
+     * @param end   结束日期
+     * @return 是否在范围内
+     */
+    public static boolean isBetween(LocalDate date, LocalDate start, LocalDate end) {
+<span class="nc bnc" id="L185" title="All 6 branches missed.">        if (date == null || start == null || end == null) {</span>
+<span class="nc" id="L186">            return false;</span>
+        }
+<span class="nc bnc" id="L188" title="All 4 branches missed.">        return !date.isBefore(start) &amp;&amp; !date.isAfter(end);</span>
+    }
+
+    /**
+     * 判断日期时间是否在指定范围内
+     *
+     * @param dateTime 要判断的日期时间
+     * @param start    开始日期时间
+     * @param end      结束日期时间
+     * @return 是否在范围内
+     */
+    public static boolean isBetween(LocalDateTime dateTime, LocalDateTime start, LocalDateTime end) {
+<span class="nc bnc" id="L200" title="All 6 branches missed.">        if (dateTime == null || start == null || end == null) {</span>
+<span class="nc" id="L201">            return false;</span>
+        }
+<span class="nc bnc" id="L203" title="All 4 branches missed.">        return !dateTime.isBefore(start) &amp;&amp; !dateTime.isAfter(end);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
