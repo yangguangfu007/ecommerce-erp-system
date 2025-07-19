@@ -1,8 +1,46 @@
 # 电商ERP系统
 
+[![GitHub stars](https://img.shields.io/github/stars/yangguangfu007/ecommerce-erp-system.svg?style=flat-square)](https://github.com/yangguangfu007/ecommerce-erp-system/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/yangguangfu007/ecommerce-erp-system.svg?style=flat-square)](https://github.com/yangguangfu007/ecommerce-erp-system/network)
+[![GitHub issues](https://img.shields.io/github/issues/yangguangfu007/ecommerce-erp-system.svg?style=flat-square)](https://github.com/yangguangfu007/ecommerce-erp-system/issues)
+[![GitHub license](https://img.shields.io/github/license/yangguangfu007/ecommerce-erp-system.svg?style=flat-square)](https://github.com/yangguangfu007/ecommerce-erp-system/blob/main/LICENSE)
+[![Java](https://img.shields.io/badge/Java-17-orange.svg?style=flat-square)](https://openjdk.java.net/projects/jdk/17/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg?style=flat-square)](https://spring.io/projects/spring-boot)
+
+> 🚀 **GitHub仓库**: [https://github.com/yangguangfu007/ecommerce-erp-system](https://github.com/yangguangfu007/ecommerce-erp-system)
+
 ## 项目概述
 
 本项目是一套基于Spring Boot 3.2和Spring Cloud 2023的微服务架构电商ERP系统，主要用于对接沃尔玛电商平台和云途物流服务，实现订单管理、商品管理、库存管理、物流管理等核心功能的自动化处理。
+
+## 🎯 项目进度
+
+- [x] **项目架构设计** - 完成微服务架构设计和技术选型
+- [x] **基础设施搭建** - 完成Docker环境和基础服务配置
+- [x] **用户服务开发** - ✅ **已完成** (2025-07-19)
+  - [x] 用户管理系统核心功能
+  - [x] 基于RBAC的权限管理系统
+  - [x] JWT认证和Spring Security集成
+  - [x] 安全审计和日志记录
+  - [x] 异常登录检测和账户锁定
+- [ ] **商品服务开发** - 🚧 计划中
+- [ ] **订单服务开发** - 🚧 计划中
+- [ ] **库存服务开发** - 🚧 计划中
+- [ ] **平台对接服务开发** - 🚧 计划中
+- [ ] **物流服务开发** - 🚧 计划中
+- [ ] **通知服务开发** - 🚧 计划中
+
+## 📈 最新更新
+
+### v0.1.0 (2025-07-19)
+- ✅ **用户服务核心功能实现**
+  - 完成用户注册、登录、密码修改等基础功能
+  - 实现基于RBAC的角色权限管理系统
+  - 集成Spring Security和JWT认证机制
+  - 添加权限注解和AOP切面进行权限校验
+  - 实现安全审计和日志记录功能
+  - 添加登录异常检测和账户锁定机制
+  - 完善单元测试覆盖，测试通过率100%
 
 ## 技术栈
 
@@ -63,8 +101,8 @@ erp-system/
 
 1. **克隆项目**
    ```bash
-   git clone <repository-url>
-   cd erp-system
+   git clone https://github.com/yangguangfu007/ecommerce-erp-system.git
+   cd ecommerce-erp-system
    ```
 
 2. **启动基础设施**
@@ -293,5 +331,6 @@ docker-compose down -v
 
 如有问题或建议，请通过以下方式联系：
 
-- 项目Issues: [GitHub Issues](https://github.com/your-repo/issues)
-- 邮箱: your-email@example.com
+- 项目Issues: [GitHub Issues](https://github.com/yangguangfu007/ecommerce-erp-system/issues)
+- 邮箱: yangguangfu007@foxmail.com
+- GitHub: [@yangguangfu007](https://github.com/yangguangfu007)
