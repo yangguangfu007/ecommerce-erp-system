@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Test Review Commit",
+  "description": "Automatically executes unit tests and code review, then commits and pushes changes after task completion or feature modifications",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*/src/main/java/**/*.java",
+      "*/src/test/java/**/*.java",
+      "pom.xml",
+      "*/pom.xml"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A Java file or Maven configuration has been modified. Please:\n1. Run the corresponding unit tests for the modified functionality\n2. Perform a code review of the changes\n3. If tests pass and code review is satisfactory, commit the changes with an appropriate commit message\n4. Push the changes to the repository\n\nFocus on the modified files and their related test files. Ensure code quality and test coverage before committing."
+  }
+}

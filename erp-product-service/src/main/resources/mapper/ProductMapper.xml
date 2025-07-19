@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.product.mapper.ProductMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.erp.product.entity.Product">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="sku" property="sku" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="LONGVARCHAR"/>
+        <result column="category_id" property="categoryId" jdbcType="BIGINT"/>
+        <result column="brand" property="brand" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="cost_price" property="costPrice" jdbcType="DECIMAL"/>
+        <result column="weight" property="weight" jdbcType="DECIMAL"/>
+        <result column="dimensions" property="dimensions" jdbcType="VARCHAR"/>
+        <result column="images" property="images" jdbcType="VARCHAR" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="attributes" property="attributes" jdbcType="VARCHAR" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="version" property="version" jdbcType="INTEGER"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="updated_by" property="updatedBy" jdbcType="VARCHAR"/>
+        <result column="deleted" property="deleted" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <!-- 根据SKU查询商品 -->
+    <select id="selectBySku" resultMap="BaseResultMap">
+        SELECT * FROM products 
+        WHERE sku = #{sku} AND deleted = FALSE
+    </select>
+
+    <!-- 检查SKU是否存在 -->
+    <select id="existsBySku" resultType="boolean">
+        SELECT COUNT(1) > 0 FROM products 
+        WHERE sku = #{sku} AND deleted = FALSE
+    </select>
+
+    <!-- 分页搜索商品 -->
+    <select id="searchProducts" resultMap="BaseResultMap">
+        SELECT p.*, c.name as category_name
+        FROM products p
+        LEFT JOIN product_categories c ON p.category_id = c.id
+        <where>
+            p.deleted = FALSE
+            <if test="search.keyword != null and search.keyword != ''">
+                AND (p.sku LIKE CONCAT('%', #{search.keyword}, '%')
+                OR p.title LIKE CONCAT('%', #{search.keyword}, '%')
+                OR p.description LIKE CONCAT('%', #{search.keyword}, '%'))
+            </if>
+            <if test="search.sku != null and search.sku != ''">
+                AND p.sku LIKE CONCAT('%', #{search.sku}, '%')
+            </if>
+            <if test="search.title != null and search.title != ''">
+                AND p.title LIKE CONCAT('%', #{search.title}, '%')
+            </if>
+            <if test="search.categoryId != null">
+                AND p.category_id = #{search.categoryId}
+            </if>
+            <if test="search.brand != null and search.brand != ''">
+                AND p.brand LIKE CONCAT('%', #{search.brand}, '%')
+            </if>
+            <if test="search.minPrice != null">
+                AND p.price >= #{search.minPrice}
+            </if>
+            <if test="search.maxPrice != null">
+                AND p.price &lt;= #{search.maxPrice}
+            </if>
+            <if test="search.status != null">
+                AND p.status = #{search.status}
+            </if>
+        </where>
+        <choose>
+            <when test="search.sortField != null and search.sortField != ''">
+                ORDER BY ${search.sortField}
+                <if test="search.sortDirection != null and search.sortDirection != ''">
+                    ${search.sortDirection}
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY p.updated_at DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 根据分类ID查询商品列表 -->
+    <select id="selectByCategoryId" resultMap="BaseResultMap">
+        SELECT * FROM products 
+        WHERE category_id = #{categoryId} AND deleted = FALSE
+        ORDER BY updated_at DESC
+    </select>
+
+    <!-- 批量更新商品状态 -->
+    <update id="batchUpdateStatus">
+        UPDATE products 
+        SET status = #{status}, updated_at = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND deleted = FALSE
+    </update>
+
+    <!-- 获取商品统计信息 -->
+    <select id="getProductStatistics" resultType="com.erp.product.mapper.ProductMapper$ProductStatistics">
+        SELECT 
+            COUNT(*) as totalCount,
+            SUM(CASE WHEN status = 'ACTIVE' THEN 1 ELSE 0 END) as activeCount,
+            SUM(CASE WHEN status = 'INACTIVE' THEN 1 ELSE 0 END) as inactiveCount
+        FROM products 
+        WHERE deleted = FALSE
+    </select>
+
+</mapper>

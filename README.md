@@ -1,4 +1,4 @@
-# 电商ERP系统
+# 电商 ERP 系统
 
 [![GitHub stars](https://img.shields.io/github/stars/yangguangfu007/ecommerce-erp-system.svg?style=flat-square)](https://github.com/yangguangfu007/ecommerce-erp-system/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/yangguangfu007/ecommerce-erp-system.svg?style=flat-square)](https://github.com/yangguangfu007/ecommerce-erp-system/network)
@@ -7,20 +7,20 @@
 [![Java](https://img.shields.io/badge/Java-17-orange.svg?style=flat-square)](https://openjdk.java.net/projects/jdk/17/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg?style=flat-square)](https://spring.io/projects/spring-boot)
 
-> 🚀 **GitHub仓库**: [https://github.com/yangguangfu007/ecommerce-erp-system](https://github.com/yangguangfu007/ecommerce-erp-system)
+> 🚀 **GitHub 仓库**: [https://github.com/yangguangfu007/ecommerce-erp-system](https://github.com/yangguangfu007/ecommerce-erp-system)
 
 ## 项目概述
 
-本项目是一套基于Spring Boot 3.2和Spring Cloud 2023的微服务架构电商ERP系统，主要用于对接沃尔玛电商平台和云途物流服务，实现订单管理、商品管理、库存管理、物流管理等核心功能的自动化处理。
+本项目是一套基于 Spring Boot 3.2 和 Spring Cloud 2023 的微服务架构电商 ERP 系统，主要用于对接沃尔玛电商平台和云途物流服务，实现订单管理、商品管理、库存管理、物流管理等核心功能的自动化处理。
 
 ## 🎯 项目进度
 
 - [x] **项目架构设计** - 完成微服务架构设计和技术选型
-- [x] **基础设施搭建** - 完成Docker环境和基础服务配置
+- [x] **基础设施搭建** - 完成 Docker 环境和基础服务配置
 - [x] **用户服务开发** - ✅ **已完成** (2025-07-19)
   - [x] 用户管理系统核心功能
-  - [x] 基于RBAC的权限管理系统
-  - [x] JWT认证和Spring Security集成
+  - [x] 基于 RBAC 的权限管理系统
+  - [x] JWT 认证和 Spring Security 集成
   - [x] 安全审计和日志记录
   - [x] 异常登录检测和账户锁定
 - [ ] **商品服务开发** - 🚧 计划中
@@ -33,22 +33,24 @@
 ## 📈 最新更新
 
 ### v0.1.0 (2025-07-19)
+
 - ✅ **用户服务核心功能实现**
   - 完成用户注册、登录、密码修改等基础功能
-  - 实现基于RBAC的角色权限管理系统
-  - 集成Spring Security和JWT认证机制
-  - 添加权限注解和AOP切面进行权限校验
+  - 实现基于 RBAC 的角色权限管理系统
+  - 集成 Spring Security 和 JWT 认证机制
+  - 添加权限注解和 AOP 切面进行权限校验
   - 实现安全审计和日志记录功能
   - 添加登录异常检测和账户锁定机制
-  - 完善单元测试覆盖，测试通过率100%
+  - 完善单元测试覆盖，测试通过率 100%
 
 ## 技术栈
 
 ### 后端技术
+
 - **Java**: OpenJDK 17 LTS
 - **Spring Boot**: 3.2.0
 - **Spring Cloud**: 2023.0.0
-- **Spring Cloud Gateway**: API网关
+- **Spring Cloud Gateway**: API 网关
 - **Spring Security**: 安全框架
 - **MyBatis Plus**: 数据访问层
 - **MySQL**: 8.0.35 主数据库
@@ -58,6 +60,7 @@
 - **Sentinel**: 1.8.6 流量控制
 
 ### 监控运维
+
 - **Prometheus**: 监控数据收集
 - **Grafana**: 监控面板
 - **Elasticsearch**: 日志存储和搜索
@@ -100,78 +103,82 @@ erp-system/
 ### 本地开发环境搭建
 
 1. **克隆项目**
+
    ```bash
    git clone https://github.com/yangguangfu007/ecommerce-erp-system.git
    cd ecommerce-erp-system
    ```
 
 2. **启动基础设施**
+
    ```bash
    # 启动所有基础设施服务
    docker-compose up -d
-   
+
    # 查看服务状态
    docker-compose ps
    ```
 
 3. **编译项目**
+
    ```bash
    # 编译所有模块
    mvn clean compile
-   
+
    # 运行测试
    mvn test
-   
+
    # 代码质量检查
    mvn clean compile -Pcode-quality
    ```
 
 4. **启动服务**
+
    ```bash
    # 启动网关服务
    cd erp-gateway
    mvn spring-boot:run
-   
+
    # 启动用户服务
    cd erp-user-service
    mvn spring-boot:run
-   
+
    # 其他服务类似...
    ```
 
 ### 服务端口说明
 
-| 服务 | 端口 | 描述 |
-|------|------|------|
-| API Gateway | 8080 | API网关 |
-| User Service | 8001 | 用户服务 |
-| Product Service | 8002 | 商品服务 |
-| Order Service | 8003 | 订单服务 |
-| Inventory Service | 8004 | 库存服务 |
-| Platform Service | 8005 | 平台对接服务 |
-| Logistics Service | 8006 | 物流服务 |
-| Notification Service | 8007 | 通知服务 |
+| 服务                 | 端口 | 描述         |
+| -------------------- | ---- | ------------ |
+| API Gateway          | 8080 | API 网关     |
+| User Service         | 8001 | 用户服务     |
+| Product Service      | 8002 | 商品服务     |
+| Order Service        | 8003 | 订单服务     |
+| Inventory Service    | 8004 | 库存服务     |
+| Platform Service     | 8005 | 平台对接服务 |
+| Logistics Service    | 8006 | 物流服务     |
+| Notification Service | 8007 | 通知服务     |
 
 ### 基础设施服务
 
-| 服务 | 端口 | 用户名/密码 | 描述 |
-|------|------|-------------|------|
-| MySQL | 3306 | root/root123 | 数据库 |
-| Redis | 6379 | -/redis123 | 缓存 |
-| Nacos | 8848 | nacos/nacos | 服务注册中心 |
-| Kafka | 9092 | - | 消息队列 |
-| Elasticsearch | 9200 | - | 搜索引擎 |
-| Kibana | 5601 | - | 日志可视化 |
-| Prometheus | 9090 | - | 监控 |
-| Grafana | 3000 | admin/admin123 | 监控面板 |
-| Zipkin | 9411 | - | 链路追踪 |
-| MinIO | 9000/9001 | minioadmin/minioadmin123 | 对象存储 |
+| 服务          | 端口      | 用户名/密码              | 描述         |
+| ------------- | --------- | ------------------------ | ------------ |
+| MySQL         | 3306      | root/root123             | 数据库       |
+| Redis         | 6379      | -/redis123               | 缓存         |
+| Nacos         | 8848      | nacos/nacos              | 服务注册中心 |
+| Kafka         | 9092      | -                        | 消息队列     |
+| Elasticsearch | 9200      | -                        | 搜索引擎     |
+| Kibana        | 5601      | -                        | 日志可视化   |
+| Prometheus    | 9090      | -                        | 监控         |
+| Grafana       | 3000      | admin/admin123           | 监控面板     |
+| Zipkin        | 9411      | -                        | 链路追踪     |
+| MinIO         | 9000/9001 | minioadmin/minioadmin123 | 对象存储     |
 
 ## 开发指南
 
 ### 代码规范
 
-项目使用Checkstyle进行代码规范检查，配置文件为`checkstyle.xml`。
+项目使用 Checkstyle 进行代码规范检查，配置文件为`checkstyle.xml`。
 
 ```bash
 # 运行代码规范检查
@@ -194,7 +201,7 @@ mvn jacoco:report
 open target/site/jacoco/index.html
 ```
 
-### Docker构建
+### Docker 构建
 
 ```bash
 # 构建Docker镜像
@@ -219,7 +226,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 ```
 
-### Nacos配置
+### Nacos 配置
 
 服务注册发现配置：
 
@@ -232,7 +239,7 @@ spring:
         namespace: erp-system
 ```
 
-### Kafka配置
+### Kafka 配置
 
 消息队列配置：
 
@@ -279,7 +286,7 @@ tail -f logs/application.log
 
 ### 本地部署
 
-使用Docker Compose进行本地部署：
+使用 Docker Compose 进行本地部署：
 
 ```bash
 # 构建并启动所有服务
@@ -294,43 +301,45 @@ docker-compose down -v
 
 ### 生产部署
 
-生产环境建议使用Kubernetes进行部署，相关配置文件在`k8s/`目录下。
+生产环境建议使用 Kubernetes 进行部署，相关配置文件在`k8s/`目录下。
 
 ## 故障排除
 
 ### 常见问题
 
 1. **服务启动失败**
+
    - 检查端口是否被占用
    - 检查数据库连接是否正常
    - 查看应用日志
 
-2. **Nacos连接失败**
-   - 确认Nacos服务是否启动
+2. **Nacos 连接失败**
+
+   - 确认 Nacos 服务是否启动
    - 检查网络连接
    - 验证配置是否正确
 
 3. **数据库连接失败**
-   - 确认MySQL服务是否启动
+   - 确认 MySQL 服务是否启动
    - 检查数据库用户权限
    - 验证连接字符串
 
 ## 贡献指南
 
-1. Fork项目
+1. Fork 项目
 2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建Pull Request
+5. 创建 Pull Request
 
 ## 许可证
 
-本项目采用MIT许可证 - 查看[LICENSE](LICENSE)文件了解详情。
+本项目采用 MIT 许可证 - 查看[LICENSE](LICENSE)文件了解详情。
 
 ## 联系方式
 
 如有问题或建议，请通过以下方式联系：
 
-- 项目Issues: [GitHub Issues](https://github.com/yangguangfu007/ecommerce-erp-system/issues)
+- 项目 Issues: [GitHub Issues](https://github.com/yangguangfu007/ecommerce-erp-system/issues)
 - 邮箱: yangguangfu007@foxmail.com
 - GitHub: [@yangguangfu007](https://github.com/yangguangfu007)
