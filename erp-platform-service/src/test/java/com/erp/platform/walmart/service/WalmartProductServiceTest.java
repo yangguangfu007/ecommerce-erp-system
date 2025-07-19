@@ -195,7 +195,7 @@ class WalmartProductServiceTest {
         when(requestBodySpec.bodyValue(any())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(any(ParameterizedTypeReference.class))).thenReturn(Mono.just(new HashMap<>()));
-        when(responseSpec.timeout(any(Duration.class))).thenReturn(Mono.just(new HashMap<>()));
+
 
         // When
         Map<String, Object> result = walmartProductService.uploadProduct("store123", validProductData);
