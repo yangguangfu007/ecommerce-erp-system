@@ -1,6 +1,0 @@
-/Users/yguangfu/project/ecommerce-erp-system/erp-gateway/src/main/java/com/erp/gateway/filter/GlobalLoggingFilter.java
-/Users/yguangfu/project/ecommerce-erp-system/erp-gateway/src/main/java/com/erp/gateway/handler/FallbackHandler.java
-/Users/yguangfu/project/ecommerce-erp-system/erp-gateway/src/main/java/com/erp/gateway/filter/AuthenticationFilter.java
-/Users/yguangfu/project/ecommerce-erp-system/erp-gateway/src/main/java/com/erp/gateway/config/RedisConfig.java
-/Users/yguangfu/project/ecommerce-erp-system/erp-gateway/src/main/java/com/erp/gateway/GatewayApplication.java
-/Users/yguangfu/project/ecommerce-erp-system/erp-gateway/src/main/java/com/erp/gateway/config/GatewayConfig.java

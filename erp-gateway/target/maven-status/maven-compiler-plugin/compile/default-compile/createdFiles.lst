@@ -1,7 +1,0 @@
-com/erp/gateway/filter/GlobalLoggingFilter.class
-com/erp/gateway/handler/FallbackHandler.class
-com/erp/gateway/filter/AuthenticationFilter$Config.class
-com/erp/gateway/GatewayApplication.class
-com/erp/gateway/config/GatewayConfig.class
-com/erp/gateway/filter/AuthenticationFilter.class
-com/erp/gateway/config/RedisConfig.class
