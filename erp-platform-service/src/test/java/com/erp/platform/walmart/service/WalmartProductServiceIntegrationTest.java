@@ -1,7 +1,9 @@
 package com.erp.platform.walmart.service;
 
+import com.erp.platform.config.TestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
@@ -17,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(TestConfig.class)
 class WalmartProductServiceIntegrationTest {
 
     @Test

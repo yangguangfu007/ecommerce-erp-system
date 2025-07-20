@@ -156,12 +156,12 @@ public class InventoryServiceImpl implements InventoryService {
         try {
             // 获取分布式锁
             if (!acquireLock(lockKey)) {
-                throw new BusinessException(ResultCode.SERVICE_UNAVAILABLE.getCode(), "系统繁忙，请稍后重试");
+                throw new BusinessException(ResultCode.SERVICE_UNAVAILABLE.getCode().toString(), "系统繁忙，请稍后重试");
             }
 
             Inventory inventory = inventoryMapper.selectBySkuAndStore(operationDTO.getSku(), operationDTO.getStoreId());
             if (inventory == null) {
-                throw new BusinessException(ResultCode.INVENTORY_NOT_FOUND);
+                throw new BusinessException(ResultCode.INVENTORY_NOT_FOUND.getCode().toString(), ResultCode.INVENTORY_NOT_FOUND.getMessage());
             }
 
             int beforeQuantity = inventory.getAvailableQuantity();
@@ -218,7 +218,7 @@ public class InventoryServiceImpl implements InventoryService {
         int totalAvailable = inventories.stream().mapToInt(Inventory::getAvailableQuantity).sum();
         
         if (totalAllocation > totalAvailable) {
-            throw new BusinessException(ResultCode.INVENTORY_ALLOCATION_FAILED);
+            throw new BusinessException(ResultCode.INVENTORY_ALLOCATION_FAILED.getCode().toString(), ResultCode.INVENTORY_ALLOCATION_FAILED.getMessage());
         }
 
         // 执行分配
@@ -286,14 +286,14 @@ public class InventoryServiceImpl implements InventoryService {
         try {
             // 获取分布式锁
             if (!acquireLock(lockKey)) {
-                throw new BusinessException(ResultCode.SERVICE_UNAVAILABLE.getCode(), "系统繁忙，请稍后重试");
+                throw new BusinessException(ResultCode.SERVICE_UNAVAILABLE.getCode().toString(), "系统繁忙，请稍后重试");
             }
 
             // 重试机制
             for (int i = 0; i < MAX_RETRY_TIMES; i++) {
                 Inventory inventory = inventoryMapper.selectBySkuAndStore(operationDTO.getSku(), operationDTO.getStoreId());
                 if (inventory == null) {
-                    throw new BusinessException(ResultCode.INVENTORY_NOT_FOUND);
+                    throw new BusinessException(ResultCode.INVENTORY_NOT_FOUND.getCode().toString(), ResultCode.INVENTORY_NOT_FOUND.getMessage());
                 }
 
                 int beforeQuantity = inventory.getAvailableQuantity();
@@ -317,7 +317,7 @@ public class InventoryServiceImpl implements InventoryService {
                     return true;
                 } else if (i == MAX_RETRY_TIMES - 1) {
                     // 最后一次重试失败
-                    throw new BusinessException(ResultCode.INVENTORY_INSUFFICIENT);
+                    throw new BusinessException(ResultCode.INVENTORY_INSUFFICIENT.getCode().toString(), ResultCode.INVENTORY_INSUFFICIENT.getMessage());
                 }
                 
                 // 短暂等待后重试
@@ -325,7 +325,7 @@ public class InventoryServiceImpl implements InventoryService {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    throw new BusinessException(ResultCode.INTERNAL_SERVER_ERROR.getCode(), "操作被中断");
+                    throw new BusinessException(ResultCode.INTERNAL_SERVER_ERROR.getCode().toString(), "操作被中断");
                 }
             }
             

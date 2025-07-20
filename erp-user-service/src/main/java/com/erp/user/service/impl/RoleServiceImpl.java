@@ -12,7 +12,7 @@ import com.erp.user.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 检查角色编码是否被其他角色使用
-        if (StringUtils.hasText(role.getRoleCode()) && !role.getRoleCode().equals(existingRole.getRoleCode())) {
+        if (StrUtil.isNotBlank(role.getRoleCode()) && !role.getRoleCode().equals(existingRole.getRoleCode())) {
             if (existsByRoleCode(role.getRoleCode())) {
                 throw new BusinessException("角色编码已存在");
             }
@@ -101,7 +101,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Role> rolePage = new Page<>(page, size);
         LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();
         
-        if (StringUtils.hasText(roleName)) {
+        if (StrUtil.isNotBlank(roleName)) {
             queryWrapper.like(Role::getRoleName, roleName);
         }
         if (status != null) {

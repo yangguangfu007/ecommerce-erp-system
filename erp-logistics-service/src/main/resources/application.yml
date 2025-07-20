@@ -1,0 +1,79 @@
+server:
+  port: 8006
+
+spring:
+  application:
+    name: erp-logistics-service
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/erp_logistics?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: root123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 3
+      batch-size: 16384
+      buffer-memory: 33554432
+    consumer:
+      group-id: logistics-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+
+# 云途物流配置
+yunexpress:
+  base-url: https://api.yunexpress.com
+  api-key: ${YUNEXPRESS_API_KEY:your-api-key}
+  customer-code: ${YUNEXPRESS_CUSTOMER_CODE:your-customer-code}
+  connect-timeout: 30000
+  read-timeout: 60000
+  enabled: true
+  default-service-type: YE1
+  retry-count: 3
+  retry-interval: 1000
+  test-mode: false
+  test-base-url: https://test-api.yunexpress.com
+
+# 服务注册发现
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+
+# 监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+# 日志配置
+logging:
+  level:
+    com.erp.logistics: DEBUG
+    org.springframework.web.client: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/logistics-service.log

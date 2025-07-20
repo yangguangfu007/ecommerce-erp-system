@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
@@ -29,9 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     @Override
@@ -41,11 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         String token = getTokenFromRequest(request);
         
-        if (StringUtils.hasText(token)) {
+        if (StrUtil.isNotBlank(token)) {
             try {
                 String username = jwtUtil.getUsernameFromToken(token);
                 
-                if (StringUtils.hasText(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (StrUtil.isNotBlank(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     
                     if (jwtUtil.validateToken(token, username)) {
@@ -68,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        if (StrUtil.isNotBlank(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;

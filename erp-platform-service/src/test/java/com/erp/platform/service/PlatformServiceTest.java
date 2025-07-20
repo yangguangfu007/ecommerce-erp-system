@@ -31,6 +31,12 @@ class PlatformServiceTest {
     private PlatformStoreRepository platformStoreRepository;
     
     @Mock
+    private com.erp.platform.repository.StorePermissionRepository storePermissionRepository;
+    
+    @Mock
+    private com.erp.platform.repository.StoreDataIsolationRepository storeDataIsolationRepository;
+    
+    @Mock
     private PlatformAdapter platformAdapter;
     
     private PlatformService platformService;
@@ -38,7 +44,7 @@ class PlatformServiceTest {
     @BeforeEach
     void setUp() {
         List<PlatformAdapter> adapters = Arrays.asList(platformAdapter);
-        platformService = new PlatformServiceImpl(platformStoreRepository, adapters);
+        platformService = new PlatformServiceImpl(platformStoreRepository, storePermissionRepository, storeDataIsolationRepository, adapters);
     }
     
     @Test

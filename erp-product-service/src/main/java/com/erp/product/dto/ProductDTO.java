@@ -3,7 +3,7 @@ package com.erp.product.dto;
 import com.erp.product.entity.Product;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;

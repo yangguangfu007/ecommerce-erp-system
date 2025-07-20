@@ -84,6 +84,43 @@ public class WalmartPlatformAdapter implements PlatformAdapter {
     }
     
     @Override
+    public Map<String, Object> validateCredentials(String storeId) {
+        log.info("验证沃尔玛平台API凭证，店铺ID: {}", storeId);
+        
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            // 尝试获取访问令牌来验证凭证
+            WalmartAuthToken token = walmartAuthService.getAccessToken();
+            
+            if (token != null && token.getAccessToken() != null && !token.getAccessToken().isEmpty()) {
+                result.put("valid", true);
+                result.put("tokenType", token.getTokenType());
+                result.put("expiresIn", token.getExpiresIn());
+                result.put("message", "沃尔玛API凭证验证成功");
+                
+                // 进一步验证令牌是否可用
+                boolean connectionTest = testConnection(storeId);
+                result.put("connectionTest", connectionTest);
+                
+                if (!connectionTest) {
+                    result.put("warning", "凭证有效但连接测试失败，可能是网络问题或API限制");
+                }
+            } else {
+                result.put("valid", false);
+                result.put("error", "无法获取有效的访问令牌");
+            }
+            
+        } catch (Exception e) {
+            log.error("验证沃尔玛平台API凭证失败，店铺ID: {}", storeId, e);
+            result.put("valid", false);
+            result.put("error", "凭证验证失败: " + e.getMessage());
+        }
+        
+        return result;
+    }
+    
+    @Override
     @Retryable(value = {Exception.class}, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public List<Map<String, Object>> fetchOrders(String storeId, LocalDateTime fromDate, LocalDateTime toDate) {
         log.info("拉取沃尔玛订单，店铺ID: {}, 时间范围: {} - {}", storeId, fromDate, toDate);

@@ -25,6 +25,14 @@ public interface PlatformAdapter {
     boolean testConnection(String storeId);
     
     /**
+     * 验证API凭证
+     *
+     * @param storeId 店铺ID
+     * @return 验证结果
+     */
+    Map<String, Object> validateCredentials(String storeId);
+    
+    /**
      * 拉取订单
      *
      * @param storeId 店铺ID

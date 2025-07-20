@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -119,10 +119,10 @@ public class SecurityAuditServiceImpl implements SecurityAuditService {
         Page<LoginLog> loginLogPage = new Page<>(page, size);
         LambdaQueryWrapper<LoginLog> queryWrapper = new LambdaQueryWrapper<>();
         
-        if (StringUtils.hasText(username)) {
+        if (StrUtil.isNotBlank(username)) {
             queryWrapper.like(LoginLog::getUsername, username);
         }
-        if (StringUtils.hasText(loginIp)) {
+        if (StrUtil.isNotBlank(loginIp)) {
             queryWrapper.eq(LoginLog::getLoginIp, loginIp);
         }
         if (status != null) {

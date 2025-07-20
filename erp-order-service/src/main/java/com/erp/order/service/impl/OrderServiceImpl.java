@@ -10,7 +10,7 @@ import com.erp.order.dto.OrderItemDTO;
 import com.erp.order.dto.OrderQueryDTO;
 import com.erp.order.entity.Order;
 import com.erp.order.entity.OrderItem;
-import com.erp.order.entity.OrderStatusHistory;
+
 import com.erp.order.mapper.OrderItemMapper;
 import com.erp.order.mapper.OrderMapper;
 import com.erp.order.service.OrderService;
@@ -26,7 +26,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
         validateOrderData(orderDTO);
 
         // 2. 生成订单编号
-        if (!StringUtils.hasText(orderDTO.getOrderId())) {
+        if (!StrUtil.isNotBlank(orderDTO.getOrderId())) {
             orderDTO.setOrderId(generateOrderId());
         }
 
@@ -223,11 +223,23 @@ public class OrderServiceImpl implements OrderService {
             case CONFIRMED:
                 order.setConfirmDate(LocalDateTime.now());
                 break;
+            case PROCESSING:
+                // 处理中状态，可以添加相应的时间字段
+                break;
             case SHIPPED:
                 order.setShipDate(LocalDateTime.now());
                 break;
             case DELIVERED:
                 order.setDeliveryDate(LocalDateTime.now());
+                break;
+            case CANCELLED:
+                // 取消状态，可以添加相应的时间字段
+                break;
+            case REFUNDED:
+                // 退款状态，可以添加相应的时间字段
+                break;
+            case PENDING:
+                // 待处理状态，通常不需要特殊处理
                 break;
         }
 
@@ -403,7 +415,7 @@ public class OrderServiceImpl implements OrderService {
         if (orderDTO.getStoreId() == null) {
             throw new BusinessException("店铺ID不能为空");
         }
-        if (!StringUtils.hasText(orderDTO.getCustomerName())) {
+        if (!StrUtil.isNotBlank(orderDTO.getCustomerName())) {
             throw new BusinessException("客户姓名不能为空");
         }
         if (orderDTO.getTotalAmount() == null || orderDTO.getTotalAmount().compareTo(java.math.BigDecimal.ZERO) <= 0) {
@@ -446,10 +458,10 @@ public class OrderServiceImpl implements OrderService {
         }
         
         // 处理状态枚举
-        if (StringUtils.hasText(orderDTO.getStatus())) {
+        if (StrUtil.isNotBlank(orderDTO.getStatus())) {
             order.setStatus(Order.OrderStatus.valueOf(orderDTO.getStatus()));
         }
-        if (StringUtils.hasText(orderDTO.getPaymentStatus())) {
+        if (StrUtil.isNotBlank(orderDTO.getPaymentStatus())) {
             order.setPaymentStatus(Order.PaymentStatus.valueOf(orderDTO.getPaymentStatus()));
         }
         
@@ -549,6 +561,13 @@ public class OrderServiceImpl implements OrderService {
             case CANCELLED:
                 // 取消订单时，释放库存锁定
                 inventoryLockService.releaseInventoryLock(orderId);
+                break;
+            case PENDING:
+            case PROCESSING:
+            case SHIPPED:
+            case DELIVERED:
+            case REFUNDED:
+                // 其他状态暂不需要特殊的库存处理
                 break;
         }
     }

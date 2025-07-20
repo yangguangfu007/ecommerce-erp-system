@@ -1,10 +1,8 @@
 package com.erp.product.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.erp.common.exception.BusinessException;
-import com.erp.common.response.ResultCode;
 import com.erp.product.dto.ProductDTO;
 import com.erp.product.dto.ProductSearchDTO;
 import com.erp.product.entity.Product;
@@ -21,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 商品服务实现类
@@ -39,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO createProduct(ProductDTO productDTO) {
         // 检查SKU唯一性
         if (existsBySku(productDTO.getSku())) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "SKU编码已存在: " + productDTO.getSku());
+            throw new BusinessException("SKU编码已存在: " + productDTO.getSku());
         }
         
         Product product = new Product();
@@ -48,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
         
         int result = productMapper.insert(product);
         if (result <= 0) {
-            throw new BusinessException(ResultCode.SYSTEM_ERROR, "商品创建失败");
+            throw new BusinessException("商品创建失败");
         }
         
         // 记录历史
@@ -62,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProductById(Long id) {
         Product product = productMapper.selectById(id);
         if (product == null) {
-            throw new BusinessException(ResultCode.NOT_FOUND, "商品不存在");
+            throw new BusinessException("商品不存在");
         }
         
         ProductDTO productDTO = new ProductDTO();
@@ -74,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProductBySku(String sku) {
         Product product = productMapper.selectBySku(sku);
         if (product == null) {
-            throw new BusinessException(ResultCode.NOT_FOUND, "商品不存在");
+            throw new BusinessException("商品不存在");
         }
         
         ProductDTO productDTO = new ProductDTO();
@@ -87,12 +84,12 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         Product existingProduct = productMapper.selectById(id);
         if (existingProduct == null) {
-            throw new BusinessException(ResultCode.NOT_FOUND, "商品不存在");
+            throw new BusinessException("商品不存在");
         }
         
         // 如果SKU发生变化，检查新SKU的唯一性
         if (!existingProduct.getSku().equals(productDTO.getSku()) && existsBySku(productDTO.getSku())) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "SKU编码已存在: " + productDTO.getSku());
+            throw new BusinessException("SKU编码已存在: " + productDTO.getSku());
         }
         
         Product product = new Product();
@@ -102,7 +99,7 @@ public class ProductServiceImpl implements ProductService {
         
         int result = productMapper.updateById(product);
         if (result <= 0) {
-            throw new BusinessException(ResultCode.SYSTEM_ERROR, "商品更新失败");
+            throw new BusinessException("商品更新失败");
         }
         
         // 记录历史
@@ -115,12 +112,12 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(Long id) {
         if (!canDeleteProduct(id)) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "商品存在关联数据，无法删除");
+            throw new BusinessException("商品存在关联数据，无法删除");
         }
         
         Product product = productMapper.selectById(id);
         if (product == null) {
-            throw new BusinessException(ResultCode.NOT_FOUND, "商品不存在");
+            throw new BusinessException("商品不存在");
         }
         
         // 软删除
@@ -161,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
     public void updateProductStatus(Long id, Product.ProductStatus status) {
         Product product = productMapper.selectById(id);
         if (product == null) {
-            throw new BusinessException(ResultCode.NOT_FOUND, "商品不存在");
+            throw new BusinessException("商品不存在");
         }
         
         Product.ProductStatus oldStatus = product.getStatus();
@@ -195,7 +192,7 @@ public class ProductServiceImpl implements ProductService {
         // 2. 生成唯一文件名
         // 3. 上传到文件存储服务
         // 4. 返回文件访问URL
-        throw new BusinessException(ResultCode.NOT_IMPLEMENTED, "图片上传功能待实现");
+        throw new BusinessException("图片上传功能待实现");
     }
     
     @Override
@@ -203,12 +200,12 @@ public class ProductServiceImpl implements ProductService {
     public void batchImportProducts(MultipartFile file) {
         // 验证文件格式
         if (file.isEmpty()) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "上传文件不能为空");
+            throw new BusinessException("上传文件不能为空");
         }
         
         String fileName = file.getOriginalFilename();
         if (fileName == null || (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls"))) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "文件格式不正确，请上传Excel文件");
+            throw new BusinessException("文件格式不正确，请上传Excel文件");
         }
         
         // TODO: 集成ProductImportService实现完整的导入逻辑
@@ -216,13 +213,13 @@ public class ProductServiceImpl implements ProductService {
         // 2. 数据验证
         // 3. 批量插入数据库
         log.info("开始批量导入商品，文件名: {}", fileName);
-        throw new BusinessException(ResultCode.NOT_IMPLEMENTED, "批量导入功能正在开发中");
+        throw new BusinessException("批量导入功能正在开发中");
     }
     
     @Override
     public void exportProducts(ProductSearchDTO searchDTO) {
         // TODO: 实现商品数据导出逻辑
-        throw new BusinessException(ResultCode.NOT_IMPLEMENTED, "数据导出功能待实现");
+        throw new BusinessException("数据导出功能待实现");
     }
     
     @Override

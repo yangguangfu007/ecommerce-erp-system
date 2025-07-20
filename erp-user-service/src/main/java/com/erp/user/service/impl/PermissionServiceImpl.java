@@ -10,7 +10,7 @@ import com.erp.user.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         // 检查权限编码是否被其他权限使用
-        if (StringUtils.hasText(permission.getPermissionCode()) && 
+        if (StrUtil.isNotBlank(permission.getPermissionCode()) && 
             !permission.getPermissionCode().equals(existingPermission.getPermissionCode())) {
             if (existsByPermissionCode(permission.getPermissionCode())) {
                 throw new BusinessException("权限编码已存在");
@@ -105,7 +105,7 @@ public class PermissionServiceImpl implements PermissionService {
         Page<Permission> permissionPage = new Page<>(page, size);
         LambdaQueryWrapper<Permission> queryWrapper = new LambdaQueryWrapper<>();
         
-        if (StringUtils.hasText(permissionName)) {
+        if (StrUtil.isNotBlank(permissionName)) {
             queryWrapper.like(Permission::getPermissionName, permissionName);
         }
         if (type != null) {
@@ -174,7 +174,7 @@ public class PermissionServiceImpl implements PermissionService {
         if (children != null) {
             for (Permission permission : children) {
                 // 递归构建子权限树
-                List<Permission> subChildren = buildPermissionTree(permissions, permission.getId());
+                buildPermissionTree(permissions, permission.getId());
                 // 这里可以设置children属性，如果Permission实体有children字段的话
                 tree.add(permission);
             }

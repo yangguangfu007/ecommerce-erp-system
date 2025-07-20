@@ -1,0 +1,69 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: erp-platform-service-test
+  
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 15000
+  
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: false
+        hbm2ddl:
+          auto: create-drop
+    defer-datasource-initialization: true
+  
+  sql:
+    init:
+      mode: never
+
+# MyBatis Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.erp.platform.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    call-setters-on-nulls: true
+    jdbc-type-for-null: 'null'
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 平台配置
+platform:
+  walmart:
+    api-url: http://localhost:8089
+    client-id: test-client-id
+    client-secret: test-client-secret
+    timeout: 3000
+    retry-attempts: 3
+
+logging:
+  level:
+    "[com.erp.platform]": DEBUG
+    "[org.springframework]": WARN
+    root: INFO

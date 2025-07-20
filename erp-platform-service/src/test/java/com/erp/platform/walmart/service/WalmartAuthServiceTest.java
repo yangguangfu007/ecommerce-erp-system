@@ -17,8 +17,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 /**
@@ -54,8 +54,8 @@ class WalmartAuthServiceTest {
         walmartConfig.setReadTimeout(5000);
         walmartConfig.setTokenCacheTime(3600);
         
-        // Mock Redis操作
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        // Mock Redis操作 (使用lenient避免unnecessary stubbing错误)
+        lenient().when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         
         // 创建WebClient
         WebClient webClient = WebClient.builder().build();

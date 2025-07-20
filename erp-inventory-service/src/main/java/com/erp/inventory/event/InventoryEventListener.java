@@ -33,7 +33,7 @@ public class InventoryEventListener {
     @KafkaListener(topics = "order-confirmed", groupId = "inventory-service")
     public void handleOrderConfirmed(@Payload Map<String, Object> orderEvent,
                                    @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                                   @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
+                                   @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
                                    @Header(KafkaHeaders.OFFSET) long offset,
                                    Acknowledgment acknowledgment) {
         try {

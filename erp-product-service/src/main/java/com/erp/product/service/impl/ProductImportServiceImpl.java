@@ -54,7 +54,7 @@ public class ProductImportServiceImpl implements ProductImportService {
             }
         } catch (IOException e) {
             log.error("解析Excel文件失败", e);
-            throw new BusinessException(ResultCode.SYSTEM_ERROR, "Excel文件解析失败: " + e.getMessage());
+            throw new BusinessException("Excel文件解析失败: " + e.getMessage());
         }
         
         return importData;
@@ -143,7 +143,7 @@ public class ProductImportServiceImpl implements ProductImportService {
                 log.info("成功导入商品: {}", dto.getSku());
             } catch (Exception e) {
                 log.error("导入商品失败: {}, 错误: {}", dto.getSku(), e.getMessage());
-                throw new BusinessException(ResultCode.SYSTEM_ERROR, 
+                throw new BusinessException(
                     "导入商品失败: " + dto.getSku() + ", " + e.getMessage());
             }
         }
@@ -190,7 +190,7 @@ public class ProductImportServiceImpl implements ProductImportService {
             
         } catch (IOException e) {
             log.error("生成导入模板失败", e);
-            throw new BusinessException(ResultCode.SYSTEM_ERROR, "生成导入模板失败");
+            throw new BusinessException("生成导入模板失败");
         }
     }
     
@@ -239,7 +239,7 @@ public class ProductImportServiceImpl implements ProductImportService {
             
         } catch (IOException e) {
             log.error("导出验证结果失败", e);
-            throw new BusinessException(ResultCode.SYSTEM_ERROR, "导出验证结果失败");
+            throw new BusinessException("导出验证结果失败");
         }
     }
     

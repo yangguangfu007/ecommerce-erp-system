@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         // 检查分类编码唯一性
         if (existsByCode(categoryDTO.getCode())) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "分类编码已存在: " + categoryDTO.getCode());
+            throw new BusinessException("分类编码已存在: " + categoryDTO.getCode());
         }
         
         Category category = new Category();
@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (category.getParentId() != null && category.getParentId() > 0) {
             Category parent = categoryMapper.selectById(category.getParentId());
             if (parent == null) {
-                throw new BusinessException(ResultCode.NOT_FOUND, "父分类不存在");
+                throw new BusinessException("父分类不存在");
             }
             category.setLevel(parent.getLevel() + 1);
         } else {
@@ -57,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
         
         int result = categoryMapper.insert(category);
         if (result <= 0) {
-            throw new BusinessException(ResultCode.SYSTEM_ERROR, "分类创建失败");
+            throw new BusinessException("分类创建失败");
         }
         
         categoryDTO.setId(category.getId());
@@ -68,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO getCategoryById(Long id) {
         Category category = categoryMapper.selectById(id);
         if (category == null) {
-            throw new BusinessException(ResultCode.NOT_FOUND, "分类不存在");
+            throw new BusinessException("分类不存在");
         }
         
         CategoryDTO categoryDTO = new CategoryDTO();
@@ -81,12 +81,12 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category existingCategory = categoryMapper.selectById(id);
         if (existingCategory == null) {
-            throw new BusinessException(ResultCode.NOT_FOUND, "分类不存在");
+            throw new BusinessException("分类不存在");
         }
         
         // 如果分类编码发生变化，检查新编码的唯一性
         if (!existingCategory.getCode().equals(categoryDTO.getCode()) && existsByCode(categoryDTO.getCode())) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "分类编码已存在: " + categoryDTO.getCode());
+            throw new BusinessException("分类编码已存在: " + categoryDTO.getCode());
         }
         
         Category category = new Category();
@@ -95,7 +95,7 @@ public class CategoryServiceImpl implements CategoryService {
         
         int result = categoryMapper.updateById(category);
         if (result <= 0) {
-            throw new BusinessException(ResultCode.SYSTEM_ERROR, "分类更新失败");
+            throw new BusinessException("分类更新失败");
         }
         
         return categoryDTO;
@@ -105,17 +105,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void deleteCategory(Long id) {
         if (!canDeleteCategory(id)) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "分类存在子分类或关联商品，无法删除");
+            throw new BusinessException("分类存在子分类或关联商品，无法删除");
         }
         
         Category category = categoryMapper.selectById(id);
         if (category == null) {
-            throw new BusinessException(ResultCode.NOT_FOUND, "分类不存在");
+            throw new BusinessException("分类不存在");
         }
         
         int result = categoryMapper.deleteById(id);
         if (result <= 0) {
-            throw new BusinessException(ResultCode.SYSTEM_ERROR, "分类删除失败");
+            throw new BusinessException("分类删除失败");
         }
     }
     

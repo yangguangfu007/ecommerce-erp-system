@@ -98,15 +98,15 @@ public class InventoryAlertServiceImpl implements InventoryAlertService {
 
     @Override
     public InventoryAlertConfig createAlertConfig(InventoryAlertConfig config) {
-        config.setCreatedAt(LocalDateTime.now());
-        config.setUpdatedAt(LocalDateTime.now());
+        config.setCreateTime(LocalDateTime.now());
+        config.setUpdateTime(LocalDateTime.now());
         alertConfigMapper.insert(config);
         return config;
     }
 
     @Override
     public InventoryAlertConfig updateAlertConfig(InventoryAlertConfig config) {
-        config.setUpdatedAt(LocalDateTime.now());
+        config.setUpdateTime(LocalDateTime.now());
         alertConfigMapper.updateById(config);
         return config;
     }

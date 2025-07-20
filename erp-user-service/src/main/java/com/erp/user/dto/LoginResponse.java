@@ -1,7 +1,6 @@
 package com.erp.user.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 登录响应DTO

@@ -24,6 +24,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
 
 /**
  * 沃尔玛商品服务测试类
@@ -68,9 +69,9 @@ class WalmartProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        when(walmartConfig.getBaseUrl()).thenReturn("https://marketplace.walmartapis.com");
-        when(walmartConfig.getReadTimeout()).thenReturn(30000);
+        lenient().when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        lenient().when(walmartConfig.getBaseUrl()).thenReturn("https://marketplace.walmartapis.com");
+        lenient().when(walmartConfig.getReadTimeout()).thenReturn(30000);
 
         mockToken = new WalmartAuthToken();
         mockToken.setAccessToken("test-token");

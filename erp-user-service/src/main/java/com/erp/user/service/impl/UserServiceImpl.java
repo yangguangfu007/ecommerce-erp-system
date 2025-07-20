@@ -18,7 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 检查手机号是否存在
-        if (StringUtils.hasText(registerRequest.getPhone()) && existsByPhone(registerRequest.getPhone())) {
+        if (StrUtil.isNotBlank(registerRequest.getPhone()) && existsByPhone(registerRequest.getPhone())) {
             throw new BusinessException("手机号已存在");
         }
 
@@ -254,17 +254,17 @@ public class UserServiceImpl implements UserService {
         }
 
         // 检查邮箱是否存在
-        if (StringUtils.hasText(user.getEmail()) && existsByEmail(user.getEmail())) {
+        if (StrUtil.isNotBlank(user.getEmail()) && existsByEmail(user.getEmail())) {
             throw new BusinessException("邮箱已存在");
         }
 
         // 检查手机号是否存在
-        if (StringUtils.hasText(user.getPhone()) && existsByPhone(user.getPhone())) {
+        if (StrUtil.isNotBlank(user.getPhone()) && existsByPhone(user.getPhone())) {
             throw new BusinessException("手机号已存在");
         }
 
         // 加密密码
-        if (StringUtils.hasText(user.getPassword())) {
+        if (StrUtil.isNotBlank(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
@@ -290,21 +290,21 @@ public class UserServiceImpl implements UserService {
         }
 
         // 检查用户名是否被其他用户使用
-        if (StringUtils.hasText(user.getUsername()) && !user.getUsername().equals(existingUser.getUsername())) {
+        if (StrUtil.isNotBlank(user.getUsername()) && !user.getUsername().equals(existingUser.getUsername())) {
             if (existsByUsername(user.getUsername())) {
                 throw new BusinessException("用户名已存在");
             }
         }
 
         // 检查邮箱是否被其他用户使用
-        if (StringUtils.hasText(user.getEmail()) && !user.getEmail().equals(existingUser.getEmail())) {
+        if (StrUtil.isNotBlank(user.getEmail()) && !user.getEmail().equals(existingUser.getEmail())) {
             if (existsByEmail(user.getEmail())) {
                 throw new BusinessException("邮箱已存在");
             }
         }
 
         // 检查手机号是否被其他用户使用
-        if (StringUtils.hasText(user.getPhone()) && !user.getPhone().equals(existingUser.getPhone())) {
+        if (StrUtil.isNotBlank(user.getPhone()) && !user.getPhone().equals(existingUser.getPhone())) {
             if (existsByPhone(user.getPhone())) {
                 throw new BusinessException("手机号已存在");
             }
@@ -345,10 +345,10 @@ public class UserServiceImpl implements UserService {
         Page<User> userPage = new Page<>(page, size);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         
-        if (StringUtils.hasText(username)) {
+        if (StrUtil.isNotBlank(username)) {
             queryWrapper.like(User::getUsername, username);
         }
-        if (StringUtils.hasText(realName)) {
+        if (StrUtil.isNotBlank(realName)) {
             queryWrapper.like(User::getRealName, realName);
         }
         if (status != null) {

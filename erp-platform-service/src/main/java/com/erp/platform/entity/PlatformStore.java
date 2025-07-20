@@ -19,6 +19,14 @@ import java.time.LocalDateTime;
 public class PlatformStore extends BaseEntity {
     
     /**
+     * 主键ID (JPA需要显式声明)
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    
+    /**
      * 店铺名称
      */
     @Column(name = "store_name", nullable = false, length = 100)

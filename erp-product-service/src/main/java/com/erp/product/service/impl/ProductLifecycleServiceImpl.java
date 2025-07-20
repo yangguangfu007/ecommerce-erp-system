@@ -32,11 +32,11 @@ public class ProductLifecycleServiceImpl implements ProductLifecycleService {
         Product product = getProductById(productId);
         
         if (product.getStatus() == Product.ProductStatus.ACTIVE) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "商品已经是激活状态");
+            throw new BusinessException("商品已经是激活状态");
         }
         
         if (!canChangeStatus(productId, product.getStatus(), Product.ProductStatus.ACTIVE)) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "当前状态不允许激活商品");
+            throw new BusinessException("当前状态不允许激活商品");
         }
         
         Product.ProductStatus oldStatus = product.getStatus();
@@ -55,11 +55,11 @@ public class ProductLifecycleServiceImpl implements ProductLifecycleService {
         Product product = getProductById(productId);
         
         if (product.getStatus() == Product.ProductStatus.INACTIVE) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "商品已经是停用状态");
+            throw new BusinessException("商品已经是停用状态");
         }
         
         if (!canChangeStatus(productId, product.getStatus(), Product.ProductStatus.INACTIVE)) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "当前状态不允许停用商品");
+            throw new BusinessException("当前状态不允许停用商品");
         }
         
         Product.ProductStatus oldStatus = product.getStatus();
@@ -78,13 +78,13 @@ public class ProductLifecycleServiceImpl implements ProductLifecycleService {
         Product product = getProductById(productId);
         
         if (product.getStatus() == Product.ProductStatus.DELETED) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, "商品已经是下架状态");
+            throw new BusinessException("商品已经是下架状态");
         }
         
         // 检查依赖关系
         ProductDependencyInfo dependencyInfo = checkProductDependencies(productId);
         if (!dependencyInfo.canDelete()) {
-            throw new BusinessException(ResultCode.BUSINESS_ERROR, 
+            throw new BusinessException(
                 "商品存在依赖关系，无法下架: " + dependencyInfo.getMessage());
         }
         
@@ -132,7 +132,7 @@ public class ProductLifecycleServiceImpl implements ProductLifecycleService {
                         discontinueProduct(productId);
                         break;
                     default:
-                        throw new BusinessException(ResultCode.BUSINESS_ERROR, "不支持的状态: " + status);
+                        throw new BusinessException("不支持的状态: " + status);
                 }
             } catch (Exception e) {
                 log.error("批量更新商品状态失败, 商品ID: {}, 状态: {}, 错误: {}", 
@@ -180,7 +180,7 @@ public class ProductLifecycleServiceImpl implements ProductLifecycleService {
     private Product getProductById(Long productId) {
         Product product = productMapper.selectById(productId);
         if (product == null) {
-            throw new BusinessException(ResultCode.NOT_FOUND, "商品不存在");
+            throw new BusinessException("商品不存在");
         }
         return product;
     }
