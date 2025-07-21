@@ -3,6 +3,7 @@ package com.erp.gateway.config;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import reactor.core.publisher.Mono;
 
 /**
@@ -17,10 +18,12 @@ public class RedisConfig {
      * IP限流键解析器
      */
     @Bean
+    @Primary
     public KeyResolver ipKeyResolver() {
         return exchange -> {
-            String hostAddress = exchange.getRequest().getRemoteAddress() != null ?
-                    exchange.getRequest().getRemoteAddress().getAddress().getHostAddress() : "unknown";
+            String hostAddress = exchange.getRequest().getRemoteAddress() != null
+                    ? exchange.getRequest().getRemoteAddress().getAddress().getHostAddress()
+                    : "unknown";
             return Mono.just(hostAddress);
         };
     }

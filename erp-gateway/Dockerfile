@@ -1,7 +1,10 @@
-FROM openjdk:17-jre-slim
+FROM amazoncorretto:17-alpine
 
 # 设置工作目录
 WORKDIR /app
+
+# 安装curl用于健康检查
+RUN apk add --no-cache curl
 
 # 复制jar文件
 COPY target/erp-gateway-*.jar app.jar
