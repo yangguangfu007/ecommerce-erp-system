@@ -1,0 +1,34 @@
+{{- if .Values.services.userService.enabled }}
+{{- include "erp-system.microservice" (dict "service" .Values.services.userService "global" .Values.global "Chart" .Chart "Release" .Release) }}
+---
+{{- end }}
+
+{{- if .Values.services.productService.enabled }}
+{{- include "erp-system.microservice" (dict "service" .Values.services.productService "global" .Values.global "Chart" .Chart "Release" .Release) }}
+---
+{{- end }}
+
+{{- if .Values.services.orderService.enabled }}
+{{- include "erp-system.microservice" (dict "service" .Values.services.orderService "global" .Values.global "Chart" .Chart "Release" .Release) }}
+---
+{{- end }}
+
+{{- if .Values.services.inventoryService.enabled }}
+{{- include "erp-system.microservice" (dict "service" .Values.services.inventoryService "global" .Values.global "Chart" .Chart "Release" .Release) }}
+---
+{{- end }}
+
+{{- if .Values.services.platformService.enabled }}
+{{- include "erp-system.microservice" (dict "service" .Values.services.platformService "global" .Values.global "Chart" .Chart "Release" .Release) }}
+---
+{{- end }}
+
+{{- if .Values.services.logisticsService.enabled }}
+{{- include "erp-system.microservice" (dict "service" .Values.services.logisticsService "global" .Values.global "Chart" .Chart "Release" .Release) }}
+---
+{{- end }}
+
+{{- if .Values.services.notificationService.enabled }}
+{{- include "erp-system.microservice" (dict "service" .Values.services.notificationService "global" .Values.global "Chart" .Chart "Release" .Release) }}
+---
+{{- end }}

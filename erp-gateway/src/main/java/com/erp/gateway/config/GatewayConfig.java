@@ -67,6 +67,9 @@ public class GatewayConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowCredentials(true);
+        // 明确允许前端端口
+        corsConfig.addAllowedOrigin("http://localhost:5174");
+        corsConfig.addAllowedOrigin("http://127.0.0.1:5174");
         corsConfig.addAllowedOriginPattern("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");

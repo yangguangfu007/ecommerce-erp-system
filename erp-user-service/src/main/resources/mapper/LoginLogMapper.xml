@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.user.mapper.LoginLogMapper">
+
+    <!-- 根据用户ID查询登录日志 -->
+    <select id="selectByUserId" resultType="com.erp.user.entity.LoginLog">
+        SELECT * FROM sys_login_log 
+        WHERE user_id = #{userId} 
+        ORDER BY login_time DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- 根据IP查询登录日志 -->
+    <select id="selectByIpAndTime" resultType="com.erp.user.entity.LoginLog">
+        SELECT * FROM sys_login_log 
+        WHERE login_ip = #{loginIp}
+        <if test="startTime != null">
+            AND login_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND login_time &lt;= #{endTime}
+        </if>
+        ORDER BY login_time DESC
+    </select>
+
+    <!-- 统计用户登录次数 -->
+    <select id="countLoginByUserId" resultType="int">
+        SELECT COUNT(*) FROM sys_login_log 
+        WHERE user_id = #{userId}
+        <if test="startTime != null">
+            AND login_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND login_time &lt;= #{endTime}
+        </if>
+    </select>
+
+    <!-- 统计IP登录次数 -->
+    <select id="countLoginByIp" resultType="int">
+        SELECT COUNT(*) FROM sys_login_log 
+        WHERE login_ip = #{loginIp}
+        <if test="startTime != null">
+            AND login_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND login_time &lt;= #{endTime}
+        </if>
+    </select>
+
+    <!-- 查询异常登录记录 -->
+    <select id="selectAbnormalLogins" resultType="com.erp.user.entity.LoginLog">
+        SELECT * FROM sys_login_log 
+        WHERE status = 0 
+          AND login_time &gt;= DATE_SUB(NOW(), INTERVAL #{hours} HOUR)
+        ORDER BY login_time DESC
+    </select>
+
+    <!-- 删除过期日志 -->
+    <delete id="deleteExpiredLogs">
+        DELETE FROM sys_login_log 
+        WHERE login_time &lt; #{beforeTime}
+    </delete>
+
+</mapper>

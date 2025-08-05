@@ -1,0 +1,291 @@
+# Docker Compose file for ERP System (ARM64/Apple Silicon compatible)
+
+services:
+  # MySQL数据库
+  mysql:
+    image: mysql:8.0
+    container_name: erp-mysql
+    restart: always
+    platform: linux/arm64
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: erp_system
+      MYSQL_USER: erp_user
+      MYSQL_PASSWORD: erp_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/sql:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - erp-network
+
+  # Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: erp-redis
+    restart: always
+    platform: linux/arm64
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass redis123
+    networks:
+      - erp-network
+
+  # Zookeeper (Kafka依赖)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: erp-zookeeper
+    restart: always
+    platform: linux/arm64
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_logs:/var/lib/zookeeper/log
+    networks:
+      - erp-network
+
+  # Kafka消息队列
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: erp-kafka
+    restart: always
+    platform: linux/arm64
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - erp-network
+
+  # Nacos服务注册中心 (使用standalone模式，不依赖MySQL)
+  nacos:
+    image: nacos/nacos-server:v2.2.3-slim
+    container_name: erp-nacos
+    restart: always
+    platform: linux/arm64
+    environment:
+      MODE: standalone
+      PREFER_HOST_MODE: hostname
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    volumes:
+      - nacos_logs:/home/nacos/logs
+    networks:
+      - erp-network
+
+  # ERP Gateway 网关服务
+  erp-gateway:
+    image: erp-system/erp-gateway:latest
+    container_name: erp-gateway
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - nacos
+    networks:
+      - erp-network
+
+  # ERP User Service 用户服务
+  erp-user-service:
+    image: erp-system/erp-user-service:latest
+    container_name: erp-user-service
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - nacos
+    networks:
+      - erp-network
+
+  # ERP Product Service 产品服务
+  erp-product-service:
+    image: erp-system/erp-product-service:latest
+    container_name: erp-product-service
+    restart: always
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - nacos
+    networks:
+      - erp-network
+
+  # ERP Order Service 订单服务
+  erp-order-service:
+    image: erp-system/erp-order-service:latest
+    container_name: erp-order-service
+    restart: always
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - nacos
+    networks:
+      - erp-network
+
+  # ERP Inventory Service 库存服务
+  erp-inventory-service:
+    image: erp-system/erp-inventory-service:latest
+    container_name: erp-inventory-service
+    restart: always
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - nacos
+    networks:
+      - erp-network
+
+  # ERP Platform Service 平台服务
+  erp-platform-service:
+    image: erp-system/erp-platform-service:latest
+    container_name: erp-platform-service
+    restart: always
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - nacos
+    networks:
+      - erp-network
+
+  # ERP Logistics Service 物流服务
+  erp-logistics-service:
+    image: erp-system/erp-logistics-service:latest
+    container_name: erp-logistics-service
+    restart: always
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - nacos
+    networks:
+      - erp-network
+
+  # ERP Notification Service 通知服务
+  erp-notification-service:
+    image: erp-system/erp-notification-service:latest
+    container_name: erp-notification-service
+    restart: always
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NACOS_SERVER_ADDR: nacos:8848
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - nacos
+    networks:
+      - erp-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  zookeeper_data:
+  zookeeper_logs:
+  kafka_data:
+  nacos_logs:
+
+networks:
+  erp-network:
+    driver: bridge

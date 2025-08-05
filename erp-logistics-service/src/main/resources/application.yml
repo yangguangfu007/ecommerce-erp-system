@@ -5,6 +5,8 @@ spring:
   application:
     name: erp-logistics-service
   
+  config:
+    import: "optional:nacos:erp-logistics-service.yml"  
   datasource:
     url: jdbc:mysql://localhost:3306/erp_logistics?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
     username: root

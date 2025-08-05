@@ -1,0 +1,316 @@
+# Production Environment Values
+global:
+  namespace: erp-system
+  imageRegistry: your-registry.com
+  imagePullSecrets:
+    - name: registry-secret
+
+# Common configuration for production
+common:
+  replicaCount: 3  # High availability
+  image:
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+# Security configuration (production keys - use secrets)
+security:
+  jwt:
+    secret: "CHANGE-THIS-IN-PRODUCTION-USE-STRONG-SECRET"
+
+# External API configuration (production credentials)
+external:
+  walmart:
+    apiKey: ""  # Set via external secret management
+    apiSecret: ""
+    clientId: ""
+    clientSecret: ""
+  yunexpress:
+    apiKey: ""  # Set via external secret management
+    apiSecret: ""
+    customerCode: ""
+
+# Notification configuration (production settings)
+notification:
+  email:
+    username: ""  # Set via external secret management
+    password: ""
+    host: "smtp.gmail.com"
+    port: 587
+  sms:
+    apiKey: ""  # Set via external secret management
+    apiSecret: ""
+
+# Gateway configuration
+gateway:
+  enabled: true
+  replicaCount: 3
+  image:
+    tag: "v1.0.0"
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/rate-limit: "100"
+      nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    hosts:
+      - host: erp.yourdomain.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: erp-tls
+        hosts:
+          - erp.yourdomain.com
+
+# Microservices configuration
+services:
+  userService:
+    enabled: true
+    image:
+      tag: "v1.0.0"
+    replicaCount: 2
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+    
+  productService:
+    enabled: true
+    image:
+      tag: "v1.0.0"
+    replicaCount: 2
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+    
+  orderService:
+    enabled: true
+    image:
+      tag: "v1.0.0"
+    replicaCount: 3  # Higher load expected
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+    
+  inventoryService:
+    enabled: true
+    image:
+      tag: "v1.0.0"
+    replicaCount: 2
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+    
+  platformService:
+    enabled: true
+    image:
+      tag: "v1.0.0"
+    replicaCount: 2
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+    
+  logisticsService:
+    enabled: true
+    image:
+      tag: "v1.0.0"
+    replicaCount: 2
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+    
+  notificationService:
+    enabled: true
+    image:
+      tag: "v1.0.0"
+    replicaCount: 2
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+
+# Database configuration (production-ready)
+mysql:
+  enabled: true
+  auth:
+    rootPassword: ""  # Set via external secret management
+    database: "erp_system"
+    username: "erp_user"
+    password: ""  # Set via external secret management
+  primary:
+    persistence:
+      enabled: true
+      size: 100Gi
+      storageClass: fast-ssd
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: "1000m"
+      limits:
+        memory: "8Gi"
+        cpu: "2000m"
+  secondary:
+    enabled: true  # Enable read replicas
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 100Gi
+      storageClass: fast-ssd
+
+# Redis configuration (production with persistence)
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    password: ""  # Set via external secret management
+  master:
+    persistence:
+      enabled: true
+      size: 20Gi
+      storageClass: fast-ssd
+    resources:
+      requests:
+        memory: "2Gi"
+        cpu: "500m"
+      limits:
+        memory: "4Gi"
+        cpu: "1000m"
+  replica:
+    enabled: true
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 20Gi
+      storageClass: fast-ssd
+
+# Kafka configuration (production cluster)
+kafka:
+  enabled: true
+  zookeeper:
+    enabled: true
+    replicaCount: 3
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: fast-ssd
+  replicaCount: 3
+  persistence:
+    enabled: true
+    size: 200Gi
+    storageClass: fast-ssd
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "1000m"
+    limits:
+      memory: "8Gi"
+      cpu: "2000m"
+
+# Monitoring configuration (full production monitoring)
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    retention: "30d"
+    storage:
+      size: 100Gi
+      storageClass: fast-ssd
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: "1000m"
+      limits:
+        memory: "8Gi"
+        cpu: "2000m"
+  grafana:
+    enabled: true
+    adminPassword: ""  # Set via external secret management
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: fast-ssd
+  alertmanager:
+    enabled: true
+    config:
+      global:
+        smtp_smarthost: 'smtp.gmail.com:587'
+        smtp_from: 'alerts@yourdomain.com'
+      route:
+        group_by: ['alertname']
+        group_wait: 10s
+        group_interval: 10s
+        repeat_interval: 1h
+        receiver: 'web.hook'
+      receivers:
+      - name: 'web.hook'
+        email_configs:
+        - to: 'admin@yourdomain.com'
+          subject: 'ERP System Alert'
+          body: |
+            {{ range .Alerts }}
+            Alert: {{ .Annotations.summary }}
+            Description: {{ .Annotations.description }}
+            {{ end }}
+
+# Pod Disruption Budgets for high availability
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Network Policies for security
+networkPolicy:
+  enabled: true
+  ingress:
+    enabled: true
+  egress:
+    enabled: true
+
+# Resource Quotas
+resourceQuota:
+  enabled: true
+  hard:
+    requests.cpu: "20"
+    requests.memory: "40Gi"
+    limits.cpu: "40"
+    limits.memory: "80Gi"
+    persistentvolumeclaims: "20"

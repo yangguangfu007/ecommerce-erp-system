@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *
  * @author ERP System
  */
-@SpringBootApplication(scanBasePackages = {"com.erp.product", "com.erp.common"})
+@SpringBootApplication(scanBasePackages = { "com.erp.product", "com.erp.common" })
 @EnableDiscoveryClient
 @EnableTransactionManagement
 @MapperScan("com.erp.product.mapper")

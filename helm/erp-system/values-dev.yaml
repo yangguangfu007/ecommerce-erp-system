@@ -1,0 +1,144 @@
+# Development Environment Values
+global:
+  namespace: erp-system-dev
+  imageRegistry: docker.io
+  imagePullSecrets: []
+
+# Common configuration for development
+common:
+  replicaCount: 1  # Single replica for dev
+  image:
+    pullPolicy: Always  # Always pull latest for dev
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "250m"
+
+# Security configuration (dev keys)
+security:
+  jwt:
+    secret: "dev-jwt-secret-key-not-for-production"
+
+# External API configuration (dev/test credentials)
+external:
+  walmart:
+    apiKey: "dev-walmart-api-key"
+    apiSecret: "dev-walmart-api-secret"
+    clientId: "dev-walmart-client-id"
+    clientSecret: "dev-walmart-client-secret"
+  yunexpress:
+    apiKey: "dev-yunexpress-api-key"
+    apiSecret: "dev-yunexpress-api-secret"
+    customerCode: "dev-customer-code"
+
+# Notification configuration (dev settings)
+notification:
+  email:
+    username: "dev@example.com"
+    password: "dev-email-password"
+    host: "smtp.gmail.com"
+    port: 587
+  sms:
+    apiKey: "dev-sms-api-key"
+    apiSecret: "dev-sms-api-secret"
+
+# Gateway configuration
+gateway:
+  enabled: true
+  replicaCount: 1
+  image:
+    tag: "dev"
+  ingress:
+    enabled: true
+    hosts:
+      - host: erp-dev.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []  # No TLS for dev
+
+# Microservices configuration
+services:
+  userService:
+    enabled: true
+    image:
+      tag: "dev"
+    replicaCount: 1
+    
+  productService:
+    enabled: true
+    image:
+      tag: "dev"
+    replicaCount: 1
+    
+  orderService:
+    enabled: true
+    image:
+      tag: "dev"
+    replicaCount: 1
+    
+  inventoryService:
+    enabled: true
+    image:
+      tag: "dev"
+    replicaCount: 1
+    
+  platformService:
+    enabled: true
+    image:
+      tag: "dev"
+    replicaCount: 1
+    
+  logisticsService:
+    enabled: true
+    image:
+      tag: "dev"
+    replicaCount: 1
+    
+  notificationService:
+    enabled: true
+    image:
+      tag: "dev"
+    replicaCount: 1
+
+# Database configuration (smaller for dev)
+mysql:
+  enabled: true
+  auth:
+    rootPassword: "dev123"
+    database: "erp_system_dev"
+    username: "erp_dev"
+    password: "dev123"
+  primary:
+    persistence:
+      enabled: true
+      size: 5Gi  # Smaller storage for dev
+
+# Redis configuration (no persistence for dev)
+redis:
+  enabled: true
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: false
+
+# Kafka configuration (single node for dev)
+kafka:
+  enabled: true
+  zookeeper:
+    enabled: true
+  replicaCount: 1
+
+# Monitoring configuration (basic for dev)
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    retention: "7d"  # Shorter retention for dev
+  grafana:
+    enabled: true
+    adminPassword: "dev123"

@@ -11,7 +11,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @author ERP System
  */
 @SpringBootApplication
-@EnableDiscoveryClient
+@EnableDiscoveryClient 
 @MapperScan("com.erp.user.mapper")
 public class UserServiceApplication {
 

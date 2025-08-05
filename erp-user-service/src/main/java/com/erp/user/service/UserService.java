@@ -172,4 +172,61 @@ public interface UserService {
      * @return 是否存在
      */
     boolean existsByPhone(String phone);
+
+    /**
+     * 用户登出
+     *
+     * @param token JWT token
+     * @return 登出结果
+     */
+    boolean logout(String token);
+
+    /**
+     * 刷新token
+     *
+     * @param refreshToken 刷新token
+     * @return 新的登录响应
+     */
+    LoginResponse refreshToken(String refreshToken);
+
+    /**
+     * 根据token获取当前用户信息
+     *
+     * @param token JWT token
+     * @return 用户信息
+     */
+    UserDTO getCurrentUser(String token);
+
+    /**
+     * 根据token修改密码
+     *
+     * @param token JWT token
+     * @param changePasswordRequest 修改密码请求
+     * @return 修改结果
+     */
+    boolean changePasswordByToken(String token, ChangePasswordRequest changePasswordRequest);
+
+    /**
+     * 发送密码重置邮件
+     *
+     * @param email 邮箱地址
+     * @return 发送结果
+     */
+    boolean sendPasswordResetEmail(String email);
+
+    /**
+     * 重置密码
+     *
+     * @param resetToken 重置token
+     * @param newPassword 新密码
+     * @return 重置结果
+     */
+    boolean resetPassword(String resetToken, String newPassword);
+
+    /**
+     * 生成验证码
+     *
+     * @return 验证码响应
+     */
+    CaptchaResponse generateCaptcha();
 }

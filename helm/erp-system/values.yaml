@@ -1,0 +1,175 @@
+# Default values for erp-system
+global:
+  namespace: erp-system
+  imageRegistry: docker.io
+  imagePullSecrets: []
+  
+# Common configuration
+common:
+  replicaCount: 2
+  image:
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+# Service Account configuration
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+# Security configuration
+security:
+  jwt:
+    secret: "your-jwt-secret-key-change-in-production"
+
+# External API configuration
+external:
+  walmart:
+    apiKey: ""
+    apiSecret: ""
+    clientId: ""
+    clientSecret: ""
+  yunexpress:
+    apiKey: ""
+    apiSecret: ""
+    customerCode: ""
+
+# Notification configuration
+notification:
+  email:
+    username: ""
+    password: ""
+    host: "smtp.gmail.com"
+    port: 587
+  sms:
+    apiKey: ""
+    apiSecret: ""
+  
+# Gateway configuration
+gateway:
+  enabled: true
+  name: erp-gateway
+  image:
+    repository: erp-system/erp-gateway
+    tag: "latest"
+  port: 8080
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: erp.yourdomain.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: erp-tls
+        hosts:
+          - erp.yourdomain.com
+
+# Microservices configuration
+services:
+  userService:
+    enabled: true
+    name: erp-user-service
+    image:
+      repository: erp-system/erp-user-service
+      tag: "latest"
+    port: 8001
+    
+  productService:
+    enabled: true
+    name: erp-product-service
+    image:
+      repository: erp-system/erp-product-service
+      tag: "latest"
+    port: 8002
+    
+  orderService:
+    enabled: true
+    name: erp-order-service
+    image:
+      repository: erp-system/erp-order-service
+      tag: "latest"
+    port: 8003
+    
+  inventoryService:
+    enabled: true
+    name: erp-inventory-service
+    image:
+      repository: erp-system/erp-inventory-service
+      tag: "latest"
+    port: 8004
+    
+  platformService:
+    enabled: true
+    name: erp-platform-service
+    image:
+      repository: erp-system/erp-platform-service
+      tag: "latest"
+    port: 8005
+    
+  logisticsService:
+    enabled: true
+    name: erp-logistics-service
+    image:
+      repository: erp-system/erp-logistics-service
+      tag: "latest"
+    port: 8006
+    
+  notificationService:
+    enabled: true
+    name: erp-notification-service
+    image:
+      repository: erp-system/erp-notification-service
+      tag: "latest"
+    port: 8007
+
+# Database configuration
+mysql:
+  enabled: true
+  auth:
+    rootPassword: "root123"
+    database: "erp_system"
+    username: "erp_user"
+    password: "erp123"
+  primary:
+    persistence:
+      enabled: true
+      size: 20Gi
+
+# Redis configuration
+redis:
+  enabled: true
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: false
+
+# Kafka configuration
+kafka:
+  enabled: true
+  zookeeper:
+    enabled: true
+  replicaCount: 1
+  
+# Monitoring configuration
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+  grafana:
+    enabled: true
+    adminPassword: "admin123"

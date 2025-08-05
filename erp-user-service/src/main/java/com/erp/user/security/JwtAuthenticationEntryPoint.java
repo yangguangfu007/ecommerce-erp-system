@@ -1,8 +1,5 @@
 package com.erp.user.security;
 
-import com.erp.common.response.Result;
-import com.erp.common.response.ResultCode;
-import com.erp.common.util.JsonUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -28,7 +25,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         
-        Result<String> result = Result.error(ResultCode.UNAUTHORIZED, "未认证或认证已过期");
-        response.getWriter().write(JsonUtils.toJsonString(result));
+        String jsonResponse = "{\"code\":401,\"message\":\"未授权访问\",\"data\":\"未认证或认证已过期\",\"timestamp\":\"" + 
+                             java.time.LocalDateTime.now() + "\"}";
+        response.getWriter().write(jsonResponse);
     }
 }

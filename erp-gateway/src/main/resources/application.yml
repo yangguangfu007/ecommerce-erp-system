@@ -4,13 +4,12 @@ server:
 spring:
   application:
     name: erp-gateway
-  
   main:
     web-application-type: reactive
-  
+
   config:
     import: "optional:nacos:erp-gateway.yml"
-  
+
   cloud:
     nacos:
       discovery:
@@ -27,13 +26,13 @@ spring:
         file-extension: yml
         import-check:
           enabled: false
-    
+
     gateway:
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
-      
+
       # 全局过滤器配置
       default-filters:
         - name: Retry
@@ -41,80 +40,78 @@ spring:
             retries: 3
             statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
             methods: GET,POST
-        - name: CircuitBreaker
-          args:
-            name: default-circuit-breaker
-            fallback-uri: forward:/fallback
-        - name: RequestRateLimiter
-          args:
-            redis-rate-limiter.replenish-rate: 10
-            redis-rate-limiter.burst-capacity: 20
-            redis-rate-limiter.requested-tokens: 1
-            key-resolver: "#{@ipKeyResolver}"
-      
+
       # 路由配置
       routes:
+        # 认证服务（用户服务）- 不需要认证的路径
+        - id: auth-service
+          uri: lb://erp-user-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+
         # 用户服务
         - id: user-service
           uri: lb://erp-user-service
           predicates:
             - Path=/api/users/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
             - name: AuthenticationFilter
-        
+
         # 商品服务
         - id: product-service
           uri: lb://erp-product-service
           predicates:
             - Path=/api/products/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
             - name: AuthenticationFilter
-        
+
         # 订单服务
         - id: order-service
           uri: lb://erp-order-service
           predicates:
             - Path=/api/orders/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
             - name: AuthenticationFilter
-        
+
         # 库存服务
         - id: inventory-service
           uri: lb://erp-inventory-service
           predicates:
             - Path=/api/inventory/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
             - name: AuthenticationFilter
-        
+
         # 平台服务
         - id: platform-service
           uri: lb://erp-platform-service
           predicates:
             - Path=/api/platforms/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
             - name: AuthenticationFilter
-        
+
         # 物流服务
         - id: logistics-service
           uri: lb://erp-logistics-service
           predicates:
             - Path=/api/logistics/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
             - name: AuthenticationFilter
-        
+
         # 通知服务
         - id: notification-service
           uri: lb://erp-notification-service
           predicates:
             - Path=/api/notifications/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
             - name: AuthenticationFilter
 
   # Redis配置（用于限流）
@@ -136,7 +133,8 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus,gateway
+        include: "*"
+      base-path: /actuator
   endpoint:
     health:
       show-details: always
@@ -164,7 +162,7 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 3
         automatic-transition-from-open-to-half-open-enabled: true
 
-# 重试配置
+  # 重试配置
   retry:
     instances:
       default-retry:

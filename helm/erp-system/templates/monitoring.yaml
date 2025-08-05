@@ -1,0 +1,133 @@
+{{- if .Values.monitoring.enabled }}
+# ServiceMonitor for Prometheus to scrape metrics
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: erp-system-metrics
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "erp-system.labels" . | nindent 4 }}
+    monitoring: enabled
+spec:
+  selector:
+    matchLabels:
+      component: microservice
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 30s
+    scrapeTimeout: 10s
+  - port: http
+    path: /actuator/prometheus
+    interval: 30s
+    scrapeTimeout: 10s
+    targetPort: http
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.global.namespace }}
+---
+# ServiceMonitor for Gateway
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: erp-gateway-metrics
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "erp-system.labels" . | nindent 4 }}
+    monitoring: enabled
+spec:
+  selector:
+    matchLabels:
+      component: gateway
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 30s
+    scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.global.namespace }}
+---
+# PrometheusRule for alerting
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: erp-system-alerts
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "erp-system.labels" . | nindent 4 }}
+    monitoring: enabled
+spec:
+  groups:
+  - name: erp-system.rules
+    rules:
+    # High error rate alert
+    - alert: ERPHighErrorRate
+      expr: rate(http_server_requests_total{status=~"5.."}[5m]) > 0.1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High error rate detected in ERP system"
+        description: "Error rate is {{ $value }} errors per second for {{ $labels.job }}"
+    
+    # High response time alert
+    - alert: ERPHighResponseTime
+      expr: histogram_quantile(0.95, rate(http_server_requests_duration_seconds_bucket[5m])) > 2
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High response time detected in ERP system"
+        description: "95th percentile response time is {{ $value }}s for {{ $labels.job }}"
+    
+    # Pod down alert
+    - alert: ERPPodDown
+      expr: up{job=~"erp-.*"} == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ERP service pod is down"
+        description: "Pod {{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes"
+    
+    # High memory usage alert
+    - alert: ERPHighMemoryUsage
+      expr: (container_memory_usage_bytes{pod=~"erp-.*"} / container_spec_memory_limit_bytes{pod=~"erp-.*"}) > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High memory usage in ERP system"
+        description: "Memory usage is {{ $value | humanizePercentage }} for pod {{ $labels.pod }}"
+    
+    # High CPU usage alert
+    - alert: ERPHighCPUUsage
+      expr: rate(container_cpu_usage_seconds_total{pod=~"erp-.*"}[5m]) > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High CPU usage in ERP system"
+        description: "CPU usage is {{ $value | humanizePercentage }} for pod {{ $labels.pod }}"
+    
+    # Database connection alert
+    - alert: ERPDatabaseConnectionFailed
+      expr: mysql_up == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ERP database connection failed"
+        description: "MySQL database is not accessible"
+    
+    # Kafka connection alert
+    - alert: ERPKafkaConnectionFailed
+      expr: kafka_server_brokertopicmetrics_messagesinpersec == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ERP Kafka connection failed"
+        description: "Kafka broker is not accessible or not processing messages"
+{{- end }}

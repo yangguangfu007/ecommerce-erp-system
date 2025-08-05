@@ -5,6 +5,9 @@ spring:
   application:
     name: erp-user-service
   
+  config:
+    import: "optional:nacos:erp-user-service.yml"
+  
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -41,7 +44,7 @@ spring:
     redis:
       host: localhost
       port: 6379
-      password: 
+      password: redis123
       database: 0
       timeout: 2000ms
       lettuce:
@@ -57,7 +60,14 @@ spring:
         server-addr: localhost:8848
         namespace: erp-system
         group: DEFAULT_GROUP
-
+      config:
+        server-addr: localhost:8848
+        namespace: erp-system
+        group: DEFAULT_GROUP
+        file-extension: yml
+        import-check:
+          enabled: false
+          
 # MyBatis Plus配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -76,7 +86,7 @@ mybatis-plus:
 
 # JWT配置
 jwt:
-  secret: erp-system-jwt-secret-key-2024-user-service
+  secret: +E7Q0GIfvQuptz4eGGFnj9jXShMnYgGEeAHdgS8YAo8rKGjFBMLrKWel2eokwvWapKrVm6zHRfaYw/zlkvHkqg==
   expiration: 86400000  # 24小时
   refresh-expiration: 604800000  # 7天
 

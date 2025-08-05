@@ -34,6 +34,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private static final List<String> SKIP_AUTH_PATHS = Arrays.asList(
             "/api/users/login",
             "/api/users/register",
+            "/api/auth/login",
+            "/api/auth/register",
+            "/api/auth/forgot-password",
+            "/api/auth/reset-password",
+            "/api/auth/captcha",
             "/actuator/health",
             "/actuator/info",
             "/v3/api-docs",

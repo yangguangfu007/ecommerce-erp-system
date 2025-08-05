@@ -1,0 +1,193 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: erp-system
+data:
+  my.cnf: |
+    [mysqld]
+    # Basic settings
+    default-storage-engine=INNODB
+    character-set-server=utf8mb4
+    collation-server=utf8mb4_unicode_ci
+    
+    # Connection settings
+    max_connections=1000
+    max_connect_errors=1000000
+    
+    # Buffer settings
+    innodb_buffer_pool_size=2G
+    innodb_log_file_size=256M
+    innodb_log_buffer_size=64M
+    innodb_flush_log_at_trx_commit=2
+    innodb_flush_method=O_DIRECT
+    
+    # Query cache
+    query_cache_type=1
+    query_cache_size=256M
+    query_cache_limit=2M
+    
+    # Slow query log
+    slow_query_log=1
+    long_query_time=2
+    slow_query_log_file=/var/log/mysql/slow.log
+    
+    # Binary log
+    log-bin=mysql-bin
+    binlog_format=ROW
+    expire_logs_days=7
+    max_binlog_size=100M
+    
+    # Performance settings
+    tmp_table_size=256M
+    max_heap_table_size=256M
+    sort_buffer_size=4M
+    read_buffer_size=2M
+    read_rnd_buffer_size=8M
+    myisam_sort_buffer_size=128M
+    
+    # InnoDB settings
+    innodb_file_per_table=1
+    innodb_open_files=400
+    innodb_io_capacity=400
+    innodb_read_io_threads=8
+    innodb_write_io_threads=8
+    innodb_thread_concurrency=16
+    
+    [mysql]
+    default-character-set=utf8mb4
+    
+    [client]
+    default-character-set=utf8mb4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+  namespace: erp-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: fast-ssd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: erp-system
+  labels:
+    app: mysql
+    component: database
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+        component: database
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0.35
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-password
+        - name: MYSQL_DATABASE
+          value: "erp_system"
+        - name: MYSQL_USER
+          value: "erp_user"
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: user-password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+        - name: mysql-config
+          mountPath: /etc/mysql/conf.d
+        - name: mysql-logs
+          mountPath: /var/log/mysql
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+            - -h
+            - localhost
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - mysql
+            - -h
+            - localhost
+            - -u
+            - root
+            - -p${MYSQL_ROOT_PASSWORD}
+            - -e
+            - "SELECT 1"
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+      - name: mysql-config
+        configMap:
+          name: mysql-config
+      - name: mysql-logs
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: erp-system
+  labels:
+    app: mysql
+    component: database
+spec:
+  selector:
+    app: mysql
+  ports:
+  - port: 3306
+    targetPort: 3306
+    name: mysql
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  namespace: erp-system
+type: Opaque
+data:
+  root-password: cm9vdDEyMw==  # root123
+  user-password: ZXJwMTIz      # erp123

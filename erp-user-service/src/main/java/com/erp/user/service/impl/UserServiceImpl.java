@@ -479,4 +479,175 @@ public class UserServiceImpl implements UserService {
         // 这里简化实现，实际应该从HttpServletRequest中获取
         return "127.0.0.1";
     }
+
+    @Override
+    public boolean logout(String token) {
+        try {
+            // 将token加入黑名单
+            String tokenKey = "blacklist:token:" + token;
+            redisTemplate.opsForValue().set(tokenKey, "1", 24, TimeUnit.HOURS);
+            
+            // 记录登出日志
+            String username = jwtUtil.getUsernameFromToken(token);
+            logger.info("用户 {} 已登出", username);
+            
+            return true;
+        } catch (Exception e) {
+            logger.error("用户登出失败", e);
+            return false;
+        }
+    }
+
+    @Override
+    public LoginResponse refreshToken(String refreshToken) {
+        try {
+            // 验证刷新token
+            if (!jwtUtil.validateToken(refreshToken)) {
+                throw new BusinessException("刷新token无效");
+            }
+
+            String username = jwtUtil.getUsernameFromToken(refreshToken);
+            User user = userMapper.selectByUsername(username);
+            
+            if (user == null) {
+                throw new BusinessException("用户不存在");
+            }
+
+            // 生成新的访问token
+            String newAccessToken = jwtUtil.generateToken(username);
+            String newRefreshToken = jwtUtil.generateRefreshToken(username);
+
+            LoginResponse response = new LoginResponse();
+            response.setAccessToken(newAccessToken);
+            response.setRefreshToken(newRefreshToken);
+            
+            UserDTO userDTO = new UserDTO();
+            BeanUtils.copyProperties(user, userDTO);
+            response.setUserInfo(userDTO);
+            
+            return response;
+        } catch (Exception e) {
+            logger.error("刷新token失败", e);
+            throw new BusinessException("刷新token失败");
+        }
+    }
+
+    @Override
+    public UserDTO getCurrentUser(String token) {
+        try {
+            String username = jwtUtil.getUsernameFromToken(token);
+            User user = userMapper.selectByUsername(username);
+            
+            if (user == null) {
+                throw new BusinessException("用户不存在");
+            }
+
+            UserDTO userDTO = new UserDTO();
+            BeanUtils.copyProperties(user, userDTO);
+            
+            return userDTO;
+        } catch (Exception e) {
+            logger.error("获取当前用户信息失败", e);
+            throw new BusinessException("获取用户信息失败");
+        }
+    }
+
+    @Override
+    public boolean changePasswordByToken(String token, ChangePasswordRequest changePasswordRequest) {
+        try {
+            String username = jwtUtil.getUsernameFromToken(token);
+            User user = userMapper.selectByUsername(username);
+            
+            if (user == null) {
+                throw new BusinessException("用户不存在");
+            }
+
+            return changePassword(user.getId(), changePasswordRequest);
+        } catch (Exception e) {
+            logger.error("修改密码失败", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean sendPasswordResetEmail(String email) {
+        try {
+            User user = userMapper.selectByEmail(email);
+            if (user == null) {
+                // 为了安全，即使邮箱不存在也返回成功
+                return true;
+            }
+
+            // 生成重置token
+            String resetToken = jwtUtil.generatePasswordResetToken(user.getUsername());
+            
+            // 存储重置token到Redis，有效期30分钟
+            String resetKey = "password:reset:" + resetToken;
+            redisTemplate.opsForValue().set(resetKey, user.getId(), 30, TimeUnit.MINUTES);
+
+            // TODO: 发送邮件
+            logger.info("密码重置邮件已发送到: {}", email);
+            
+            return true;
+        } catch (Exception e) {
+            logger.error("发送密码重置邮件失败", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean resetPassword(String resetToken, String newPassword) {
+        try {
+            String resetKey = "password:reset:" + resetToken;
+            Object userIdObj = redisTemplate.opsForValue().get(resetKey);
+            
+            if (userIdObj == null) {
+                throw new BusinessException("重置token无效或已过期");
+            }
+
+            Long userId = Long.valueOf(userIdObj.toString());
+            User user = userMapper.selectById(userId);
+            
+            if (user == null) {
+                throw new BusinessException("用户不存在");
+            }
+
+            // 更新密码
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setUpdateTime(LocalDateTime.now());
+            userMapper.updateById(user);
+
+            // 删除重置token
+            redisTemplate.delete(resetKey);
+
+            logger.info("用户 {} 密码重置成功", user.getUsername());
+            return true;
+        } catch (Exception e) {
+            logger.error("重置密码失败", e);
+            return false;
+        }
+    }
+
+    @Override
+    public CaptchaResponse generateCaptcha() {
+        try {
+            // 简化实现，实际应该生成图形验证码
+            String captchaId = "captcha_" + System.currentTimeMillis();
+            String captchaCode = String.valueOf((int)(Math.random() * 9000) + 1000);
+            
+            // 存储验证码到Redis，有效期5分钟
+            String captchaKey = "captcha:" + captchaId;
+            redisTemplate.opsForValue().set(captchaKey, captchaCode, 5, TimeUnit.MINUTES);
+
+            CaptchaResponse response = new CaptchaResponse();
+            response.setCaptchaId(captchaId);
+            response.setImageUrl("/api/auth/captcha/image/" + captchaId);
+            response.setImageBase64("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==");
+            
+            return response;
+        } catch (Exception e) {
+            logger.error("生成验证码失败", e);
+            throw new BusinessException("生成验证码失败");
+        }
+    }
 }

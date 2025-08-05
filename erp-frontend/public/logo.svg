@@ -1,0 +1,65 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="32" cy="32" r="30" fill="url(#gradient)" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- 主要图标 - 现代化的ERP符号 -->
+  <!-- 中央核心圆 -->
+  <circle cx="32" cy="32" r="8" fill="white" opacity="0.9"/>
+  <circle cx="32" cy="32" r="6" fill="url(#centerGradient)"/>
+  
+  <!-- ERP文字 -->
+  <text x="32" y="36" font-family="Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="white">ERP</text>
+  
+  <!-- 业务模块图标 -->
+  <!-- 订单管理 (左上) -->
+  <g transform="translate(12, 12)">
+    <rect x="0" y="0" width="12" height="8" rx="2" fill="white" opacity="0.9"/>
+    <rect x="2" y="2" width="8" height="1" fill="#3b82f6"/>
+    <rect x="2" y="4" width="6" height="1" fill="#3b82f6"/>
+    <rect x="2" y="6" width="4" height="1" fill="#3b82f6"/>
+  </g>
+  
+  <!-- 库存管理 (右上) -->
+  <g transform="translate(40, 12)">
+    <rect x="0" y="0" width="12" height="8" rx="2" fill="white" opacity="0.9"/>
+    <rect x="2" y="2" width="2" height="4" fill="#10b981"/>
+    <rect x="5" y="3" width="2" height="3" fill="#10b981"/>
+    <rect x="8" y="1" width="2" height="5" fill="#10b981"/>
+  </g>
+  
+  <!-- 财务管理 (左下) -->
+  <g transform="translate(12, 44)">
+    <rect x="0" y="0" width="12" height="8" rx="2" fill="white" opacity="0.9"/>
+    <circle cx="6" cy="4" r="2.5" stroke="#f59e0b" stroke-width="1" fill="none"/>
+    <text x="6" y="5.5" font-family="Arial" font-size="4" text-anchor="middle" fill="#f59e0b">¥</text>
+  </g>
+  
+  <!-- 数据分析 (右下) -->
+  <g transform="translate(40, 44)">
+    <rect x="0" y="0" width="12" height="8" rx="2" fill="white" opacity="0.9"/>
+    <polyline points="2,6 4,4 6,5 8,3 10,2" stroke="#8b5cf6" stroke-width="1.5" fill="none"/>
+    <circle cx="4" cy="4" r="0.8" fill="#8b5cf6"/>
+    <circle cx="8" cy="3" r="0.8" fill="#8b5cf6"/>
+  </g>
+  
+  <!-- 连接线 -->
+  <g stroke="white" stroke-width="1" opacity="0.6">
+    <line x1="24" y1="16" x2="26" y2="26"/>
+    <line x1="40" y1="16" x2="38" y2="26"/>
+    <line x1="24" y1="48" x2="26" y2="38"/>
+    <line x1="40" y1="48" x2="38" y2="38"/>
+  </g>
+  
+  <!-- 渐变定义 -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="centerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

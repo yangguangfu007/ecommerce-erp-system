@@ -162,4 +162,25 @@ public class JwtUtil {
         claims.put("userId", userId);
         return createToken(claims, username, expiration);
     }
+
+    /**
+     * 验证令牌（不需要用户名）
+     */
+    public Boolean validateToken(String token) {
+        try {
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 生成密码重置令牌
+     */
+    public String generatePasswordResetToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "password_reset");
+        // 密码重置令牌有效期30分钟
+        return createToken(claims, username, 30 * 60 * 1000L);
+    }
 }
