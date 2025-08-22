@@ -1,0 +1,35 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="200" height="200" fill="#f8f9fa"/>
+  
+  <!-- 相机机身 -->
+  <rect x="30" y="80" width="140" height="80" fill="#2c3e50" rx="8"/>
+  
+  <!-- 镜头 -->
+  <circle cx="100" cy="120" r="35" fill="#34495e"/>
+  <circle cx="100" cy="120" r="28" fill="#000"/>
+  <circle cx="100" cy="120" r="20" fill="#2c3e50"/>
+  <circle cx="100" cy="120" r="12" fill="#000"/>
+  
+  <!-- 镜头反光 -->
+  <circle cx="95" cy="115" r="6" fill="#3498db" opacity="0.3"/>
+  
+  <!-- 取景器 -->
+  <rect x="85" y="65" width="30" height="15" fill="#34495e" rx="3"/>
+  <rect x="88" y="68" width="24" height="9" fill="#000" rx="2"/>
+  
+  <!-- 闪光灯 -->
+  <circle cx="140" cy="90" r="6" fill="#ecf0f1"/>
+  <circle cx="140" cy="90" r="4" fill="#f39c12"/>
+  
+  <!-- 快门按钮 -->
+  <circle cx="120" cy="75" r="8" fill="#7f8c8d"/>
+  <circle cx="120" cy="75" r="5" fill="#95a5a6"/>
+  
+  <!-- 模式转盘 -->
+  <circle cx="60" cy="75" r="12" fill="#34495e"/>
+  <text x="60" y="80" text-anchor="middle" fill="#ecf0f1" font-family="Arial, sans-serif" font-size="8">M</text>
+  
+  <!-- 品牌标识 -->
+  <text x="100" y="185" text-anchor="middle" fill="#2c3e50" font-family="Arial, sans-serif" font-size="12" font-weight="bold">Canon Camera</text>
+</svg>

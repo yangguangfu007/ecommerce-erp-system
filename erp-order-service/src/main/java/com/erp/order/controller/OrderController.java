@@ -70,9 +70,48 @@ public class OrderController {
         return Result.success(order);
     }
 
-    @PostMapping("/page")
+    @GetMapping
     @Operation(summary = "分页查询订单", description = "根据条件分页查询订单列表")
-    public Result<IPage<OrderDTO>> getOrderPage(@Valid @RequestBody OrderQueryDTO query) {
+    public Result<IPage<OrderDTO>> getOrderPage(
+            @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer page,
+            @Parameter(description = "页大小") @RequestParam(defaultValue = "10") Integer size,
+            @Parameter(description = "订单状态") @RequestParam(required = false) String status,
+            @Parameter(description = "平台名称") @RequestParam(required = false) String platform,
+            @Parameter(description = "店铺ID") @RequestParam(required = false) Long storeId,
+            @Parameter(description = "开始日期") @RequestParam(required = false) String startDate,
+            @Parameter(description = "结束日期") @RequestParam(required = false) String endDate) {
+        log.info("分页查询订单，页码: {}, 页大小: {}", page, size);
+        
+        OrderQueryDTO query = new OrderQueryDTO();
+        query.setPageNum(page);
+        query.setPageSize(size);
+        query.setStatus(status);
+        query.setStoreId(storeId);
+        
+        // 处理日期字符串转换为LocalDateTime
+        if (startDate != null && !startDate.isEmpty()) {
+            try {
+                query.setStartDate(java.time.LocalDateTime.parse(startDate + "T00:00:00"));
+            } catch (Exception e) {
+                log.warn("开始日期格式错误: {}", startDate);
+            }
+        }
+        
+        if (endDate != null && !endDate.isEmpty()) {
+            try {
+                query.setEndDate(java.time.LocalDateTime.parse(endDate + "T23:59:59"));
+            } catch (Exception e) {
+                log.warn("结束日期格式错误: {}", endDate);
+            }
+        }
+        
+        IPage<OrderDTO> pageResult = orderService.getOrderPage(query);
+        return Result.success(pageResult);
+    }
+
+    @PostMapping("/page")
+    @Operation(summary = "分页查询订单（POST）", description = "根据条件分页查询订单列表")
+    public Result<IPage<OrderDTO>> getOrderPagePost(@Valid @RequestBody OrderQueryDTO query) {
         log.info("分页查询订单，页码: {}, 页大小: {}", query.getPageNum(), query.getPageSize());
         IPage<OrderDTO> page = orderService.getOrderPage(query);
         return Result.success(page);

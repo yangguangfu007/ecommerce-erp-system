@@ -75,11 +75,34 @@ public class ProductController {
         return Result.success();
     }
     
+    @Operation(summary = "获取商品列表")
+    @GetMapping
+    public Result<IPage<ProductDTO>> getProducts(
+            @Parameter(description = "页码") @RequestParam(value = "page", defaultValue = "1") int page,
+            @Parameter(description = "每页大小") @RequestParam(value = "size", defaultValue = "10") int size,
+            @Parameter(description = "搜索关键词") @RequestParam(value = "keyword", required = false) String keyword,
+            @Parameter(description = "商品名称") @RequestParam(value = "name", required = false) String name,
+            @Parameter(description = "分类ID") @RequestParam(value = "categoryId", required = false) Long categoryId,
+            @Parameter(description = "品牌") @RequestParam(value = "brand", required = false) String brand,
+            @Parameter(description = "商品状态") @RequestParam(value = "status", required = false) Product.ProductStatus status) {
+        
+        // 构建搜索条件
+        ProductSearchDTO searchDTO = new ProductSearchDTO();
+        searchDTO.setKeyword(keyword);
+        searchDTO.setTitle(name);
+        searchDTO.setCategoryId(categoryId);
+        searchDTO.setBrand(brand);
+        searchDTO.setStatus(status);
+        
+        IPage<ProductDTO> result = productService.searchProducts(page, size, searchDTO);
+        return Result.success(result);
+    }
+    
     @Operation(summary = "分页搜索商品")
     @PostMapping("/search")
     public Result<IPage<ProductDTO>> searchProducts(
-            @Parameter(description = "页码") @RequestParam(defaultValue = "1") int page,
-            @Parameter(description = "每页大小") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "页码") @RequestParam(value = "page", defaultValue = "1") int page,
+            @Parameter(description = "每页大小") @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestBody ProductSearchDTO searchDTO) {
         IPage<ProductDTO> result = productService.searchProducts(page, size, searchDTO);
         return Result.success(result);

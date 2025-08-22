@@ -31,6 +31,24 @@
           AND ur.deleted = 0
     </select>
 
+    <!-- 根据用户ID查询用户角色详细信息 -->
+    <select id="selectRolesByUserId" resultType="com.erp.user.dto.RoleDTO">
+        SELECT 
+            r.id,
+            r.role_name as name,
+            r.role_code as code,
+            r.description,
+            CASE WHEN r.status = 1 THEN 'ACTIVE' ELSE 'INACTIVE' END as status,
+            r.create_time as createdAt,
+            r.update_time as updatedAt
+        FROM sys_role r
+        INNER JOIN sys_user_role ur ON r.id = ur.role_id
+        WHERE ur.user_id = #{userId} 
+          AND r.deleted = 0 
+          AND ur.deleted = 0
+        ORDER BY r.sort ASC
+    </select>
+
     <!-- 根据用户ID查询用户权限 -->
     <select id="selectPermissionCodesByUserId" resultType="java.lang.String">
         SELECT DISTINCT p.permission_code

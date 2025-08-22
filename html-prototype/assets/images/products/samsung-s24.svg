@@ -1,0 +1,46 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="samsungGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 手机外框 -->
+  <rect x="45" y="25" width="110" height="150" rx="18" ry="18" fill="url(#samsungGradient)" stroke="#333" stroke-width="2"/>
+  
+  <!-- 屏幕 -->
+  <rect x="52" y="35" width="96" height="130" rx="12" ry="12" fill="#000"/>
+  
+  <!-- 屏幕内容 -->
+  <rect x="57" y="40" width="86" height="120" rx="8" ry="8" fill="#6a5acd"/>
+  
+  <!-- 摄像头模块 -->
+  <rect x="120" y="40" width="20" height="35" rx="10" ry="10" fill="#333" stroke="#555" stroke-width="1"/>
+  <circle cx="130" cy="50" r="4" fill="#222"/>
+  <circle cx="130" cy="62" r="4" fill="#222"/>
+  
+  <!-- 应用图标 -->
+  <g fill="#fff" opacity="0.9">
+    <circle cx="70" cy="60" r="6"/>
+    <circle cx="85" cy="60" r="6"/>
+    <circle cx="100" cy="60" r="6"/>
+    <circle cx="115" cy="60" r="6"/>
+    <circle cx="130" cy="60" r="6"/>
+    
+    <circle cx="70" cy="80" r="6"/>
+    <circle cx="85" cy="80" r="6"/>
+    <circle cx="100" cy="80" r="6"/>
+    <circle cx="115" cy="80" r="6"/>
+    <circle cx="130" cy="80" r="6"/>
+  </g>
+  
+  <!-- 导航栏 -->
+  <rect x="60" y="145" width="80" height="8" rx="4" ry="4" fill="#333"/>
+  <circle cx="75" cy="149" r="2" fill="#666"/>
+  <circle cx="100" cy="149" r="2" fill="#666"/>
+  <circle cx="125" cy="149" r="2" fill="#666"/>
+  
+  <!-- 品牌标识 -->
+  <text x="100" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">Galaxy S24 Ultra</text>
+</svg>

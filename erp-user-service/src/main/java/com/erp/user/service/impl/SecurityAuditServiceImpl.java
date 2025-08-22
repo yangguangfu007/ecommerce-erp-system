@@ -84,13 +84,13 @@ public class SecurityAuditServiceImpl implements SecurityAuditService {
                 userAttempts = 0;
             }
 
+            // 判断是否异常（在增加计数之前检查）
+            boolean isAbnormal = ipAttempts >= MAX_LOGIN_ATTEMPTS_PER_HOUR || 
+                               userAttempts >= MAX_LOGIN_ATTEMPTS_PER_HOUR;
+
             // 增加计数
             redisTemplate.opsForValue().set(ipKey, ipAttempts + 1, 1, TimeUnit.HOURS);
             redisTemplate.opsForValue().set(userKey, userAttempts + 1, 1, TimeUnit.HOURS);
-
-            // 判断是否异常
-            boolean isAbnormal = ipAttempts >= MAX_LOGIN_ATTEMPTS_PER_HOUR || 
-                               userAttempts >= MAX_LOGIN_ATTEMPTS_PER_HOUR;
 
             if (isAbnormal) {
                 // 记录异常登录
@@ -104,6 +104,7 @@ public class SecurityAuditServiceImpl implements SecurityAuditService {
             return isAbnormal;
         } catch (Exception e) {
             logger.error("异常登录检测失败", e);
+            // 如果检测失败，不阻止登录
             return false;
         }
     }

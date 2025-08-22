@@ -7,8 +7,9 @@ spring:
   
   config:
     import: "optional:nacos:erp-logistics-service.yml"  
+    
   datasource:
-    url: jdbc:mysql://localhost:3306/erp_logistics?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/erp_logistics?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: root123
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -36,6 +37,35 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
 
+  # Redis配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: redis123
+      timeout: 10000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1ms
+          max-idle: 8
+          min-idle: 0
+
+  # Nacos配置
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: erp-system
+        group: DEFAULT_GROUP
+      config:
+        server-addr: localhost:8848
+        namespace: erp-system
+        group: DEFAULT_GROUP
+        file-extension: yml
+        import-check:
+          enabled: false
+
 # 云途物流配置
 yunexpress:
   base-url: https://api.yunexpress.com
@@ -50,21 +80,13 @@ yunexpress:
   test-mode: false
   test-base-url: https://test-api.yunexpress.com
 
-# 服务注册发现
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}:${server.port}
-
 # 监控配置
 management:
   endpoints:
     web:
       exposure:
         include: health,info,metrics,prometheus
+      base-path: /actuator
   endpoint:
     health:
       show-details: always

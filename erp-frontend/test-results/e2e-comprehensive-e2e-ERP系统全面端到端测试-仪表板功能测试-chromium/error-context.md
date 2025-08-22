@@ -1,0 +1,368 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - banner [ref=e5]:
+    - generic [ref=e6]:
+      - button [ref=e7] [cursor=pointer]:
+        - img [ref=e9] [cursor=pointer]
+      - img "ERP系统" [ref=e11]
+      - heading "电商ERP管理系统" [level=1] [ref=e12]
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - textbox "搜索功能..." [ref=e15]
+        - generic:
+          - img
+      - button "3" [ref=e17] [cursor=pointer]:
+        - img [ref=e19] [cursor=pointer]
+        - generic [ref=e23] [cursor=pointer]: "3"
+      - button [ref=e25] [cursor=pointer]:
+        - img [ref=e27] [cursor=pointer]
+      - generic [ref=e29] [cursor=pointer]:
+        - img "用户头像" [ref=e30] [cursor=pointer]
+        - generic [ref=e31] [cursor=pointer]: 系统管理员
+  - complementary [ref=e32]:
+    - navigation [ref=e33]:
+      - list [ref=e34]:
+        - listitem [ref=e35]:
+          - link "仪表板" [ref=e36] [cursor=pointer]:
+            - /url: /dashboard
+            - generic [ref=e38] [cursor=pointer]: 仪表板
+        - listitem [ref=e39]:
+          - link "用户管理" [ref=e40] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e42] [cursor=pointer]
+            - generic [ref=e44] [cursor=pointer]: 用户管理
+            - img [ref=e46] [cursor=pointer]
+          - list:
+            - listitem [ref=e48]:
+              - link "用户列表" [ref=e49] [cursor=pointer]:
+                - /url: /users
+            - listitem [ref=e50]:
+              - link "角色管理" [ref=e51] [cursor=pointer]:
+                - /url: /roles
+        - listitem [ref=e52]:
+          - link "商品管理" [ref=e53] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e55] [cursor=pointer]
+            - generic [ref=e57] [cursor=pointer]: 商品管理
+            - img [ref=e59] [cursor=pointer]
+          - list:
+            - listitem [ref=e61]:
+              - link "商品列表" [ref=e62] [cursor=pointer]:
+                - /url: /products
+        - listitem [ref=e63]:
+          - link "订单管理" [ref=e64] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e66] [cursor=pointer]
+            - generic [ref=e68] [cursor=pointer]: 订单管理
+            - img [ref=e70] [cursor=pointer]
+          - list:
+            - listitem [ref=e72]:
+              - link "订单列表" [ref=e73] [cursor=pointer]:
+                - /url: /orders
+        - listitem [ref=e74]:
+          - link "库存管理" [ref=e75] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e77] [cursor=pointer]
+            - generic [ref=e81] [cursor=pointer]: 库存管理
+            - img [ref=e83] [cursor=pointer]
+          - list:
+            - listitem [ref=e85]:
+              - link "库存列表" [ref=e86] [cursor=pointer]:
+                - /url: /inventory
+  - main [ref=e87]:
+    - navigation [ref=e88]:
+      - list [ref=e89]:
+        - listitem [ref=e90]:
+          - link "首页" [ref=e91] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e93] [cursor=pointer]
+            - generic [ref=e95] [cursor=pointer]: 首页
+        - listitem [ref=e96]:
+          - img [ref=e99]
+          - link "Layout" [ref=e101] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e102]:
+          - img [ref=e105]
+          - generic [ref=e107]: 仪表板
+    - generic [ref=e110]:
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - heading "仪表板" [level=2] [ref=e113]
+          - generic [ref=e114]: "最后更新: 刚刚"
+        - generic [ref=e115]:
+          - button "刷新数据" [ref=e116] [cursor=pointer]:
+            - generic [ref=e117] [cursor=pointer]:
+              - img [ref=e119] [cursor=pointer]
+              - text: 刷新数据
+          - button "开启自动刷新" [ref=e121] [cursor=pointer]:
+            - generic [ref=e122] [cursor=pointer]:
+              - img [ref=e124] [cursor=pointer]
+              - text: 开启自动刷新
+      - generic [ref=e128]:
+        - generic [ref=e129]:
+          - generic [ref=e130]:
+            - heading "今日订单" [level=3] [ref=e131]
+            - img [ref=e134]
+          - generic [ref=e136]: 1,234
+          - generic [ref=e137]:
+            - img [ref=e139]
+            - generic [ref=e141]: 12.5%
+            - generic [ref=e142]: 较昨日
+        - generic [ref=e143]:
+          - generic [ref=e144]:
+            - heading "今日销售额" [level=3] [ref=e145]
+            - img [ref=e148]
+          - generic [ref=e152]: ¥156,789.50
+          - generic [ref=e153]:
+            - img [ref=e155]
+            - generic [ref=e157]: 8.2%
+            - generic [ref=e158]: 较昨日
+        - generic [ref=e159]:
+          - generic [ref=e160]:
+            - heading "商品总数" [level=3] [ref=e161]
+            - img [ref=e164]
+          - generic [ref=e168]: 5,678
+          - generic [ref=e169]:
+            - img [ref=e171]
+            - generic [ref=e173]: "-2.1%"
+            - generic [ref=e174]: 较上月
+        - generic [ref=e175]:
+          - generic [ref=e176]:
+            - heading "库存预警" [level=3] [ref=e177]
+            - img [ref=e180]
+          - generic [ref=e182]: "23"
+          - generic [ref=e183]:
+            - img [ref=e185]
+            - generic [ref=e187]: 15.3%
+            - generic [ref=e188]: 较上周
+      - generic [ref=e189]:
+        - generic [ref=e190]:
+          - generic [ref=e193]:
+            - heading "销售趋势" [level=3] [ref=e194]
+            - button [ref=e196] [cursor=pointer]:
+              - img [ref=e199] [cursor=pointer]
+          - generic [ref=e206]:
+            - heading "订单状态分布" [level=3] [ref=e207]
+            - button [ref=e209] [cursor=pointer]:
+              - img [ref=e212] [cursor=pointer]
+        - generic [ref=e219]:
+          - generic [ref=e220]:
+            - heading "热销商品排行" [level=3] [ref=e221]
+            - button [ref=e223] [cursor=pointer]:
+              - img [ref=e226] [cursor=pointer]
+          - generic [ref=e229]:
+            - generic [ref=e230]:
+              - generic [ref=e231]: "1"
+              - generic [ref=e232]:
+                - generic [ref=e233]: iPhone 15 Pro
+                - generic [ref=e234]:
+                  - generic [ref=e235]: "销量: 1000"
+                  - generic [ref=e236]: "营收: ¥50,000.00"
+              - progressbar [ref=e238]
+            - generic [ref=e242]:
+              - generic [ref=e243]: "2"
+              - generic [ref=e244]:
+                - generic [ref=e245]: Samsung Galaxy S24
+                - generic [ref=e246]:
+                  - generic [ref=e247]: "销量: 850"
+                  - generic [ref=e248]: "营收: ¥42,000.00"
+              - progressbar [ref=e250]
+            - generic [ref=e254]:
+              - generic [ref=e255]: "3"
+              - generic [ref=e256]:
+                - generic [ref=e257]: 华为 Mate 60
+                - generic [ref=e258]:
+                  - generic [ref=e259]: "销量: 700"
+                  - generic [ref=e260]: "营收: ¥34,000.00"
+              - progressbar [ref=e262]
+            - generic [ref=e266]:
+              - generic [ref=e267]: "4"
+              - generic [ref=e268]:
+                - generic [ref=e269]: 小米14 Pro
+                - generic [ref=e270]:
+                  - generic [ref=e271]: "销量: 550"
+                  - generic [ref=e272]: "营收: ¥26,000.00"
+              - progressbar [ref=e274]
+            - generic [ref=e278]:
+              - generic [ref=e279]: "5"
+              - generic [ref=e280]:
+                - generic [ref=e281]: OPPO Find X7
+                - generic [ref=e282]:
+                  - generic [ref=e283]: "销量: 400"
+                  - generic [ref=e284]: "营收: ¥18,000.00"
+              - progressbar [ref=e286]
+      - generic [ref=e290]:
+        - generic [ref=e291]:
+          - generic [ref=e292]:
+            - heading "快捷操作" [level=3] [ref=e293]
+            - button [ref=e295] [cursor=pointer]:
+              - img [ref=e298] [cursor=pointer]
+          - generic [ref=e301]:
+            - generic [ref=e302] [cursor=pointer]:
+              - img [ref=e305] [cursor=pointer]
+              - generic [ref=e309] [cursor=pointer]:
+                - heading "添加商品" [level=3] [ref=e310] [cursor=pointer]
+                - paragraph [ref=e311] [cursor=pointer]: 快速添加新商品到系统
+            - generic [ref=e312] [cursor=pointer]:
+              - img [ref=e315] [cursor=pointer]
+              - generic [ref=e319] [cursor=pointer]:
+                - heading "处理订单" [level=3] [ref=e320] [cursor=pointer]
+                - paragraph [ref=e321] [cursor=pointer]: 查看和处理待处理订单
+            - generic [ref=e322] [cursor=pointer]:
+              - img [ref=e325] [cursor=pointer]
+              - generic [ref=e329] [cursor=pointer]:
+                - heading "库存管理" [level=3] [ref=e330] [cursor=pointer]
+                - paragraph [ref=e331] [cursor=pointer]: 查看和调整商品库存
+            - generic [ref=e332] [cursor=pointer]:
+              - img [ref=e335] [cursor=pointer]
+              - generic [ref=e339] [cursor=pointer]:
+                - heading "数据报表" [level=3] [ref=e340] [cursor=pointer]
+                - paragraph [ref=e341] [cursor=pointer]: 查看销售和运营报表
+        - generic [ref=e342]:
+          - generic [ref=e343]:
+            - heading "待处理事项" [level=3] [ref=e344]
+            - generic [ref=e345]:
+              - button [ref=e346] [cursor=pointer]:
+                - img [ref=e349] [cursor=pointer]
+              - button "查看全部" [ref=e351] [cursor=pointer]:
+                - generic [ref=e352] [cursor=pointer]: 查看全部
+          - generic [ref=e354]:
+            - generic [ref=e355] [cursor=pointer]:
+              - generic [ref=e357] [cursor=pointer]:
+                - generic [ref=e358] [cursor=pointer]: 待审核订单
+                - generic [ref=e359] [cursor=pointer]: 有 15 个订单等待审核
+                - generic [ref=e360] [cursor=pointer]:
+                  - generic [ref=e361] [cursor=pointer]: 订单
+                  - generic [ref=e362] [cursor=pointer]: 2小时前
+              - img [ref=e365] [cursor=pointer]
+            - generic [ref=e367] [cursor=pointer]:
+              - generic [ref=e369] [cursor=pointer]:
+                - generic [ref=e370] [cursor=pointer]: 库存预警
+                - generic [ref=e371] [cursor=pointer]: 有 8 个商品库存不足
+                - generic [ref=e372] [cursor=pointer]:
+                  - generic [ref=e373] [cursor=pointer]: 库存
+                  - generic [ref=e374] [cursor=pointer]: 4小时前
+              - img [ref=e377] [cursor=pointer]
+            - generic [ref=e379] [cursor=pointer]:
+              - generic [ref=e381] [cursor=pointer]:
+                - generic [ref=e382] [cursor=pointer]: 待发货订单
+                - generic [ref=e383] [cursor=pointer]: 有 23 个订单等待发货
+                - generic [ref=e384] [cursor=pointer]:
+                  - generic [ref=e385] [cursor=pointer]: shipping
+                  - generic [ref=e386] [cursor=pointer]: 1小时前
+              - img [ref=e389] [cursor=pointer]
+            - generic [ref=e391] [cursor=pointer]:
+              - generic [ref=e393] [cursor=pointer]:
+                - generic [ref=e394] [cursor=pointer]: 退款申请
+                - generic [ref=e395] [cursor=pointer]: 有 3 个退款申请待处理
+                - generic [ref=e396] [cursor=pointer]:
+                  - generic [ref=e397] [cursor=pointer]: refund
+                  - generic [ref=e398] [cursor=pointer]: 6小时前
+              - img [ref=e401] [cursor=pointer]
+      - generic [ref=e403]:
+        - generic [ref=e404]:
+          - generic [ref=e405]:
+            - heading "最近操作" [level=3] [ref=e406]
+            - generic [ref=e407]:
+              - button [ref=e408] [cursor=pointer]:
+                - img [ref=e411] [cursor=pointer]
+              - button "查看全部" [ref=e413] [cursor=pointer]:
+                - generic [ref=e414] [cursor=pointer]: 查看全部
+          - generic [ref=e416]:
+            - generic [ref=e417]:
+              - img [ref=e420]
+              - generic [ref=e422]:
+                - generic [ref=e423]: 创建了新订单
+                - generic [ref=e424]:
+                  - generic [ref=e425]: 张三
+                  - generic [ref=e426]: 刚刚
+            - generic [ref=e427]:
+              - img [ref=e430]
+              - generic [ref=e434]:
+                - generic [ref=e435]: 更新了商品信息
+                - generic [ref=e436]:
+                  - generic [ref=e437]: 李四
+                  - generic [ref=e438]: 15分钟前
+            - generic [ref=e439]:
+              - img [ref=e442]
+              - generic [ref=e444]:
+                - generic [ref=e445]: 处理了退款申请
+                - generic [ref=e446]:
+                  - generic [ref=e447]: 王五
+                  - generic [ref=e448]: 30分钟前
+            - generic [ref=e449]:
+              - img [ref=e452]
+              - generic [ref=e454]:
+                - generic [ref=e455]: 调整了库存
+                - generic [ref=e456]:
+                  - generic [ref=e457]: 赵六
+                  - generic [ref=e458]: 45分钟前
+            - generic [ref=e459]:
+              - img [ref=e462]
+              - generic [ref=e464]:
+                - generic [ref=e465]: 发送了通知
+                - generic [ref=e466]:
+                  - generic [ref=e467]: 钱七
+                  - generic [ref=e468]: 1小时前
+            - generic [ref=e469]:
+              - img [ref=e472]
+              - generic [ref=e474]:
+                - generic [ref=e475]: 创建了新订单
+                - generic [ref=e476]:
+                  - generic [ref=e477]: 张三
+                  - generic [ref=e478]: 1小时前
+            - generic [ref=e479]:
+              - img [ref=e482]
+              - generic [ref=e486]:
+                - generic [ref=e487]: 更新了商品信息
+                - generic [ref=e488]:
+                  - generic [ref=e489]: 李四
+                  - generic [ref=e490]: 1小时前
+            - generic [ref=e491]:
+              - img [ref=e494]
+              - generic [ref=e496]:
+                - generic [ref=e497]: 处理了退款申请
+                - generic [ref=e498]:
+                  - generic [ref=e499]: 王五
+                  - generic [ref=e500]: 1小时前
+            - generic [ref=e501]:
+              - img [ref=e504]
+              - generic [ref=e506]:
+                - generic [ref=e507]: 调整了库存
+                - generic [ref=e508]:
+                  - generic [ref=e509]: 赵六
+                  - generic [ref=e510]: 2小时前
+            - generic [ref=e511]:
+              - img [ref=e514]
+              - generic [ref=e516]:
+                - generic [ref=e517]: 发送了通知
+                - generic [ref=e518]:
+                  - generic [ref=e519]: 钱七
+                  - generic [ref=e520]: 2小时前
+        - generic [ref=e521]:
+          - generic [ref=e522]:
+            - heading "系统通知" [level=3] [ref=e523]
+            - button "全部已读" [ref=e525] [cursor=pointer]:
+              - generic [ref=e526] [cursor=pointer]: 全部已读
+          - generic [ref=e528]:
+            - generic [ref=e529] [cursor=pointer]:
+              - img [ref=e532] [cursor=pointer]
+              - generic [ref=e534] [cursor=pointer]:
+                - generic [ref=e535] [cursor=pointer]: 系统维护通知
+                - generic [ref=e536] [cursor=pointer]: 系统将于今晚23:00-01:00进行维护升级
+                - generic [ref=e537] [cursor=pointer]: 2小时前
+            - generic [ref=e539] [cursor=pointer]:
+              - img [ref=e542] [cursor=pointer]
+              - generic [ref=e544] [cursor=pointer]:
+                - generic [ref=e545] [cursor=pointer]: 新功能发布
+                - generic [ref=e546] [cursor=pointer]: 库存预警功能已上线，支持自定义预警阈值
+                - generic [ref=e547] [cursor=pointer]: 8小时前
+            - generic [ref=e549] [cursor=pointer]:
+              - img [ref=e552] [cursor=pointer]
+              - generic [ref=e554] [cursor=pointer]:
+                - generic [ref=e555] [cursor=pointer]: 安全提醒
+                - generic [ref=e556] [cursor=pointer]: 建议定期更换密码以保障账户安全
+                - generic [ref=e557] [cursor=pointer]: 1天前
+```

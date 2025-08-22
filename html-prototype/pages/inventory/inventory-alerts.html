@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>库存预警 - 电商ERP管理系统</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../../assets/css/reset.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="../../assets/images/logo.svg" alt="ERP系统" class="logo">
+                <h1 class="system-title">电商ERP管理系统</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="搜索功能..." class="search-input">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="header-user">
+                    <img src="../../assets/images/avatars/admin.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">管理员</span>
+                    <div class="user-dropdown">
+                        <a href="#" onclick="showProfile()">个人资料</a>
+                        <a href="#" onclick="showSettings()">系统设置</a>
+                        <a href="#" onclick="logout()">退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 侧边菜单 -->
+        <aside class="app-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../../dashboard.html" class="nav-link" data-menu-id="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>仪表板</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="user-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../users/user-list.html" data-submenu-id="user-list">用户列表</a></li>
+                            <li><a href="../users/role-management.html" data-submenu-id="role-management">角色管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="product-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-box"></i>
+                            <span>商品管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../products/product-list.html" data-submenu-id="product-list">商品列表</a></li>
+                            <li><a href="../products/product-import.html" data-submenu-id="product-import">商品导入</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="order-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>订单管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../orders/order-list.html" data-submenu-id="order-list">订单列表</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu active">
+                        <a href="#" class="nav-link" data-menu-id="inventory-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-warehouse"></i>
+                            <span>库存管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu show">
+                            <li><a href="inventory-list.html" data-submenu-id="inventory-list">库存列表</a></li>
+                            <li><a href="inventory-alerts.html" data-submenu-id="inventory-alerts" class="active">库存预警</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="platform-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-store"></i>
+                            <span>平台管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../platforms/platform-list.html" data-submenu-id="platform-list">平台列表</a></li>
+                            <li><a href="../platforms/platform-config.html" data-submenu-id="platform-config">平台配置</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="logistics-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-truck"></i>
+                            <span>物流管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../logistics/logistics-list.html" data-submenu-id="logistics-list">物流列表</a></li>
+                            <li><a href="../logistics/shipping-labels.html" data-submenu-id="shipping-labels">面单管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="../notifications/notification-center.html" class="nav-link" data-menu-id="notification-center">
+                            <i class="fas fa-bell"></i>
+                            <span>通知中心</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="system-settings" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-cog"></i>
+                            <span>系统设置</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../settings/system-config.html" data-submenu-id="system-config">系统配置</a></li>
+                            <li><a href="../settings/system-logs.html" data-submenu-id="system-logs">系统日志</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="app-main">
+            <!-- 面包屑导航 -->
+            <nav class="breadcrumb">
+                <div class="breadcrumb-list">
+                    <a href="../../dashboard.html" class="breadcrumb-item">仪表板</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item">库存管理</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item active">库存预警</span>
+                </div>
+            </nav>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <div class="page-header">
+                    <h2 class="page-title">库存预警</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-outline" onclick="refreshAlerts()">
+                            <i class="fas fa-sync-alt"></i> 刷新
+                        </button>
+                        <button class="btn btn-primary" onclick="batchPurchase()">
+                            <i class="fas fa-shopping-cart"></i> 批量采购
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 预警统计 -->
+                <div class="alert-stats">
+                    <div class="stat-card critical">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>严重缺货</h3>
+                            <div class="stat-number">5</div>
+                            <p>需要立即补货</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>库存不足</h3>
+                            <div class="stat-number">12</div>
+                            <p>建议尽快补货</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>即将缺货</h3>
+                            <div class="stat-number">8</div>
+                            <p>预计3天内缺货</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>库存正常</h3>
+                            <div class="stat-number">156</div>
+                            <p>库存充足</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 预警列表 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">预警商品</h3>
+                        <div class="card-actions">
+                            <select class="form-select" id="alertTypeFilter" onchange="filterAlerts()">
+                                <option value="">全部预警</option>
+                                <option value="critical">严重缺货</option>
+                                <option value="low">库存不足</option>
+                                <option value="warning">即将缺货</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert-list" id="alertList">
+                            <!-- 预警列表将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- JavaScript Files --><script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/components.js"></script>
+    <script src="../../assets/js/mock-data.js"></script>
+    <script src="../../assets/js/app.js"></script>
+    <script>
+        // 库存预警页面逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAlerts();
+        });
+
+        // 加载预警列表
+        function loadAlerts() {
+            const alertList = document.getElementById('alertList');
+            if (!alertList) return;
+
+            // 模拟预警数据
+            const alerts = [
+                {
+                    id: 1,
+                    sku: 'SKU003',
+                    productName: 'AirPods Pro 2',
+                    currentStock: 3,
+                    alertThreshold: 10,
+                    reservedStock: 5,
+                    level: 'critical',
+                    estimatedDays: 1,
+                    lastSale: '2024-02-05 14:30:00'
+                },
+                {
+                    id: 2,
+                    sku: 'SKU004',
+                    productName: 'iPad Air',
+                    currentStock: 0,
+                    alertThreshold: 5,
+                    reservedStock: 0,
+                    level: 'critical',
+                    estimatedDays: 0,
+                    lastSale: '2024-02-04 18:45:00'
+                },
+                {
+                    id: 3,
+                    sku: 'SKU009',
+                    productName: 'Logitech MX Master 3S',
+                    currentStock: 3,
+                    alertThreshold: 10,
+                    reservedStock: 2,
+                    level: 'low',
+                    estimatedDays: 2,
+                    lastSale: '2024-02-05 12:20:00'
+                },
+                {
+                    id: 4,
+                    sku: 'SKU010',
+                    productName: 'Apple Watch Series 9',
+                    currentStock: 0,
+                    alertThreshold: 8,
+                    reservedStock: 0,
+                    level: 'critical',
+                    estimatedDays: 0,
+                    lastSale: '2024-02-03 16:30:00'
+                },
+                {
+                    id: 5,
+                    sku: 'SKU002',
+                    productName: 'MacBook Pro 14英寸',
+                    currentStock: 20,
+                    alertThreshold: 25,
+                    reservedStock: 5,
+                    level: 'low',
+                    estimatedDays: 5,
+                    lastSale: '2024-02-05 11:15:00'
+                }
+            ];
+            
+            alertList.innerHTML = alerts.map(alert => `
+                <div class="alert-item ${alert.level}">
+                    <div class="alert-header">
+                        <div class="alert-level">
+                            <i class="fas fa-${getLevelIcon(alert.level)}"></i>
+                            <span class="level-text">${getLevelText(alert.level)}</span>
+                        </div>
+                        <div class="alert-actions">
+                            <button class="btn btn-small btn-primary" onclick="quickPurchase(${alert.id})">
+                                <i class="fas fa-shopping-cart"></i> 采购
+                            </button>
+                            <button class="btn btn-small btn-outline" onclick="adjustThreshold(${alert.id})">
+                                <i class="fas fa-cog"></i> 设置
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-content">
+                        <div class="product-info">
+                            <h4 class="product-name">${alert.productName}</h4>
+                            <p class="product-sku">SKU: ${alert.sku}</p>
+                        </div>
+                        
+                        <div class="stock-info">
+                            <div class="stock-item">
+                                <span class="stock-label">当前库存</span>
+                                <span class="stock-value ${alert.currentStock === 0 ? 'zero' : ''}">${alert.currentStock}</span>
+                            </div>
+                            <div class="stock-item">
+                                <span class="stock-label">预警阈值</span>
+                                <span class="stock-value">${alert.alertThreshold}</span>
+                            </div>
+                            <div class="stock-item">
+                                <span class="stock-label">预留库存</span>
+                                <span class="stock-value">${alert.reservedStock}</span>
+                            </div>
+                            <div class="stock-item">
+                                <span class="stock-label">预计缺货</span>
+                                <span class="stock-value ${alert.estimatedDays === 0 ? 'urgent' : ''}">${alert.estimatedDays}天</span>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-meta">
+                            <span class="last-sale">最后销售: ${alert.lastSale}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 获取预警级别图标
+        function getLevelIcon(level) {
+            const iconMap = {
+                'critical': 'exclamation-circle',
+                'low': 'exclamation-triangle',
+                'warning': 'info-circle'
+            };
+            return iconMap[level] || 'question-circle';
+        }
+
+        // 获取预警级别文本
+        function getLevelText(level) {
+            const textMap = {
+                'critical': '严重缺货',
+                'low': '库存不足',
+                'warning': '即将缺货'
+            };
+            return textMap[level] || '未知';
+        }
+
+        // 筛选预警
+        function filterAlerts() {
+            showToast('筛选功能开发中...', 'info');
+        }
+
+        // 刷新预警
+        function refreshAlerts() {
+            showToast('正在刷新预警信息...', 'info');
+            loadAlerts();
+        }
+
+        // 批量采购
+        function batchPurchase() {
+            showToast('批量采购功能开发中...', 'info');
+        }
+
+        // 快速采购
+        function quickPurchase(alertId) {
+            showToast(`快速采购商品 ${alertId} 功能开发中...`, 'info');
+        }
+
+        // 调整预警阈值
+        function adjustThreshold(alertId) {
+            showToast(`调整预警阈值 ${alertId} 功能开发中...`, 'info');
+        }
+    </script>
+</body>
+</html>

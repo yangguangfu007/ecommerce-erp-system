@@ -18,10 +18,10 @@
         <result column="attributes" property="attributes" jdbcType="VARCHAR" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
         <result column="version" property="version" jdbcType="INTEGER"/>
-        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
-        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
-        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
-        <result column="updated_by" property="updatedBy" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="created_by" property="createBy" jdbcType="BIGINT"/>
+        <result column="updated_by" property="updateBy" jdbcType="BIGINT"/>
         <result column="deleted" property="deleted" jdbcType="BOOLEAN"/>
     </resultMap>
 

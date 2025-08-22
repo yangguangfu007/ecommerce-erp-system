@@ -31,17 +31,63 @@ git clone https://github.com/yangguangfu007/ecommerce-erp-system.git
 cd ecommerce-erp-system
 ```
 
+### 1.5 快速启动（推荐）
+
+如果您想快速启动完整的开发环境，可以使用以下命令：
+
+```bash
+# 一键启动所有服务（按正确顺序）
+./scripts/start-services.sh
+
+# 这个脚本会按顺序启动：
+# 1. 基础设施服务 (MySQL, Redis, Kafka, Nacos)
+# 2. 后端服务 (用户服务, 网关服务)
+# 3. 前端服务 (Vue.js应用)
+
+# 查看所有服务状态
+./scripts/start-services.sh status
+
+# 查看服务日志
+./scripts/start-services.sh logs all
+
+# 停止所有服务
+./scripts/start-services.sh stop
+```
+
+### 1.6 分步启动（开发调试）
+
+如果您需要单独启动某类服务进行开发调试：
+
+```bash
+# 第1步：启动基础设施服务
+./scripts/start-infrastructure.sh
+
+# 第2步：启动后端服务
+./scripts/start-backend.sh
+
+# 第3步：启动前端服务
+./scripts/start-frontend.sh
+
+# 或者直接调用主脚本启动特定类型的服务
+./scripts/start-services.sh start infrastructure  # 只启动基础设施
+./scripts/start-services.sh start backend         # 只启动后端服务
+./scripts/start-services.sh start frontend        # 只启动前端服务
+```
+
 ### 2. 启动基础设施
 
 ```bash
-# 启动数据库、缓存、消息队列等基础服务
-docker-compose up -d mysql redis kafka elasticsearch
+# 使用基础设施启动脚本（推荐）
+./scripts/start-infrastructure.sh
+
+# 或者手动启动基础服务
+docker-compose up -d mysql redis kafka nacos
 
 # 等待服务启动完成
 sleep 30
 
 # 验证服务状态
-docker-compose ps
+./scripts/start-infrastructure.sh status
 ```
 
 ### 3. 后端开发环境
@@ -85,55 +131,55 @@ source scripts/sql/init-data.sql;
 
 #### 3.3 启动后端服务
 
-##### Gateway 服务启动（必须首先启动）
+##### 使用后端启动脚本（推荐）
 
 ```bash
-# 方式一：使用 Maven 启动（推荐开发时使用）
-mvn spring-boot:run -f erp-gateway/pom.xml -Dspring-boot.run.profiles=dev
+# 启动所有后端服务
+./scripts/start-backend.sh
 
-# 方式二：使用开发脚本
-./scripts/dev-backend.sh gateway
+# 启动单个服务
+./scripts/start-backend.sh start user      # 启动用户服务
+./scripts/start-backend.sh start gateway   # 启动网关服务
 
-# 验证 Gateway 启动成功
-curl http://localhost:8080/actuator/health
-curl http://localhost:8080/actuator/gateway/routes
+# 查看服务状态
+./scripts/start-backend.sh status
+
+# 查看服务日志
+./scripts/start-backend.sh logs user       # 查看用户服务日志
+./scripts/start-backend.sh logs gateway    # 查看网关服务日志
 ```
 
-##### 其他微服务启动
+##### 手动启动服务
 
 ```bash
 # 启动用户服务
 mvn spring-boot:run -f erp-user-service/pom.xml -Dspring-boot.run.profiles=dev
 
-# 启动商品服务
-mvn spring-boot:run -f erp-product-service/pom.xml -Dspring-boot.run.profiles=dev
+# 启动网关服务
+mvn spring-boot:run -f erp-gateway/pom.xml -Dspring-boot.run.profiles=dev
 
-# 启动订单服务
-mvn spring-boot:run -f erp-order-service/pom.xml -Dspring-boot.run.profiles=dev
-
-# 或使用批量启动脚本
-./scripts/dev-backend.sh all
+# 验证服务启动成功
+curl http://localhost:8001/actuator/health  # 用户服务
+curl http://localhost:8080/actuator/health  # 网关服务
 ```
 
 ##### 服务启动顺序
 
-1. **基础设施服务** (MySQL, Redis, Nacos, Kafka)
-2. **Gateway 服务** (端口 8080) - 必须首先启动
-3. **业务微服务** (用户、商品、订单等服务)
-4. **前端服务** (端口 3000)
+1. **基础设施服务** (MySQL, Redis, Nacos, Kafka) - 使用 `./scripts/start-infrastructure.sh`
+2. **后端微服务** (用户服务, 网关服务) - 使用 `./scripts/start-backend.sh`
+3. **前端服务** (Vue.js应用) - 使用 `./scripts/start-frontend.sh`
 
 ##### 启动验证
 
 ```bash
-# 检查所有服务状态
-./scripts/deploy/health-check.sh
+# 检查后端服务状态
+./scripts/start-backend.sh status
 
 # 查看 Nacos 服务注册情况
 curl http://localhost:8848/nacos/v1/ns/instance/list?serviceName=erp-gateway
 
 # 测试 Gateway 路由
 curl http://localhost:8080/api/users/health
-curl http://localhost:8080/api/products/health
 ```
 
 ### 4. 前端开发环境
@@ -166,11 +212,24 @@ export const config = {
 #### 4.3 启动前端开发服务器
 
 ```bash
-# 启动开发服务器
+# 使用前端启动脚本（推荐）
+./scripts/start-frontend.sh
+
+# 或者手动启动
+cd erp-frontend
 npm run dev
 
-# 前端将在 http://localhost:5173 启动
+# 前端将在 http://localhost:3000 启动
 # 支持热重载，修改代码后自动刷新
+
+# 查看前端服务状态
+./scripts/start-frontend.sh status
+
+# 查看前端服务日志
+./scripts/start-frontend.sh logs
+
+# 构建生产版本
+./scripts/start-frontend.sh build
 ```
 
 ## 📁 项目结构详解
@@ -731,6 +790,57 @@ A: 在 `src/views` 目录下创建新组件，在 `src/router` 中配置路由�
 ### Q4: 如何处理跨域问题？
 
 A: 在网关配置中添加 CORS 配置，或在前端配置代理。
+
+### Q5: 登录时出现"检测到异常登录行为，请稍后再试"怎么办？
+
+A: 这通常是由于多次登录失败导致Redis中存储了锁定信息。解决方案：
+
+```bash
+# 清除Redis中的登录锁定信息
+docker exec erp-redis redis-cli -a redis123 FLUSHALL
+
+# 重启用户服务
+./scripts/start-backend.sh restart user
+```
+
+### Q6: API返回的中文数据显示为乱码怎么办？
+
+A: 这是数据库字符编码问题。解决方案：
+
+```bash
+# 1. 检查数据库字符集
+docker exec erp-mysql mysql -u root -proot123 -e "SHOW VARIABLES LIKE 'character_set%';"
+
+# 2. 修复数据库数据
+docker exec erp-mysql mysql -u root -proot123 --default-character-set=utf8mb4 -e "
+USE erp_user;
+UPDATE sys_user SET real_name = '系统管理员' WHERE username = 'admin';
+UPDATE sys_user SET real_name = '测试用户' WHERE username = 'test';
+UPDATE sys_role SET role_name = '系统管理员' WHERE id = 1;
+UPDATE sys_role SET role_name = '普通用户' WHERE id = 2;
+"
+
+# 3. 重启用户服务
+./scripts/start-backend.sh restart user
+```
+
+### Q7: 如何快速重置开发环境？
+
+A: 使用以下命令快速重置：
+
+```bash
+# 停止所有服务
+./scripts/start-services.sh stop
+
+# 清除Redis数据
+docker exec erp-redis redis-cli -a redis123 FLUSHALL
+
+# 重启所有服务
+./scripts/start-services.sh restart
+
+# 查看服务状态
+./scripts/start-services.sh status
+```
 
 ---
 

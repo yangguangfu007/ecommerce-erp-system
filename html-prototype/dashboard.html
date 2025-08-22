@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电商ERP管理系统 - 仪表板</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/themes.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="assets/images/logo.svg" alt="ERP系统" class="logo">
+                <h1 class="system-title">电商ERP管理系统</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="搜索功能..." class="search-input">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="header-user">
+                    <img src="assets/images/avatars/admin.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">管理员</span>
+                    <div class="user-dropdown">
+                        <a href="#" onclick="showProfile()">个人资料</a>
+                        <a href="#" onclick="showSettings()">系统设置</a>
+                        <a href="#" onclick="logout()">退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 侧边菜单 -->
+        <aside class="app-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item active">
+                        <a href="dashboard.html" class="nav-link" data-menu-id="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>仪表板</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="user-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="pages/users/user-list.html" data-submenu-id="user-list">用户列表</a></li>
+                            <li><a href="pages/users/role-management.html" data-submenu-id="role-management">角色管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="product-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-box"></i>
+                            <span>商品管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="pages/products/product-list.html" data-submenu-id="product-list">商品列表</a></li>
+                            <li><a href="pages/products/product-import.html" data-submenu-id="product-import">商品导入</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="order-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>订单管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="pages/orders/order-list.html" data-submenu-id="order-list">订单列表</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="inventory-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-warehouse"></i>
+                            <span>库存管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="pages/inventory/inventory-list.html" data-submenu-id="inventory-list">库存列表</a></li>
+                            <li><a href="pages/inventory/inventory-alerts.html" data-submenu-id="inventory-alerts">库存预警</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="platform-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-store"></i>
+                            <span>平台管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="pages/platforms/platform-list.html" data-submenu-id="platform-list">平台列表</a></li>
+                            <li><a href="pages/platforms/platform-config.html" data-submenu-id="platform-config">平台配置</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="logistics-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-truck"></i>
+                            <span>物流管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="pages/logistics/logistics-list.html" data-submenu-id="logistics-list">物流列表</a></li>
+                            <li><a href="pages/logistics/shipping-labels.html" data-submenu-id="shipping-labels">面单管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="pages/notifications/notification-center.html" class="nav-link" data-menu-id="notification-center">
+                            <i class="fas fa-bell"></i>
+                            <span>通知中心</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="system-settings" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-cog"></i>
+                            <span>系统设置</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="pages/settings/system-config.html" data-submenu-id="system-config">系统配置</a></li>
+                            <li><a href="pages/settings/system-logs.html" data-submenu-id="system-logs">系统日志</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="app-main">
+            <!-- 面包屑导航 -->
+            <nav class="breadcrumb">
+                <div class="breadcrumb-list">
+                    <span class="breadcrumb-item active">仪表板</span>
+                </div>
+            </nav>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <div class="page-header">
+                    <h2 class="page-title">仪表板</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-outline" onclick="refreshCurrentPageData()">
+                            <i class="fas fa-sync-alt"></i> 刷新数据
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="dashboard-stats" id="dashboard-stats">
+                    <!-- 统计卡片将通过JavaScript动态生成 -->
+                </div>
+
+                <!-- 图表区域 -->
+                <div class="dashboard-charts">
+                    <div class="charts-row">
+                        <div class="chart-container">
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h3 class="card-title">销售趋势</h3>
+                                    <div class="card-actions">
+                                        <button class="btn btn-text" onclick="refreshSalesTrend()">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="salesTrendChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h3 class="card-title">订单状态分布</h3>
+                                    <div class="card-actions">
+                                        <button class="btn btn-text" onclick="refreshOrderStatus()">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="orderStatusChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="charts-row">
+                        <div class="chart-container full-width">
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h3 class="card-title">热销商品排行</h3>
+                                    <div class="card-actions">
+                                        <button class="btn btn-text" onclick="refreshTopProducts()">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div id="topProductsList" class="top-products-list">
+                                        <!-- 热销商品列表将通过JavaScript动态生成 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷操作和待处理事项 -->
+                <div class="dashboard-quick-section">
+                    <!-- 快捷操作 -->
+                    <div class="content-card quick-actions-card">
+                        <div class="card-header">
+                            <h3 class="card-title">快捷操作</h3>
+                            <div class="card-actions">
+                                <button class="btn btn-text" onclick="refreshQuickActions()">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="dashboard-actions" id="dashboard-actions">
+                                <div class="action-card interactive-element" onclick="navigateToPage('pages/orders/order-list.html')">
+                                    <div class="action-icon" style="background: #409EFF;">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <h3>订单管理</h3>
+                                        <p>查看和处理订单</p>
+                                        <span class="action-badge">12 待处理</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="action-card interactive-element" onclick="navigateToPage('pages/products/product-list.html')">
+                                    <div class="action-icon" style="background: #67C23A;">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <h3>商品管理</h3>
+                                        <p>管理商品信息</p>
+                                        <span class="action-badge">3 待审核</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="action-card interactive-element" onclick="navigateToPage('pages/inventory/inventory-list.html')">
+                                    <div class="action-icon" style="background: #E6A23C;">
+                                        <i class="fas fa-warehouse"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <h3>库存管理</h3>
+                                        <p>监控库存状态</p>
+                                        <span class="action-badge warning">5 预警</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="action-card interactive-element" onclick="navigateToPage('pages/platforms/platform-list.html')">
+                                    <div class="action-icon" style="background: #F56C6C;">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <h3>平台管理</h3>
+                                        <p>管理销售平台</p>
+                                        <span class="action-badge success">正常</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="action-card interactive-element" onclick="navigateToPage('pages/logistics/logistics-list.html')">
+                                    <div class="action-icon" style="background: #909399;">
+                                        <i class="fas fa-truck"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <h3>物流管理</h3>
+                                        <p>跟踪物流状态</p>
+                                        <span class="action-badge">8 在途</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="action-card interactive-element" onclick="navigateToPage('pages/users/user-list.html')">
+                                    <div class="action-icon" style="background: #606266;">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <h3>用户管理</h3>
+                                        <p>管理系统用户</p>
+                                        <span class="action-badge">2 待激活</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 待处理事项 -->
+                    <div class="content-card pending-tasks-card">
+                        <div class="card-header">
+                            <h3 class="card-title">待处理事项</h3>
+                            <div class="card-actions">
+                                <button class="btn btn-text" onclick="refreshPendingTasks()">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn btn-text" onclick="showAllPendingTasks()">
+                                    查看全部
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="pending-tasks-list" id="pending-tasks-list">
+                                <!-- 待处理事项将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 最近操作和系统通知 -->
+                <div class="dashboard-activity-section">
+                    <!-- 最近操作 -->
+                    <div class="content-card recent-activities-card">
+                        <div class="card-header">
+                            <h3 class="card-title">最近操作</h3>
+                            <div class="card-actions">
+                                <button class="btn btn-text" onclick="refreshRecentActivities()">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn btn-text" onclick="showAllActivities()">
+                                    查看全部
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="recent-activities-list" id="recent-activities-list">
+                                <!-- 最近操作将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 系统通知 -->
+                    <div class="content-card system-notifications-card">
+                        <div class="card-header">
+                            <h3 class="card-title">系统通知</h3>
+                            <div class="card-actions">
+                                <button class="btn btn-text" onclick="markAllNotificationsRead()">
+                                    全部已读
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="system-notifications-list" id="system-notifications-list">
+                                <!-- 系统通知将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- JavaScript Files -->
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/mock-data.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

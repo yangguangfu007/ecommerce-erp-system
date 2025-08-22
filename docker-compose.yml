@@ -1,9 +1,11 @@
 # Docker Compose file for ERP System
+# 支持多架构: ARM64 (Apple Silicon) 和 x86_64 (Intel)
+# 自动检测系统架构并使用合适的镜像
 
 services:
   # MySQL数据库
   mysql:
-    image: mysql:8.0.35
+    image: mysql:8.0
     container_name: erp-mysql
     restart: always
     environment:
@@ -19,10 +21,14 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     networks:
       - erp-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   # Redis缓存
   redis:
-    image: redis:7.2-alpine
+    image: redis:7-alpine
     container_name: erp-redis
     restart: always
     ports:
@@ -32,8 +38,12 @@ services:
     command: redis-server --appendonly yes --requirepass redis123
     networks:
       - erp-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 10s
+      retries: 5
 
-  # Zookeeper (Kafka依赖)
+  # Zookeeper (Kafka依赖) - ARM64兼容版本
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
     container_name: erp-zookeeper
@@ -41,6 +51,9 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      # ARM64兼容性配置
+      KAFKA_JVM_PERFORMANCE_OPTS: "-server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35"
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms256M"
     ports:
       - "2181:2181"
     volumes:
@@ -48,14 +61,20 @@ services:
       - zookeeper_logs:/var/lib/zookeeper/log
     networks:
       - erp-network
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo 'srvr' | nc localhost 2181"]
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
-  # Kafka消息队列
+  # Kafka消息队列 (ARM64兼容版本)
   kafka:
     image: confluentinc/cp-kafka:7.4.0
     container_name: erp-kafka
     restart: always
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -66,42 +85,47 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      # ARM64兼容性配置
+      KAFKA_JVM_PERFORMANCE_OPTS: "-server -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent -Djava.awt.headless=true"
+      KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
     ports:
       - "9092:9092"
     volumes:
       - kafka_data:/var/lib/kafka/data
     networks:
       - erp-network
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   # Nacos服务注册中心
   nacos:
-    image: nacos/nacos-server:v2.2.3
+    image: nacos/nacos-server:v2.2.3-slim
     container_name: erp-nacos
     restart: always
     environment:
       MODE: standalone
-      SPRING_DATASOURCE_PLATFORM: mysql
-      MYSQL_SERVICE_HOST: mysql
-      MYSQL_SERVICE_DB_NAME: nacos_config
-      MYSQL_SERVICE_PORT: 3306
-      MYSQL_SERVICE_USER: root
-      MYSQL_SERVICE_PASSWORD: root123
-      MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+      PREFER_HOST_MODE: hostname
     ports:
       - "8848:8848"
       - "9848:9848"
-    depends_on:
-      - mysql
     volumes:
       - nacos_logs:/home/nacos/logs
     networks:
       - erp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/v1/console/health/readiness"]
+      timeout: 10s
+      retries: 10
 
   # Elasticsearch搜索引擎
   elasticsearch:
     image: elasticsearch:8.10.4
     container_name: erp-elasticsearch
     restart: always
+    # Elasticsearch官方镜像支持多架构
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -113,12 +137,17 @@ services:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
       - erp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      timeout: 10s
+      retries: 5
 
-  # Kibana日志可视化
+  # Kibana日志可视化 (可选)
   kibana:
     image: kibana:8.10.4
     container_name: erp-kibana
     restart: always
+    # Kibana官方镜像支持多架构
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     ports:
@@ -127,12 +156,19 @@ services:
       - elasticsearch
     networks:
       - erp-network
+    profiles:
+      - monitoring
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+      timeout: 10s
+      retries: 5
 
-  # Prometheus监控
+  # Prometheus监控 (可选)
   prometheus:
     image: prom/prometheus:v2.45.0
     container_name: erp-prometheus
     restart: always
+    # Prometheus官方镜像支持多架构
     ports:
       - "9090:9090"
     volumes:
@@ -147,12 +183,19 @@ services:
       - '--web.enable-lifecycle'
     networks:
       - erp-network
+    profiles:
+      - monitoring
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      timeout: 10s
+      retries: 5
 
-  # Grafana监控面板
+  # Grafana监控面板 (可选)
   grafana:
     image: grafana/grafana:10.2.2
     container_name: erp-grafana
     restart: always
+    # Grafana官方镜像支持多架构
     environment:
       GF_SECURITY_ADMIN_PASSWORD: admin123
     ports:
@@ -164,12 +207,19 @@ services:
       - prometheus
     networks:
       - erp-network
+    profiles:
+      - monitoring
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      timeout: 10s
+      retries: 5
 
-  # Zipkin链路追踪
+  # Zipkin链路追踪 (可选)
   zipkin:
     image: openzipkin/zipkin:2.24.3
     container_name: erp-zipkin
     restart: always
+    # Zipkin官方镜像支持多架构
     ports:
       - "9411:9411"
     environment:
@@ -179,12 +229,19 @@ services:
       - elasticsearch
     networks:
       - erp-network
+    profiles:
+      - monitoring
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9411/health"]
+      timeout: 10s
+      retries: 5
 
-  # MinIO对象存储 (用于文件存储)
+  # MinIO对象存储 (可选)
   minio:
     image: minio/minio:RELEASE.2023-12-02T10-51-33Z
     container_name: erp-minio
     restart: always
+    # MinIO官方镜像支持多架构
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin123
@@ -196,203 +253,36 @@ services:
     command: server /data --console-address ":9001"
     networks:
       - erp-network
-
-  # ERP Gateway 网关服务
-  erp-gateway:
-    image: erp-system/erp-gateway:latest
-    container_name: erp-gateway
-    restart: always
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      NACOS_SERVER_ADDR: nacos:8848
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      - mysql
-      - redis
-      - kafka
-      - nacos
-    networks:
-      - erp-network
-
-  # ERP User Service 用户服务
-  erp-user-service:
-    image: erp-system/erp-user-service:latest
-    container_name: erp-user-service
-    restart: always
-    ports:
-      - "8081:8081"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      NACOS_SERVER_ADDR: nacos:8848
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      - mysql
-      - redis
-      - kafka
-      - nacos
-    networks:
-      - erp-network
-
-  # ERP Product Service 产品服务
-  erp-product-service:
-    image: erp-system/erp-product-service:latest
-    container_name: erp-product-service
-    restart: always
-    ports:
-      - "8082:8082"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      NACOS_SERVER_ADDR: nacos:8848
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      - mysql
-      - redis
-      - kafka
-      - nacos
-    networks:
-      - erp-network
-
-  # ERP Order Service 订单服务
-  erp-order-service:
-    image: erp-system/erp-order-service:latest
-    container_name: erp-order-service
-    restart: always
-    ports:
-      - "8083:8083"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      NACOS_SERVER_ADDR: nacos:8848
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      - mysql
-      - redis
-      - kafka
-      - nacos
-    networks:
-      - erp-network
-
-  # ERP Inventory Service 库存服务
-  erp-inventory-service:
-    image: erp-system/erp-inventory-service:latest
-    container_name: erp-inventory-service
-    restart: always
-    ports:
-      - "8084:8084"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      NACOS_SERVER_ADDR: nacos:8848
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      - mysql
-      - redis
-      - kafka
-      - nacos
-    networks:
-      - erp-network
-
-  # ERP Platform Service 平台服务
-  erp-platform-service:
-    image: erp-system/erp-platform-service:latest
-    container_name: erp-platform-service
-    restart: always
-    ports:
-      - "8085:8085"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      NACOS_SERVER_ADDR: nacos:8848
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      - mysql
-      - redis
-      - kafka
-      - nacos
-    networks:
-      - erp-network
-
-  # ERP Logistics Service 物流服务
-  erp-logistics-service:
-    image: erp-system/erp-logistics-service:latest
-    container_name: erp-logistics-service
-    restart: always
-    ports:
-      - "8086:8086"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      NACOS_SERVER_ADDR: nacos:8848
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      - mysql
-      - redis
-      - kafka
-      - nacos
-    networks:
-      - erp-network
-
-  # ERP Notification Service 通知服务
-  erp-notification-service:
-    image: erp-system/erp-notification-service:latest
-    container_name: erp-notification-service
-    restart: always
-    ports:
-      - "8087:8087"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      NACOS_SERVER_ADDR: nacos:8848
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      - mysql
-      - redis
-      - kafka
-      - nacos
-    networks:
-      - erp-network
+    profiles:
+      - storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      timeout: 10s
+      retries: 5
 
 volumes:
   mysql_data:
+    driver: local
   redis_data:
+    driver: local
   zookeeper_data:
+    driver: local
   zookeeper_logs:
+    driver: local
   kafka_data:
+    driver: local
   nacos_logs:
+    driver: local
   elasticsearch_data:
+    driver: local
   prometheus_data:
+    driver: local
   grafana_data:
+    driver: local
   minio_data:
+    driver: local
 
 networks:
   erp-network:
     driver: bridge
+    name: erp-network

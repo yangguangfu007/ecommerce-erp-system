@@ -1,7 +1,10 @@
 package com.erp.user.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.erp.common.entity.BaseEntity;
+
+import java.util.List;
 
 /**
  * 权限实体类
@@ -62,6 +65,12 @@ public class Permission extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    /**
+     * 子权限列表（非数据库字段）
+     */
+    @TableField(exist = false)
+    private List<Permission> children;
 
     public String getPermissionCode() {
         return permissionCode;
@@ -141,6 +150,14 @@ public class Permission extends BaseEntity {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public List<Permission> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Permission> children) {
+        this.children = children;
     }
 
     @Override

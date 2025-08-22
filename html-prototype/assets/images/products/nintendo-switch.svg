@@ -1,0 +1,62 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="switchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f0f0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d0d0d0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 主机屏幕 -->
+  <rect x="60" y="40" width="80" height="50" rx="8" ry="8" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
+  <rect x="65" y="45" width="70" height="40" rx="5" ry="5" fill="#000"/>
+  <rect x="68" y="48" width="64" height="34" rx="3" ry="3" fill="#1e90ff"/>
+  
+  <!-- 左Joy-Con -->
+  <rect x="30" y="35" width="25" height="60" rx="12" ry="12" fill="#0078d4" stroke="#005a9e" stroke-width="1"/>
+  
+  <!-- 左摇杆 -->
+  <circle cx="42" cy="50" r="6" fill="#333"/>
+  <circle cx="42" cy="50" r="4" fill="#666"/>
+  
+  <!-- 左按键 -->
+  <rect x="38" y="70" width="8" height="8" rx="1" fill="#333"/>
+  <rect x="38" y="80" width="8" height="8" rx="1" fill="#333"/>
+  
+  <!-- 右Joy-Con -->
+  <rect x="145" y="35" width="25" height="60" rx="12" ry="12" fill="#dc143c" stroke="#b91c3c" stroke-width="1"/>
+  
+  <!-- 右摇杆 -->
+  <circle cx="158" cy="80" r="6" fill="#333"/>
+  <circle cx="158" cy="80" r="4" fill="#666"/>
+  
+  <!-- 右按键 -->
+  <circle cx="154" cy="55" r="3" fill="#333"/>
+  <circle cx="162" cy="55" r="3" fill="#333"/>
+  <circle cx="154" cy="63" r="3" fill="#333"/>
+  <circle cx="162" cy="63" r="3" fill="#333"/>
+  
+  <!-- 游戏卡槽 -->
+  <rect x="85" y="35" width="30" height="3" rx="1" ry="1" fill="#666"/>
+  
+  <!-- 散热孔 -->
+  <rect x="70" y="95" width="60" height="8" rx="4" ry="4" fill="#333"/>
+  <g fill="#666">
+    <rect x="75" y="97" width="2" height="4"/>
+    <rect x="80" y="97" width="2" height="4"/>
+    <rect x="85" y="97" width="2" height="4"/>
+    <rect x="90" y="97" width="2" height="4"/>
+    <rect x="95" y="97" width="2" height="4"/>
+    <rect x="100" y="97" width="2" height="4"/>
+    <rect x="105" y="97" width="2" height="4"/>
+    <rect x="110" y="97" width="2" height="4"/>
+    <rect x="115" y="97" width="2" height="4"/>
+    <rect x="120" y="97" width="2" height="4"/>
+  </g>
+  
+  <!-- 支架 -->
+  <rect x="95" y="105" width="10" height="15" rx="2" ry="2" fill="#999"/>
+  
+  <!-- 品牌标识 -->
+  <text x="100" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">Nintendo</text>
+  <text x="100" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">Switch OLED</text>
+</svg>

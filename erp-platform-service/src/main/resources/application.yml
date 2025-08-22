@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: 8005
 
 spring:
   application:
@@ -10,11 +10,11 @@ spring:
   # 数据源配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/erp_platform?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: root123
     druid:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/erp_platform?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-      username: root
-      password: 123456
       initial-size: 10
       max-active: 100
       min-idle: 10
@@ -56,7 +56,7 @@ spring:
     redis:
       host: localhost
       port: 6379
-      password: 
+      password: redis123
       timeout: 10000ms
       lettuce:
         pool:
@@ -87,6 +87,14 @@ spring:
       discovery:
         server-addr: localhost:8848
         namespace: erp-system
+        group: DEFAULT_GROUP
+      config:
+        server-addr: localhost:8848
+        namespace: erp-system
+        group: DEFAULT_GROUP
+        file-extension: yml
+        import-check:
+          enabled: false
 
 # 沃尔玛API配置
 walmart:
@@ -118,6 +126,7 @@ management:
     web:
       exposure:
         include: health,info,metrics,prometheus
+      base-path: /actuator
   endpoint:
     health:
       show-details: always

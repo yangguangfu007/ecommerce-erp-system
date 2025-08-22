@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>面单管理 - 电商ERP管理系统</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../../assets/css/reset.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 导航栏和侧边栏代码省略，与其他页面相同 -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="../../assets/images/logo.svg" alt="ERP系统" class="logo">
+                <h1 class="system-title">电商ERP管理系统</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="搜索功能..." class="search-input">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="header-user">
+                    <img src="../../assets/images/avatars/admin.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">管理员</span>
+                    <div class="user-dropdown">
+                        <a href="#" onclick="showProfile()">个人资料</a>
+                        <a href="#" onclick="showSettings()">系统设置</a>
+                        <a href="#" onclick="logout()">退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <aside class="app-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../../dashboard.html" class="nav-link" data-menu-id="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>仪表板</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="user-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../users/user-list.html" data-submenu-id="user-list">用户列表</a></li>
+                            <li><a href="../users/role-management.html" data-submenu-id="role-management">角色管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="product-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-box"></i>
+                            <span>商品管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../products/product-list.html" data-submenu-id="product-list">商品列表</a></li>
+                            <li><a href="../products/product-import.html" data-submenu-id="product-import">商品导入</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="order-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>订单管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../orders/order-list.html" data-submenu-id="order-list">订单列表</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="inventory-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-warehouse"></i>
+                            <span>库存管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../inventory/inventory-list.html" data-submenu-id="inventory-list">库存列表</a></li>
+                            <li><a href="../inventory/inventory-alerts.html" data-submenu-id="inventory-alerts">库存预警</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="platform-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-store"></i>
+                            <span>平台管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../platforms/platform-list.html" data-submenu-id="platform-list">平台列表</a></li>
+                            <li><a href="../platforms/platform-config.html" data-submenu-id="platform-config">平台配置</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu active">
+                        <a href="#" class="nav-link" data-menu-id="logistics-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-truck"></i>
+                            <span>物流管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu show">
+                            <li><a href="logistics-list.html" data-submenu-id="logistics-list">物流列表</a></li>
+                            <li><a href="shipping-labels.html" data-submenu-id="shipping-labels" class="active">面单管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="../notifications/notification-center.html" class="nav-link" data-menu-id="notification-center">
+                            <i class="fas fa-bell"></i>
+                            <span>通知中心</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="system-settings" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-cog"></i>
+                            <span>系统设置</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../settings/system-config.html" data-submenu-id="system-config">系统配置</a></li>
+                            <li><a href="../settings/system-logs.html" data-submenu-id="system-logs">系统日志</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="app-main">
+            <nav class="breadcrumb">
+                <div class="breadcrumb-list">
+                    <a href="../../dashboard.html" class="breadcrumb-item">仪表板</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item">物流管理</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item active">面单管理</span>
+                </div>
+            </nav>
+
+            <div class="page-content">
+                <div class="page-header">
+                    <h2 class="page-title">面单管理</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-outline" onclick="refreshLabels()">
+                            <i class="fas fa-sync-alt"></i> 刷新
+                        </button>
+                        <button class="btn btn-primary" onclick="batchPrint()">
+                            <i class="fas fa-print"></i> 批量打印
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">面单列表</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>面单管理功能开发中...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div><script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/components.js"></script>
+    <script src="../../assets/js/mock-data.js"></script>
+    <script src="../../assets/js/app.js"></script>
+    <script>
+        function refreshLabels() {
+            showToast('刷新面单列表功能开发中...', 'info');
+        }
+        
+        function batchPrint() {
+            showToast('批量打印面单功能开发中...', 'info');
+        }
+    </script>
+</body>
+</html>

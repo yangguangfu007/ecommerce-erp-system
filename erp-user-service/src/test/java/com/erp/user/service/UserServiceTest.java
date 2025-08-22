@@ -324,8 +324,14 @@ class UserServiceTest {
     @Test
     void testGetUserById() {
         // Given
+        RoleDTO roleDTO = new RoleDTO();
+        roleDTO.setId(1L);
+        roleDTO.setCode("USER");
+        roleDTO.setName("普通用户");
+        
         when(userMapper.selectById(1L)).thenReturn(testUser);
         when(userMapper.selectRoleCodesByUserId(1L)).thenReturn(Arrays.asList("USER"));
+        when(userMapper.selectRolesByUserId(1L)).thenReturn(Arrays.asList(roleDTO));
         when(userMapper.selectPermissionCodesByUserId(1L)).thenReturn(Arrays.asList("user:view"));
 
         // When
@@ -336,7 +342,7 @@ class UserServiceTest {
         assertEquals("testuser", result.getUsername());
         assertEquals("Test User", result.getRealName());
         assertEquals(1, result.getRoles().size());
-        assertEquals("USER", result.getRoles().get(0));
+        assertEquals("USER", result.getRoles().get(0).getCode());
     }
 
     @Test

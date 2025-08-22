@@ -130,6 +130,13 @@ public interface InventoryService {
     List<InventoryDTO> getLowStockInventories();
 
     /**
+     * 获取所有库存列表
+     *
+     * @return 所有库存列表
+     */
+    List<InventoryDTO> getAllInventories();
+
+    /**
      * 同步库存数据
      *
      * @param sku     SKU编码

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单列表 - 电商ERP管理系统</title>
+    
+    <!-- CSS文件 -->
+    <link rel="stylesheet" href="../../assets/css/reset.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    
+    <!-- Font Awesome图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="../../assets/images/logo.svg" alt="ERP系统" class="logo">
+                <h1 class="system-title">电商ERP管理系统</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="搜索功能..." class="search-input">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="header-user">
+                    <img src="../../assets/images/avatars/admin.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">管理员</span>
+                    <div class="user-dropdown">
+                        <a href="#" onclick="showProfile()">个人资料</a>
+                        <a href="#" onclick="showSettings()">系统设置</a>
+                        <a href="#" onclick="logout()">退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 侧边菜单 -->
+        <aside class="app-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../../dashboard.html" class="nav-link">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>仪表板</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../users/user-list.html">用户列表</a></li>
+                            <li><a href="../users/role-management.html">角色管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-box"></i>
+                            <span>商品管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../products/product-list.html">商品列表</a></li>
+                            <li><a href="../products/product-import.html">商品导入</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu active">
+                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>订单管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="order-list.html" class="active">订单列表</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-warehouse"></i>
+                            <span>库存管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../inventory/inventory-list.html">库存列表</a></li>
+                            <li><a href="../inventory/inventory-alerts.html">库存预警</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-store"></i>
+                            <span>平台管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../platforms/platform-list.html">平台列表</a></li>
+                            <li><a href="../platforms/platform-config.html">平台配置</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-truck"></i>
+                            <span>物流管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../logistics/logistics-list.html">物流列表</a></li>
+                            <li><a href="../logistics/shipping-labels.html">面单管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="../notifications/notification-center.html" class="nav-link">
+                            <i class="fas fa-bell"></i>
+                            <span>通知中心</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-cog"></i>
+                            <span>系统设置</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../settings/system-config.html">系统配置</a></li>
+                            <li><a href="../settings/system-logs.html">系统日志</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="app-main">
+            <!-- 面包屑导航 -->
+            <nav class="breadcrumb">
+                <ol class="breadcrumb-list">
+                    <li class="breadcrumb-item">
+                        <a href="../../dashboard.html">
+                            <i class="fas fa-home"></i>
+                            首页
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span>订单管理</span>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        <span>订单列表</span>
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h2>订单列表</h2>
+                        <p class="page-description">管理和查看所有订单信息，支持订单状态更新和详情查看</p>
+                    </div>
+                </div>
+
+                <!-- 数据表格容器 -->
+                <div class="data-table-container">
+                    <!-- 表格头部 -->
+                    <div class="table-header">
+                        <div class="table-title">
+                            <h3>订单数据</h3>
+                            <span class="table-count">共 <strong id="total-count">0</strong> 条记录</span>
+                        </div>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary" onclick="exportOrders()">
+                                <i class="fas fa-download"></i> 导出订单
+                            </button>
+                            <button class="btn btn-primary" onclick="syncOrders()">
+                                <i class="fas fa-sync"></i> 同步订单
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 筛选器 -->
+                    <div class="table-filters">
+                        <div class="filter-group">
+                            <div class="filter-item">
+                                <input type="text" id="keyword-filter" placeholder="搜索订单号或客户姓名..." class="filter-input">
+                            </div>
+                            <div class="filter-item">
+                                <select id="status-filter" class="filter-select">
+                                    <option value="">全部状态</option>
+                                    <option value="pending">待支付</option>
+                                    <option value="paid">已支付</option>
+                                    <option value="shipped">已发货</option>
+                                    <option value="completed">已完成</option>
+                                    <option value="cancelled">已取消</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <select id="platform-filter" class="filter-select">
+                                    <option value="">全部平台</option>
+                                    <option value="Walmart">Walmart</option>
+                                    <option value="Amazon">Amazon</option>
+                                    <option value="eBay">eBay</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <input type="date" id="start-date" class="filter-input" placeholder="开始日期">
+                            </div>
+                            <div class="filter-item">
+                                <input type="date" id="end-date" class="filter-input" placeholder="结束日期">
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn btn-outline" onclick="resetFilters()">重置</button>
+                                <button class="btn btn-primary" onclick="applyFilters()">搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 表格包装器 -->
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" class="select-all" onchange="toggleSelectAll(this)">
+                                    </th>
+                                    <th class="sortable" onclick="sortTable('orderNo')">
+                                        订单号 <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" onclick="sortTable('platform')">
+                                        平台 <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" onclick="sortTable('customerName')">
+                                        客户姓名 <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" onclick="sortTable('totalAmount')">
+                                        订单金额 <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" onclick="sortTable('status')">
+                                        订单状态 <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" onclick="sortTable('createdAt')">
+                                        创建时间 <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <!-- 动态生成的表格行 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 分页组件 -->
+                    <div class="table-pagination">
+                        <div class="pagination-info">
+                            显示第 <span id="page-start">1</span>-<span id="page-end">10</span> 条，共 <span id="total-records">0</span> 条记录
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="btn btn-outline" id="prev-page" onclick="previousPage()" disabled>
+                                <i class="fas fa-chevron-left"></i> 上一页
+                            </button>
+                            <div class="page-numbers" id="page-numbers">
+                                <!-- 动态生成的页码 -->
+                            </div>
+                            <button class="btn btn-outline" id="next-page" onclick="nextPage()">
+                                下一页 <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 加载状态 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+        <div class="loading-text">数据加载中...</div>
+    </div>
+
+    <!-- 订单详情模态框 -->
+    <div class="modal-overlay" id="order-detail-modal">
+        <div class="modal-container large">
+            <div class="modal-header">
+                <h3 class="modal-title">订单详情</h3>
+                <button class="modal-close" onclick="closeOrderDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="order-detail-content">
+                    <!-- 订单详情内容将在这里动态生成 -->
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeOrderDetailModal()">关闭</button>
+                <button class="btn btn-primary" onclick="editOrder()">编辑订单</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 状态更新模态框 -->
+    <div class="modal-overlay" id="status-update-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">更新订单状态</h3>
+                <button class="modal-close" onclick="closeStatusUpdateModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="status-update-form">
+                    <div class="form-group">
+                        <label class="form-label required">订单号</label>
+                        <input type="text" id="update-order-no" class="form-input" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">新状态</label>
+                        <select id="update-status" class="form-select" required>
+                            <option value="">请选择状态</option>
+                            <option value="pending">待支付</option>
+                            <option value="paid">已支付</option>
+                            <option value="shipped">已发货</option>
+                            <option value="completed">已完成</option>
+                            <option value="cancelled">已取消</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">备注</label>
+                        <textarea id="update-remark" class="form-textarea" rows="3" placeholder="请输入状态更新备注..."></textarea>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeStatusUpdateModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmStatusUpdate()">确认更新</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast消息容器 -->
+    <div class="toast-container"></div>
+
+    <!-- JavaScript文件 --><script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/components.js"></script>
+    <script src="../../assets/js/mock-data.js"></script>
+    <script src="../../assets/js/app.js"></script>
+    <script src="order-list.js"></script>
+</body>
+</html>

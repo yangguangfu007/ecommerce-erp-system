@@ -146,15 +146,18 @@ ecommerce-erp-system/
 │       ├── values-prod.yaml
 │       └── templates/              # Kubernetes 模板
 ├── scripts/                        # 运维脚本
+│   ├── README.md                   # 脚本使用说明
+│   ├── start-infrastructure.sh     # 基础设施服务启动脚本
+│   ├── start-backend.sh           # 后端服务启动脚本
+│   ├── start-frontend.sh          # 前端服务启动脚本
+│   ├── start-services.sh          # 统一服务管理脚本
 │   ├── deploy/                     # 部署脚本
 │   │   ├── deploy.sh
 │   │   └── health-check.sh
 │   ├── backup/                     # 备份脚本
 │   │   ├── backup-mysql.sh
 │   │   └── restore-mysql.sh
-│   ├── monitoring/                 # 监控脚本
-│   │   ├── log-collector.sh
-│   │   └── auto-restart.sh
+│   ├── sql/                        # 数据库脚本
 │   └── testing/                    # 测试框架
 │       ├── integration-test-suite.js
 │       ├── e2e-test-runner.sh
@@ -190,37 +193,84 @@ ecommerce-erp-system/
 
 ### ⚡ 一键启动（推荐）
 
-使用我们提供的自动化部署脚本，一键启动完整系统：
+#### 方式一：使用启动脚本（推荐开发者）
 
 ```bash
 # 1. 克隆项目
 git clone https://github.com/yangguangfu007/ecommerce-erp-system.git
 cd ecommerce-erp-system
 
-# 2. 热重载开发环境（推荐开发者）
-make dev-hot
-# 特性：代码修改自动生效，无需重启服务
+# 2. 一键启动所有服务（按正确顺序）
+./scripts/start-services.sh
 
-# 3. 一键部署（自动检测平台）
-make deploy
-# 或者
-./scripts/deploy/one-click-deploy.sh
+# 脚本会按顺序自动启动：
+# - 基础设施服务 (MySQL, Redis, Kafka, Nacos)
+# - 后端微服务 (用户服务, 网关服务)
+# - 前端应用 (Vue.js开发服务器)
 
-# 4. 传统开发环境
-make dev
-# 或者
-./scripts/deploy/quick-dev.sh
+# 3. 查看服务状态
+./scripts/start-services.sh status
 
-# 5. 等待部署完成，访问系统
+# 4. 访问系统
 # 前端界面: http://localhost:3000
-# API 网关: http://localhost:8080
-# Nacos 控制台: http://localhost:8848/nacos
-# 监控面板: http://localhost:3001 (admin/admin123)
+# API 网关: http://localhost:8080/api
+# Nacos 控制台: http://localhost:8848/nacos (nacos/nacos)
+```
+
+#### 方式二：分步启动（开发调试）
+
+```bash
+# 第1步：启动基础设施服务
+./scripts/start-infrastructure.sh
+
+# 第2步：启动后端服务
+./scripts/start-backend.sh
+
+# 第3步：启动前端服务
+./scripts/start-frontend.sh
+
+# 或者使用主脚本启动特定类型服务
+./scripts/start-services.sh start infrastructure  # 只启动基础设施
+./scripts/start-services.sh start backend         # 只启动后端服务
+./scripts/start-services.sh start frontend        # 只启动前端服务
+```
+
+#### 方式三：传统部署方式
+
+```bash
+# 热重载开发环境（如果支持）
+make dev-hot
+
+# 一键部署（自动检测平台）
+make deploy
+
+# 传统开发环境
+make dev
 ```
 
 ### 🎯 选择性开发
 
 支持只启动需要的服务，提高开发效率：
+
+#### 使用启动脚本
+
+```bash
+# 启动单个后端服务
+./scripts/start-backend.sh start user      # 只启动用户服务
+./scripts/start-backend.sh start gateway   # 只启动网关服务
+
+# 查看特定服务状态
+./scripts/start-backend.sh status
+./scripts/start-frontend.sh status
+./scripts/start-infrastructure.sh status
+
+# 查看特定服务日志
+./scripts/start-backend.sh logs user
+./scripts/start-frontend.sh logs
+./scripts/start-infrastructure.sh logs mysql
+```
+
+#### 使用传统方式（如果支持）
 
 ```bash
 # 只启动特定服务（热重载模式）
@@ -332,6 +382,31 @@ kubectl port-forward svc/erp-gateway 8080:8080 -n erp-system
 
 部署完成后，可以通过以下方式验证系统是否正常运行：
 
+#### 使用启动脚本验证
+
+```bash
+# 1. 查看所有服务状态
+./scripts/start-services.sh status
+
+# 2. 查看特定服务状态
+./scripts/start-infrastructure.sh status
+./scripts/start-backend.sh status
+./scripts/start-frontend.sh status
+
+# 3. 查看服务日志
+./scripts/start-services.sh logs all
+./scripts/start-backend.sh logs gateway
+
+# 4. 验证服务健康状态
+curl http://localhost:8080/actuator/health
+curl http://localhost:8001/actuator/health
+
+# 5. 访问前端界面
+open http://localhost:3000
+```
+
+#### 传统验证方式
+
 ```bash
 # 1. 启动基础设施服务
 docker-compose up -d
@@ -355,9 +430,6 @@ curl http://localhost:8080/actuator/gateway/routes
 # 7. 运行测试套件
 cd scripts/testing
 ./test-orchestrator.sh test all
-
-# 8. 访问前端界面
-open http://localhost:5174
 ```
 
 ## 🌐 服务访问信息
@@ -366,7 +438,7 @@ open http://localhost:5174
 
 | 服务名称        | 访问地址              | 描述            | 状态    |
 | --------------- | --------------------- | --------------- | ------- |
-| 🎨 **前端界面** | http://localhost:5174 | Vue.js 管理界面 | ✅ 可用 |
+| 🎨 **前端界面** | http://localhost:3000 | Vue.js 管理界面 | ✅ 可用 |
 | 🚪 **API 网关** | http://localhost:8080 | 统一 API 入口   | ✅ 可用 |
 | 📊 **监控面板** | http://localhost:3001 | Grafana 监控    | ✅ 可用 |
 | 📋 **日志分析** | http://localhost:5601 | Kibana 日志     | ✅ 可用 |
@@ -425,12 +497,14 @@ open http://localhost:5174
 | ------------------- | ------------------------ | ------------------------------------------------------ |
 | 📋 **项目概览**     | 系统架构和技术栈详细介绍 | [project-overview.md](docs/project-overview.md)        |
 | 🚀 **快速启动指南** | 5 分钟快速体验系统       | [quick-start-guide.md](docs/quick-start-guide.md)      |
+| 🎯 **启动脚本指南** | 启动脚本详细使用说明     | [startup-scripts-guide.md](docs/startup-scripts-guide.md) |
 | 💻 **本地开发指南** | 本地开发环境详细配置     | [local-development.md](docs/local-development.md)      |
 | 🛠️ **开发指南**     | 详细的开发流程和最佳实践 | [development-guide.md](docs/development-guide.md)      |
 | 🚀 **部署指南**     | 生产环境部署和运维指南   | [deployment-guide.md](docs/deployment-guide.md)        |
 | 👥 **用户指南**     | 系统功能使用说明         | [user-guide.md](docs/user-guide.md)                    |
 | 📋 **API 文档**     | 完整的 API 接口文档      | [api-documentation.md](docs/api-documentation.md)      |
 | 🧪 **测试指南**     | 测试框架使用说明         | [scripts/testing/README.md](scripts/testing/README.md) |
+| 🆘 **故障排除**     | 常见问题解决方案         | [troubleshooting.md](docs/troubleshooting.md)          |
 
 ### 🔧 开发相关
 

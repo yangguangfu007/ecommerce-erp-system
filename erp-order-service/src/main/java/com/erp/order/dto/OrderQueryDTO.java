@@ -55,6 +55,11 @@ public class OrderQueryDTO {
     private List<String> statuses;
 
     /**
+     * 平台名称
+     */
+    private String platform;
+
+    /**
      * 支付状态
      */
     private String paymentStatus;

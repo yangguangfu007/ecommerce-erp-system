@@ -1,0 +1,53 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="laptopGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8e8e8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c0c0c0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 笔记本底座 -->
+  <rect x="20" y="120" width="160" height="60" rx="8" ry="8" fill="url(#laptopGradient)" stroke="#999" stroke-width="1"/>
+  
+  <!-- 屏幕 -->
+  <rect x="30" y="30" width="140" height="100" rx="8" ry="8" fill="#2a2a2a" stroke="#666" stroke-width="1"/>
+  
+  <!-- 屏幕内容 -->
+  <rect x="35" y="35" width="130" height="90" rx="5" ry="5" fill="#000"/>
+  
+  <!-- 桌面背景 -->
+  <rect x="40" y="40" width="120" height="80" rx="3" ry="3" fill="#1e90ff"/>
+  
+  <!-- 菜单栏 -->
+  <rect x="40" y="40" width="120" height="8" fill="#333"/>
+  
+  <!-- 应用图标 -->
+  <rect x="45" y="55" width="12" height="12" rx="2" fill="#fff" opacity="0.8"/>
+  <rect x="60" y="55" width="12" height="12" rx="2" fill="#fff" opacity="0.8"/>
+  <rect x="75" y="55" width="12" height="12" rx="2" fill="#fff" opacity="0.8"/>
+  
+  <!-- 键盘 -->
+  <rect x="35" y="135" width="130" height="35" rx="3" ry="3" fill="#f0f0f0"/>
+  
+  <!-- 键盘按键 -->
+  <g fill="#ddd" stroke="#ccc" stroke-width="0.5">
+    <rect x="40" y="140" width="8" height="6" rx="1"/>
+    <rect x="50" y="140" width="8" height="6" rx="1"/>
+    <rect x="60" y="140" width="8" height="6" rx="1"/>
+    <rect x="70" y="140" width="8" height="6" rx="1"/>
+    <rect x="80" y="140" width="8" height="6" rx="1"/>
+    <rect x="90" y="140" width="8" height="6" rx="1"/>
+    <rect x="100" y="140" width="8" height="6" rx="1"/>
+    <rect x="110" y="140" width="8" height="6" rx="1"/>
+    <rect x="120" y="140" width="8" height="6" rx="1"/>
+    <rect x="130" y="140" width="8" height="6" rx="1"/>
+    <rect x="140" y="140" width="8" height="6" rx="1"/>
+    <rect x="150" y="140" width="8" height="6" rx="1"/>
+  </g>
+  
+  <!-- 触控板 -->
+  <rect x="85" y="155" width="30" height="20" rx="3" ry="3" fill="#e0e0e0" stroke="#ccc" stroke-width="1"/>
+  
+  <!-- 品牌标识 -->
+  <text x="100" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">MacBook Pro</text>
+</svg>

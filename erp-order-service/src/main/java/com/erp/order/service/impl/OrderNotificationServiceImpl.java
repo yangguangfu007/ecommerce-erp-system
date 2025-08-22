@@ -3,8 +3,9 @@ package com.erp.order.service.impl;
 import com.erp.order.dto.OrderDTO;
 import com.erp.order.service.OrderNotificationService;
 import com.erp.order.service.OrderService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,17 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class OrderNotificationServiceImpl implements OrderNotificationService {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final OrderService orderService;
+    
+    @Autowired
+    @Lazy
+    private OrderService orderService;
+
+    public OrderNotificationServiceImpl(KafkaTemplate<String, Object> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     @Override
     public void sendOrderStatusChangeNotification(Long orderId, String oldStatus, String newStatus, String reason, String operator) {

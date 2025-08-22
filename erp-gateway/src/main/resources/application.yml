@@ -114,6 +114,15 @@ spring:
             - StripPrefix=1
             - name: AuthenticationFilter
 
+        # 仪表板服务（路由到用户服务）
+        - id: dashboard-service
+          uri: lb://erp-user-service
+          predicates:
+            - Path=/api/dashboard/**
+          filters:
+            - StripPrefix=1
+            - name: AuthenticationFilter
+
   # Redis配置（用于限流）
   data:
     redis:

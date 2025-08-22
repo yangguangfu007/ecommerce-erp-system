@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品导入 - 电商ERP管理系统</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../../assets/css/reset.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="../../assets/images/logo.svg" alt="ERP系统" class="logo">
+                <h1 class="system-title">电商ERP管理系统</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="搜索功能..." class="search-input">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="header-user">
+                    <img src="../../assets/images/avatars/admin.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">管理员</span>
+                    <div class="user-dropdown">
+                        <a href="#" onclick="showProfile()">个人资料</a>
+                        <a href="#" onclick="showSettings()">系统设置</a>
+                        <a href="#" onclick="logout()">退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 侧边菜单 -->
+        <aside class="app-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../../dashboard.html" class="nav-link" data-menu-id="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>仪表板</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="user-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../users/user-list.html" data-submenu-id="user-list">用户列表</a></li>
+                            <li><a href="../users/role-management.html" data-submenu-id="role-management">角色管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu active">
+                        <a href="#" class="nav-link" data-menu-id="product-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-box"></i>
+                            <span>商品管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu show">
+                            <li><a href="product-list.html" data-submenu-id="product-list">商品列表</a></li>
+                            <li><a href="product-import.html" data-submenu-id="product-import" class="active">商品导入</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="order-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>订单管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../orders/order-list.html" data-submenu-id="order-list">订单列表</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="inventory-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-warehouse"></i>
+                            <span>库存管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../inventory/inventory-list.html" data-submenu-id="inventory-list">库存列表</a></li>
+                            <li><a href="../inventory/inventory-alerts.html" data-submenu-id="inventory-alerts">库存预警</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="platform-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-store"></i>
+                            <span>平台管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../platforms/platform-list.html" data-submenu-id="platform-list">平台列表</a></li>
+                            <li><a href="../platforms/platform-config.html" data-submenu-id="platform-config">平台配置</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="logistics-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-truck"></i>
+                            <span>物流管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../logistics/logistics-list.html" data-submenu-id="logistics-list">物流列表</a></li>
+                            <li><a href="../logistics/shipping-labels.html" data-submenu-id="shipping-labels">面单管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="../notifications/notification-center.html" class="nav-link" data-menu-id="notification-center">
+                            <i class="fas fa-bell"></i>
+                            <span>通知中心</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="system-settings" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-cog"></i>
+                            <span>系统设置</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../settings/system-config.html" data-submenu-id="system-config">系统配置</a></li>
+                            <li><a href="../settings/system-logs.html" data-submenu-id="system-logs">系统日志</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="app-main">
+            <!-- 面包屑导航 -->
+            <nav class="breadcrumb">
+                <div class="breadcrumb-list">
+                    <a href="../../dashboard.html" class="breadcrumb-item">仪表板</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item">商品管理</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item active">商品导入</span>
+                </div>
+            </nav>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <div class="page-header">
+                    <h2 class="page-title">商品导入</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-outline" onclick="downloadTemplate()">
+                            <i class="fas fa-download"></i> 下载模板
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 导入步骤 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">导入步骤</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="import-steps">
+                            <div class="step-item active" data-step="1">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>选择文件</h4>
+                                    <p>上传Excel或CSV格式的商品文件</p>
+                                </div>
+                            </div>
+                            <div class="step-item" data-step="2">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>数据预览</h4>
+                                    <p>预览和验证导入的商品数据</p>
+                                </div>
+                            </div>
+                            <div class="step-item" data-step="3">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>确认导入</h4>
+                                    <p>确认无误后开始导入商品</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 文件上传 -->
+                <div class="content-card" id="uploadSection">
+                    <div class="card-header">
+                        <h3 class="card-title">上传商品文件</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">
+                                <h4>拖拽文件到此处或点击上传</h4>
+                                <p>支持 .xlsx, .xls, .csv 格式，文件大小不超过 10MB</p>
+                            </div>
+                            <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display: none;">
+                            <button class="btn btn-primary" onclick="selectFile()">选择文件</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数据预览 -->
+                <div class="content-card" id="previewSection" style="display: none;">
+                    <div class="card-header">
+                        <h3 class="card-title">数据预览</h3>
+                        <div class="card-actions">
+                            <span class="preview-info">共 <span id="totalRows">0</span> 条数据</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="data-table" id="previewTable">
+                                <thead>
+                                    <tr>
+                                        <th>商品名称</th>
+                                        <th>SKU</th>
+                                        <th>分类</th>
+                                        <th>价格</th>
+                                        <th>库存</th>
+                                        <th>状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewTableBody">
+                                    <!-- 预览数据将通过JavaScript动态生成 -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="preview-actions">
+                            <button class="btn btn-outline" onclick="resetImport()">重新选择</button>
+                            <button class="btn btn-primary" onclick="confirmImport()">确认导入</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 导入结果 -->
+                <div class="content-card" id="resultSection" style="display: none;">
+                    <div class="card-header">
+                        <h3 class="card-title">导入结果</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="import-result" id="importResult">
+                            <!-- 导入结果将通过JavaScript动态生成 -->
+                        </div>
+                        
+                        <div class="result-actions">
+                            <button class="btn btn-outline" onclick="resetImport()">重新导入</button>
+                            <button class="btn btn-primary" onclick="goToProductList()">查看商品列表</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- JavaScript Files --><script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/components.js"></script>
+    <script src="../../assets/js/mock-data.js"></script>
+    <script src="../../assets/js/app.js"></script>
+    <script>
+        // 商品导入页面逻辑
+        let currentStep = 1;
+        let importData = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupFileUpload();
+        });
+
+        // 设置文件上传
+        function setupFileUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+
+            // 拖拽上传
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('drag-over');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect(files[0]);
+                }
+            });
+
+            // 文件选择
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelect(e.target.files[0]);
+                }
+            });
+        }
+
+        // 选择文件
+        function selectFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        // 处理文件选择
+        function handleFileSelect(file) {
+            if (!validateFile(file)) {
+                return;
+            }
+
+            showToast('正在解析文件...', 'info');
+            
+            // 模拟文件解析
+            setTimeout(() => {
+                parseFile(file);
+            }, 1000);
+        }
+
+        // 验证文件
+        function validateFile(file) {
+            const allowedTypes = ['.xlsx', '.xls', '.csv'];
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            
+            if (!allowedTypes.includes(fileExtension)) {
+                showToast('不支持的文件格式，请上传 Excel 或 CSV 文件', 'error');
+                return false;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                showToast('文件大小不能超过 10MB', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        // 解析文件
+        function parseFile(file) {
+            // 模拟解析数据
+            importData = [
+                { name: 'iPhone 15 Pro Max', sku: 'SKU001', category: '手机数码', price: 9999.00, stock: 50, status: 'active' },
+                { name: 'MacBook Pro 14英寸', sku: 'SKU002', category: '电脑办公', price: 15999.00, stock: 25, status: 'active' },
+                { name: 'AirPods Pro 2', sku: 'SKU003', category: '手机数码', price: 1899.00, stock: 100, status: 'active' },
+                { name: 'iPad Air', sku: 'SKU004', category: '电脑办公', price: 4399.00, stock: 30, status: 'active' },
+                { name: 'Apple Watch Series 9', sku: 'SKU005', category: '手机数码', price: 2999.00, stock: 60, status: 'active' }
+            ];
+
+            showPreview();
+            updateStep(2);
+            showToast('文件解析完成', 'success');
+        }
+
+        // 显示预览
+        function showPreview() {
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('previewSection').style.display = 'block';
+            
+            document.getElementById('totalRows').textContent = importData.length;
+            
+            const tbody = document.getElementById('previewTableBody');
+            tbody.innerHTML = importData.map(item => `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.sku}</td>
+                    <td>${item.category}</td>
+                    <td>¥${item.price.toFixed(2)}</td>
+                    <td>${item.stock}</td>
+                    <td>
+                        <span class="status-badge status-${item.status}">
+                            ${item.status === 'active' ? '启用' : '禁用'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 确认导入
+        function confirmImport() {
+            showToast('正在导入商品数据...', 'info');
+            
+            // 模拟导入过程
+            setTimeout(() => {
+                showResult();
+                updateStep(3);
+                showToast('商品导入完成', 'success');
+            }, 2000);
+        }
+
+        // 显示结果
+        function showResult() {
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            
+            const successCount = importData.length - 1;
+            const failCount = 1;
+            
+            document.getElementById('importResult').innerHTML = `
+                <div class="result-summary">
+                    <div class="result-item success">
+                        <div class="result-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="result-info">
+                            <h4>导入成功</h4>
+                            <p>${successCount} 条商品</p>
+                        </div>
+                    </div>
+                    <div class="result-item error">
+                        <div class="result-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="result-info">
+                            <h4>导入失败</h4>
+                            <p>${failCount} 条商品</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="error-details">
+                    <h5>失败详情：</h5>
+                    <ul>
+                        <li>第2行：SKU重复 (SKU002)</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        // 更新步骤
+        function updateStep(step) {
+            currentStep = step;
+            
+            document.querySelectorAll('.step-item').forEach((item, index) => {
+                if (index + 1 <= step) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // 重置导入
+        function resetImport() {
+            currentStep = 1;
+            importData = [];
+            
+            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
+            
+            updateStep(1);
+            
+            // 重置文件输入
+            document.getElementById('fileInput').value = '';
+        }
+
+        // 下载模板
+        function downloadTemplate() {
+            showToast('正在下载模板文件...', 'info');
+            // 这里应该实现模板下载功能
+        }
+
+        // 跳转到商品列表
+        function goToProductList() {
+            window.location.href = 'product-list.html';
+        }
+    </script>
+</body>
+</html>

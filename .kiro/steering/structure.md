@@ -1,159 +1,150 @@
-# Project Structure & Organization
+# 项目结构与组织
 
-## Root Level Organization
+## 根目录结构
 
 ```
 ecommerce-erp-system/
-├── erp-common/              # Shared utilities and common code
-├── erp-gateway/             # API Gateway (Spring Cloud Gateway)
-├── erp-*-service/           # Microservices (8 core services)
-├── erp-frontend/            # Vue.js frontend application
-├── k8s/                     # Kubernetes deployment manifests
-├── helm/                    # Helm charts for K8s deployment
-├── scripts/                 # Automation and utility scripts
-│   ├── dev-hot-reload.sh    # Hot reload development script
-│   ├── build-selective.sh   # Selective build and deploy script
-├── docs/                    # Project documentation
-├── monitoring/              # Monitoring configurations
-├── docker-compose.yml       # Local development environment
-└── pom.xml                  # Maven parent POM
+├── README.md                    # 项目文档
+├── pom.xml                      # Maven父POM
+├── package.json                 # 根目录package.json，用于E2E工具
+├── Makefile                     # 构建编排命令
+├── docker-compose.yml           # 本地开发环境
+├── checkstyle.xml              # Java代码规范配置
+├── .gitignore                  # Git忽略规则
+└── .kiro/                      # Kiro AI助手配置
 ```
 
-## Microservices Architecture
+## 后端服务 (微服务)
 
-Each service follows the same structure pattern:
+每个服务遵循相同的Maven结构：
 
 ```
-erp-{service}-service/
-├── src/main/java/com/erp/{service}/
-│   ├── {Service}Application.java    # Spring Boot main class
-│   ├── controller/                  # REST controllers
-│   ├── service/                     # Business logic layer
-│   │   └── impl/                    # Service implementations
-│   ├── entity/                      # JPA entities
-│   ├── dto/                         # Data transfer objects
-│   ├── mapper/                      # MyBatis mappers
-│   ├── config/                      # Configuration classes
-│   └── event/                       # Event handlers (if applicable)
-├── src/main/resources/
-│   ├── application.yml              # Service configuration
-│   ├── mapper/                      # MyBatis XML mappers
-│   └── sql/                         # Database initialization scripts
-├── src/test/                        # Unit and integration tests
-├── Dockerfile                       # Container build instructions
-└── pom.xml                          # Service-specific dependencies
+erp-{service-name}/
+├── pom.xml                     # 服务特定的Maven配置
+├── Dockerfile                  # 容器构建配置
+├── src/
+│   ├── main/
+│   │   ├── java/com/erp/       # Java源代码
+│   │   └── resources/          # 配置文件
+│   └── test/                   # 单元测试和集成测试
+├── target/                     # 构建输出 (生成)
+└── logs/                       # 服务日志 (运行时)
 ```
 
-## Core Services
+### 服务模块
 
-| Service | Port | Purpose |
-|---------|------|---------|
-| **erp-gateway** | 8080 | API Gateway, routing, authentication |
-| **erp-user-service** | 8001 | User management, RBAC, authentication |
-| **erp-product-service** | 8002 | Product catalog, categories, attributes |
-| **erp-order-service** | 8003 | Order processing, status tracking |
-| **erp-inventory-service** | 8004 | Stock management, alerts, adjustments |
-| **erp-platform-service** | 8005 | E-commerce platform integrations |
-| **erp-logistics-service** | 8006 | Shipping, tracking, label generation |
-| **erp-notification-service** | 8007 | Email, SMS, system notifications |
+- **erp-common**: 共享工具类、DTO和通用配置
+- **erp-gateway**: Spring Cloud Gateway (API网关)
+- **erp-user-service**: 用户管理和认证
+- **erp-product-service**: 商品目录管理
+- **erp-order-service**: 订单处理和管理
+- **erp-inventory-service**: 库存跟踪和预警
+- **erp-platform-service**: 外部平台集成 (沃尔玛)
+- **erp-logistics-service**: 物流和配送 (云途)
+- **erp-notification-service**: 通知和消息
 
-## Frontend Structure
+## 前端应用
 
 ```
 erp-frontend/
+├── package.json                # NPM依赖和脚本
+├── vite.config.ts             # Vite构建配置
+├── tsconfig.json              # TypeScript配置
+├── playwright.config.ts       # E2E测试配置
 ├── src/
-│   ├── views/                       # Page components
-│   │   ├── auth/                    # Login, registration
-│   │   ├── dashboard/               # Main dashboard
-│   │   ├── users/                   # User management
-│   │   ├── products/                # Product management
-│   │   ├── orders/                  # Order management
-│   │   ├── inventory/               # Inventory management
-│   │   ├── platforms/               # Platform integration
-│   │   ├── logistics/               # Logistics management
-│   │   ├── notifications/           # Notification center
-│   │   └── settings/                # System settings
-│   ├── components/                  # Reusable Vue components
-│   ├── stores/                      # Pinia state management
-│   ├── api/                         # API service layer
-│   ├── utils/                       # Utility functions
-│   ├── types/                       # TypeScript type definitions
-│   ├── styles/                      # Global styles and themes
-│   └── layouts/                     # Layout components
-├── public/                          # Static assets
-└── package.json                     # Frontend dependencies
+│   ├── main.ts                # 应用入口点
+│   ├── App.vue                # 根Vue组件
+│   ├── api/                   # API客户端模块
+│   │   ├── modules/           # 服务特定的API调用
+│   │   ├── request.ts         # HTTP客户端配置
+│   │   └── types.ts           # API类型定义
+│   ├── components/            # 可复用Vue组件
+│   │   ├── business/          # 业务特定组件
+│   │   ├── common/            # 通用UI组件
+│   │   └── charts/            # 图表组件
+│   ├── views/                 # 页面级组件
+│   │   ├── dashboard/         # 仪表板页面
+│   │   ├── orders/            # 订单管理页面
+│   │   ├── products/          # 商品管理页面
+│   │   ├── inventory/         # 库存页面
+│   │   └── auth/              # 认证页面
+│   ├── stores/                # Pinia状态管理
+│   ├── router/                # Vue Router配置
+│   ├── types/                 # TypeScript类型定义
+│   ├── utils/                 # 工具函数
+│   └── styles/                # 全局样式和主题
+├── tests/                     # 测试文件
+│   ├── e2e/                   # 端到端测试
+│   └── api/                   # API集成测试
+└── dist/                      # 构建输出 (生成)
 ```
 
-## Configuration Management
-
-### Environment-specific configs:
-- `application.yml` - Default configuration
-- `application-dev.yml` - Development environment
-- `application-prod.yml` - Production environment
-- `application-test.yml` - Testing environment
-
-### Docker Compose services:
-- Infrastructure: MySQL, Redis, Kafka, Nacos
-- Monitoring: Prometheus, Grafana, ELK Stack
-- Storage: MinIO object storage
-
-## Naming Conventions
-
-### Java Classes:
-- **Controllers**: `{Entity}Controller.java`
-- **Services**: `{Entity}Service.java` (interface) + `{Entity}ServiceImpl.java`
-- **Entities**: `{Entity}.java`
-- **DTOs**: `{Entity}DTO.java`
-- **Mappers**: `{Entity}Mapper.java`
-
-### Database Tables:
-- Use snake_case: `user_roles`, `order_items`
-- Primary keys: `id` (Long, auto-increment)
-- Timestamps: `created_at`, `updated_at`
-
-### API Endpoints:
-- RESTful pattern: `/api/{service}/{resource}`
-- Examples: `/api/users`, `/api/products/{id}`, `/api/orders/{id}/items`
-
-### Vue Components:
-- PascalCase for components: `UserManagement.vue`
-- kebab-case for files in views: `user-management.vue`
-
-## Testing Structure
+## 基础设施与部署
 
 ```
-src/test/java/
-├── {service}/
-│   ├── controller/                  # Controller tests
-│   ├── service/                     # Service layer tests
-│   ├── integration/                 # Integration tests
-│   └── config/                      # Test configurations
+k8s/                           # Kubernetes清单
+├── infrastructure/            # 数据库、缓存、消息队列
+├── monitoring/               # Prometheus、Grafana配置
+└── namespace.yaml            # Kubernetes命名空间
+
+helm/                         # Helm图表
+└── erp-system/              # 主应用图表
+    ├── Chart.yaml           # 图表元数据
+    ├── values.yaml          # 默认值
+    ├── values-dev.yaml      # 开发环境
+    ├── values-prod.yaml     # 生产环境
+    └── templates/           # Kubernetes模板
+
+scripts/                     # 自动化脚本
+├── deploy/                  # 部署脚本
+├── backup/                  # 数据库备份脚本
+├── sql/                     # 数据库初始化
+└── start-*.sh              # 服务启动脚本
 ```
 
-## Deployment Structure
+## 文档
 
-### Kubernetes:
 ```
-k8s/
-├── infrastructure/                  # Database, cache, messaging
-├── monitoring/                      # Prometheus, Grafana
-└── namespace.yaml                   # Kubernetes namespace
-```
-
-### Helm Charts:
-```
-helm/erp-system/
-├── templates/                       # K8s resource templates
-├── values.yaml                      # Default values
-├── values-dev.yaml                  # Development values
-└── values-prod.yaml                 # Production values
+docs/                        # 项目文档
+├── project-overview.md      # 系统架构概述
+├── quick-start-guide.md     # 快速开始指南
+├── development-guide.md     # 开发设置和指南
+├── deployment-guide.md      # 生产环境部署指南
+├── api-documentation.md     # API参考文档
+├── user-guide.md           # 最终用户文档
+└── troubleshooting.md      # 常见问题和解决方案
 ```
 
-## Key Architectural Patterns
+## 命名规范
 
-- **Database per Service**: Each microservice has its own database
-- **API Gateway Pattern**: Single entry point for all client requests
-- **Event-Driven Architecture**: Kafka for async communication
-- **CQRS**: Separate read/write models where appropriate
-- **Circuit Breaker**: Resilience4j for fault tolerance
-- **Distributed Tracing**: Zipkin for request tracking
+### Java (后端)
+- **包名**: `com.erp.{service}.{layer}` (例如: `com.erp.user.controller`)
+- **类名**: PascalCase (例如: `UserController`, `OrderService`)
+- **方法名**: camelCase (例如: `getUserById`, `createOrder`)
+- **常量**: UPPER_SNAKE_CASE (例如: `MAX_RETRY_COUNT`)
+
+### TypeScript/Vue (前端)
+- **文件名**: kebab-case (例如: `user-list.vue`, `order-service.ts`)
+- **组件名**: PascalCase (例如: `UserList`, `OrderForm`)
+- **变量名**: camelCase (例如: `userName`, `orderList`)
+- **常量**: UPPER_SNAKE_CASE (例如: `API_BASE_URL`)
+
+### 数据库
+- **表名**: snake_case (例如: `user_accounts`, `order_items`)
+- **列名**: snake_case (例如: `user_id`, `created_at`)
+- **索引**: `idx_{table}_{column}` (例如: `idx_users_email`)
+
+## 配置管理
+
+- **环境变量**: 本地开发使用`.env`文件
+- **Spring配置文件**: `dev`, `test`, `prod`用于不同环境
+- **Nacos配置**: 微服务的集中化配置
+- **Kubernetes ConfigMaps**: 环境特定配置
+
+## 端口分配
+
+- **前端**: 3000 (开发服务器)
+- **网关**: 8080 (API网关)
+- **服务**: 8001-8007 (各个微服务)
+- **基础设施**: 3306 (MySQL), 6379 (Redis), 9092 (Kafka)
+- **监控**: 9090 (Prometheus), 3001 (Grafana)

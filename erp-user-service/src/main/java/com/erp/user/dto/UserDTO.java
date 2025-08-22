@@ -31,6 +31,11 @@ public class UserDTO implements Serializable {
     private String realName;
 
     /**
+     * 昵称（前端兼容字段）
+     */
+    private String nickname;
+
+    /**
      * 邮箱
      */
     private String email;
@@ -51,6 +56,11 @@ public class UserDTO implements Serializable {
     private Integer status;
 
     /**
+     * 用户状态字符串（前端兼容字段）
+     */
+    private String statusStr;
+
+    /**
      * 账户锁定状态：0-未锁定，1-已锁定
      */
     private Integer locked;
@@ -67,9 +77,14 @@ public class UserDTO implements Serializable {
     private String lastLoginIp;
 
     /**
-     * 角色列表
+     * 角色列表（字符串格式，兼容旧版本）
      */
-    private List<String> roles;
+    private List<String> roleNames;
+
+    /**
+     * 角色列表（对象格式，前端期望格式）
+     */
+    private List<RoleDTO> roles;
 
     /**
      * 权限列表
@@ -81,6 +96,12 @@ public class UserDTO implements Serializable {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
+
+    /**
+     * 创建时间（前端兼容字段）
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
 
     /**
      * 备注
@@ -167,11 +188,19 @@ public class UserDTO implements Serializable {
         this.lastLoginIp = lastLoginIp;
     }
 
-    public List<String> getRoles() {
+    public List<String> getRoleNames() {
+        return roleNames;
+    }
+
+    public void setRoleNames(List<String> roleNames) {
+        this.roleNames = roleNames;
+    }
+
+    public List<RoleDTO> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(List<RoleDTO> roles) {
         this.roles = roles;
     }
 
@@ -197,6 +226,30 @@ public class UserDTO implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getStatusStr() {
+        return statusStr;
+    }
+
+    public void setStatusStr(String statusStr) {
+        this.statusStr = statusStr;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override

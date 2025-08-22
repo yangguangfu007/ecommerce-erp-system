@@ -144,7 +144,8 @@ public class UserServiceImpl implements UserService {
 
             // 构建用户信息
             UserDTO userDTO = convertToUserDTO(user);
-            userDTO.setRoles(getUserRoles(user.getId()));
+            userDTO.setRoleNames(getUserRoles(user.getId()));
+            userDTO.setRoles(getUserRoleDetails(user.getId()));
             userDTO.setPermissions(getUserPermissions(user.getId()));
 
             // 构建登录响应
@@ -240,7 +241,8 @@ public class UserServiceImpl implements UserService {
         }
 
         UserDTO userDTO = convertToUserDTO(user);
-        userDTO.setRoles(getUserRoles(userId));
+        userDTO.setRoleNames(getUserRoles(userId));
+        userDTO.setRoles(getUserRoleDetails(userId));
         userDTO.setPermissions(getUserPermissions(userId));
         return userDTO;
     }
@@ -366,7 +368,8 @@ public class UserServiceImpl implements UserService {
         List<UserDTO> userDTOs = new ArrayList<>();
         for (User user : result.getRecords()) {
             UserDTO userDTO = convertToUserDTO(user);
-            userDTO.setRoles(getUserRoles(user.getId()));
+            userDTO.setRoleNames(getUserRoles(user.getId()));
+            userDTO.setRoles(getUserRoleDetails(user.getId()));
             userDTOs.add(userDTO);
         }
         dtoPage.setRecords(userDTOs);
@@ -398,6 +401,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<String> getUserRoles(Long userId) {
         return userMapper.selectRoleCodesByUserId(userId);
+    }
+
+    /**
+     * 获取用户角色详细信息
+     */
+    private List<RoleDTO> getUserRoleDetails(Long userId) {
+        return userMapper.selectRolesByUserId(userId);
     }
 
     @Override
@@ -432,6 +442,12 @@ public class UserServiceImpl implements UserService {
     private UserDTO convertToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
+        
+        // 设置前端兼容字段
+        userDTO.setNickname(user.getRealName()); // 使用真实姓名作为昵称
+        userDTO.setStatusStr(user.getStatus() == 1 ? "ACTIVE" : "INACTIVE");
+        userDTO.setCreatedAt(user.getCreateTime());
+        
         return userDTO;
     }
 
@@ -544,6 +560,13 @@ public class UserServiceImpl implements UserService {
 
             UserDTO userDTO = new UserDTO();
             BeanUtils.copyProperties(user, userDTO);
+            
+            // 获取用户角色和权限信息
+            List<String> roleNames = getUserRoles(user.getId());
+            List<String> permissions = getUserPermissions(user.getId());
+            
+            userDTO.setRoleNames(roleNames);
+            userDTO.setPermissions(permissions);
             
             return userDTO;
         } catch (Exception e) {

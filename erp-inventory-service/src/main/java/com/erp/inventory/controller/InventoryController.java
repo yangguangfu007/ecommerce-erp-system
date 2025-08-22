@@ -48,6 +48,38 @@ public class InventoryController {
         return Result.success(inventories);
     }
 
+    @Operation(summary = "分页查询库存列表", description = "根据条件分页查询库存列表")
+    @GetMapping
+    public Result<List<InventoryDTO>> getInventoryList(
+            @Parameter(description = "页码") @RequestParam(defaultValue = "1") Integer page,
+            @Parameter(description = "页大小") @RequestParam(defaultValue = "10") Integer size,
+            @Parameter(description = "SKU编码") @RequestParam(required = false) String sku,
+            @Parameter(description = "店铺ID") @RequestParam(required = false) Long storeId,
+            @Parameter(description = "是否只显示低库存") @RequestParam(required = false) Boolean lowStock) {
+        
+        // 如果指定了店铺ID，返回该店铺的库存
+        if (storeId != null) {
+            List<InventoryDTO> inventories = inventoryService.getInventoryByStore(storeId);
+            return Result.success(inventories);
+        }
+        
+        // 如果指定了SKU，返回该SKU的库存
+        if (sku != null) {
+            List<InventoryDTO> inventories = inventoryService.getInventoryBySku(sku);
+            return Result.success(inventories);
+        }
+        
+        // 如果只显示低库存
+        if (lowStock != null && lowStock) {
+            List<InventoryDTO> inventories = inventoryService.getLowStockInventories();
+            return Result.success(inventories);
+        }
+        
+        // 默认返回所有库存
+        List<InventoryDTO> inventories = inventoryService.getAllInventories();
+        return Result.success(inventories);
+    }
+
     @Operation(summary = "根据店铺查询库存", description = "查询指定店铺的所有库存信息")
     @GetMapping("/store/{storeId}")
     public Result<List<InventoryDTO>> getInventoryByStore(

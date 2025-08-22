@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物流列表 - 电商ERP管理系统</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../../assets/css/reset.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="../../assets/images/logo.svg" alt="ERP系统" class="logo">
+                <h1 class="system-title">电商ERP管理系统</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="搜索功能..." class="search-input">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="header-user">
+                    <img src="../../assets/images/avatars/admin.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">管理员</span>
+                    <div class="user-dropdown">
+                        <a href="#" onclick="showProfile()">个人资料</a>
+                        <a href="#" onclick="showSettings()">系统设置</a>
+                        <a href="#" onclick="logout()">退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 侧边菜单 -->
+        <aside class="app-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../../dashboard.html" class="nav-link" data-menu-id="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>仪表板</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="user-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../users/user-list.html" data-submenu-id="user-list">用户列表</a></li>
+                            <li><a href="../users/role-management.html" data-submenu-id="role-management">角色管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="product-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-box"></i>
+                            <span>商品管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../products/product-list.html" data-submenu-id="product-list">商品列表</a></li>
+                            <li><a href="../products/product-import.html" data-submenu-id="product-import">商品导入</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="order-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>订单管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../orders/order-list.html" data-submenu-id="order-list">订单列表</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="inventory-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-warehouse"></i>
+                            <span>库存管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../inventory/inventory-list.html" data-submenu-id="inventory-list">库存列表</a></li>
+                            <li><a href="../inventory/inventory-alerts.html" data-submenu-id="inventory-alerts">库存预警</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="platform-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-store"></i>
+                            <span>平台管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../platforms/platform-list.html" data-submenu-id="platform-list">平台列表</a></li>
+                            <li><a href="../platforms/platform-config.html" data-submenu-id="platform-config">平台配置</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu active">
+                        <a href="#" class="nav-link" data-menu-id="logistics-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-truck"></i>
+                            <span>物流管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu show">
+                            <li><a href="logistics-list.html" data-submenu-id="logistics-list" class="active">物流列表</a></li>
+                            <li><a href="shipping-labels.html" data-submenu-id="shipping-labels">面单管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="../notifications/notification-center.html" class="nav-link" data-menu-id="notification-center">
+                            <i class="fas fa-bell"></i>
+                            <span>通知中心</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="system-settings" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-cog"></i>
+                            <span>系统设置</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../settings/system-config.html" data-submenu-id="system-config">系统配置</a></li>
+                            <li><a href="../settings/system-logs.html" data-submenu-id="system-logs">系统日志</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="app-main">
+            <!-- 面包屑导航 -->
+            <nav class="breadcrumb">
+                <div class="breadcrumb-list">
+                    <a href="../../dashboard.html" class="breadcrumb-item">仪表板</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item">物流管理</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item active">物流列表</span>
+                </div>
+            </nav>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <div class="page-header">
+                    <h2 class="page-title">物流列表</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-outline" onclick="refreshLogisticsList()">
+                            <i class="fas fa-sync-alt"></i> 刷新
+                        </button>
+                        <button class="btn btn-primary" onclick="createShipment()">
+                            <i class="fas fa-plus"></i> 创建物流单
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 搜索和筛选 -->
+                <div class="content-card">
+                    <div class="card-body">
+                        <div class="search-filters">
+                            <div class="search-group">
+                                <input type="text" placeholder="搜索订单号或运单号..." class="search-input" id="logisticsSearch">
+                                <button class="btn btn-outline" onclick="searchLogistics()">
+                                    <i class="fas fa-search"></i> 搜索
+                                </button>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <select class="form-select" id="statusFilter" onchange="filterLogistics()">
+                                    <option value="">全部状态</option>
+                                    <option value="pending">待发货</option>
+                                    <option value="shipped">已发货</option>
+                                    <option value="in_transit">运输中</option>
+                                    <option value="delivered">已送达</option>
+                                    <option value="returned">已退回</option>
+                                </select>
+                                
+                                <select class="form-select" id="carrierFilter" onchange="filterLogistics()">
+                                    <option value="">全部承运商</option>
+                                    <option value="YunExpress">云途物流</option>
+                                    <option value="DHL">DHL</option>
+                                    <option value="FedEx">联邦快递</option>
+                                    <option value="UPS">UPS</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 物流列表 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">物流信息</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-text" onclick="exportLogistics()">
+                                <i class="fas fa-download"></i> 导出
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th width="50">
+                                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                        </th>
+                                        <th>订单信息</th>
+                                        <th>运单号</th>
+                                        <th>承运商</th>
+                                        <th>物流状态</th>
+                                        <th>收货地址</th>
+                                        <th>发货时间</th>
+                                        <th width="150">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logisticsTableBody">
+                                    <!-- 物流数据将通过JavaScript动态生成 -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- 分页控件 -->
+                        <div class="table-footer">
+                            <div class="pagination-info">
+                                显示第 1-10 条，共 25 条记录
+                            </div>
+                            <div class="pagination-controls">
+                                <!-- 分页按钮将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- JavaScript Files --><script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/components.js"></script>
+    <script src="../../assets/js/mock-data.js"></script>
+    <script src="../../assets/js/app.js"></script>
+    <script>
+        // 物流列表页面逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLogisticsList();
+        });
+
+        // 加载物流列表
+        function loadLogisticsList() {
+            const tbody = document.getElementById('logisticsTableBody');
+            if (!tbody) return;
+
+            const logistics = mockData.logistics;
+            
+            tbody.innerHTML = logistics.map(item => `
+                <tr>
+                    <td><input type="checkbox" value="${item.id}"></td>
+                    <td>
+                        <div class="order-info">
+                            <div class="order-no">${item.orderNo}</div>
+                            <div class="order-id">订单ID: ${item.orderId}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="tracking-info">
+                            <span class="tracking-number">${item.trackingNumber}</span>
+                            <button class="btn btn-text btn-small" onclick="copyTrackingNumber('${item.trackingNumber}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="carrier-name">${item.carrier}</span>
+                    </td>
+                    <td>
+                        <span class="status-badge status-${item.status}">
+                            <i class="fas fa-${getStatusIcon(item.status)}"></i>
+                            ${getStatusText(item.status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="address-info">
+                            <span class="address-text">${item.shippingAddress}</span>
+                        </div>
+                    </td>
+                    <td>${item.shippedAt || '-'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-primary" onclick="trackShipment(${item.id})" title="物流跟踪">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </button>
+                            <button class="btn btn-small btn-outline" onclick="printLabel(${item.id})" title="打印面单">
+                                <i class="fas fa-print"></i>
+                            </button>
+                            <button class="btn btn-small btn-success" onclick="updateStatus(${item.id})" title="更新状态">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 获取状态图标
+        function getStatusIcon(status) {
+            const iconMap = {
+                'pending': 'clock',
+                'shipped': 'truck',
+                'in_transit': 'shipping-fast',
+                'delivered': 'check-circle',
+                'returned': 'undo'
+            };
+            return iconMap[status] || 'question-circle';
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const textMap = {
+                'pending': '待发货',
+                'shipped': '已发货',
+                'in_transit': '运输中',
+                'delivered': '已送达',
+                'returned': '已退回'
+            };
+            return textMap[status] || '未知';
+        }
+
+        // 搜索物流
+        function searchLogistics() {
+            showToast('搜索功能开发中...', 'info');
+        }
+
+        // 筛选物流
+        function filterLogistics() {
+            showToast('筛选功能开发中...', 'info');
+        }
+
+        // 刷新物流列表
+        function refreshLogisticsList() {
+            showToast('正在刷新物流列表...', 'info');
+            loadLogisticsList();
+        }
+
+        // 创建物流单
+        function createShipment() {
+            showToast('创建物流单功能开发中...', 'info');
+        }
+
+        // 复制运单号
+        function copyTrackingNumber(trackingNumber) {
+            navigator.clipboard.writeText(trackingNumber).then(() => {
+                showToast('运单号已复制到剪贴板', 'success');
+            }).catch(() => {
+                showToast('复制失败', 'error');
+            });
+        }
+
+        // 物流跟踪
+        function trackShipment(logisticsId) {
+            showToast(`物流跟踪 ${logisticsId} 功能开发中...`, 'info');
+        }
+
+        // 打印面单
+        function printLabel(logisticsId) {
+            showToast(`打印面单 ${logisticsId} 功能开发中...`, 'info');
+        }
+
+        // 更新状态
+        function updateStatus(logisticsId) {
+            showToast(`更新状态 ${logisticsId} 功能开发中...`, 'info');
+        }
+
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('#logisticsTableBody input[type="checkbox"]');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+        }
+
+        // 导出物流数据
+        function exportLogistics() {
+            showToast('导出物流数据功能开发中...', 'info');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,707 @@
+<testsuites id="" name="" tests="32" failures="19" skipped="7" errors="0" time="104.12942899999999">
+<testsuite name="api/api-integration.test.ts" timestamp="2025-08-21T18:32:42.448Z" hostname="chromium" tests="8" failures="6" skipped="0" time="0.962" errors="0">
+<testcase name="API集成测试 › 健康检查测试" classname="api/api-integration.test.ts" time="0.146">
+<system-out>
+<![CDATA[用户服务健康检查状态: [33m200[39m
+]]>
+</system-out>
+</testcase>
+<testcase name="API集成测试 › 用户登录API测试" classname="api/api-integration.test.ts" time="0.072">
+<failure message="api-integration.test.ts:31:3 用户登录API测试" type="FAILURE">
+<![CDATA[  [chromium] › api/api-integration.test.ts:31:3 › API集成测试 › 用户登录API测试 ──────────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      55 |     })
+      56 |     
+    > 57 |     expect(validLogin.status()).toBe(200)
+         |                                 ^
+      58 |     
+      59 |     const loginData = await validLogin.json()
+      60 |     expect(loginData.code).toBe(200)
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/api/api-integration.test.ts:57:33
+]]>
+</failure>
+</testcase>
+<testcase name="API集成测试 › 用户信息API测试" classname="api/api-integration.test.ts" time="0.354">
+<failure message="api-integration.test.ts:67:3 用户信息API测试" type="FAILURE">
+<![CDATA[  [chromium] › api/api-integration.test.ts:67:3 › API集成测试 › 用户信息API测试 ──────────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      77 |     })
+      78 |     
+    > 79 |     expect(loginResponse.status()).toBe(200)
+         |                                    ^
+      80 |     const loginData = await loginResponse.json()
+      81 |     const token = loginData.data.accessToken
+      82 |     
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/api/api-integration.test.ts:79:36
+]]>
+</failure>
+</testcase>
+<testcase name="API集成测试 › 用户列表API测试" classname="api/api-integration.test.ts" time="0.204">
+<failure message="api-integration.test.ts:98:3 用户列表API测试" type="FAILURE">
+<![CDATA[  [chromium] › api/api-integration.test.ts:98:3 › API集成测试 › 用户列表API测试 ──────────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      108 |     })
+      109 |     
+    > 110 |     expect(loginResponse.status()).toBe(200)
+          |                                    ^
+      111 |     const loginData = await loginResponse.json()
+      112 |     const token = loginData.data.accessToken
+      113 |     
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/api/api-integration.test.ts:110:36
+]]>
+</failure>
+</testcase>
+<testcase name="API集成测试 › 商品API测试" classname="api/api-integration.test.ts" time="0.08">
+<failure message="api-integration.test.ts:130:3 商品API测试" type="FAILURE">
+<![CDATA[  [chromium] › api/api-integration.test.ts:130:3 › API集成测试 › 商品API测试 ───────────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      140 |     })
+      141 |     
+    > 142 |     expect(loginResponse.status()).toBe(200)
+          |                                    ^
+      143 |     const loginData = await loginResponse.json()
+      144 |     const token = loginData.data.accessToken
+      145 |     
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/api/api-integration.test.ts:142:36
+]]>
+</failure>
+</testcase>
+<testcase name="API集成测试 › 订单API测试" classname="api/api-integration.test.ts" time="0.037">
+<failure message="api-integration.test.ts:162:3 订单API测试" type="FAILURE">
+<![CDATA[  [chromium] › api/api-integration.test.ts:162:3 › API集成测试 › 订单API测试 ───────────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      172 |     })
+      173 |     
+    > 174 |     expect(loginResponse.status()).toBe(200)
+          |                                    ^
+      175 |     const loginData = await loginResponse.json()
+      176 |     const token = loginData.data.accessToken
+      177 |     
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/api/api-integration.test.ts:174:36
+]]>
+</failure>
+</testcase>
+<testcase name="API集成测试 › 库存API测试" classname="api/api-integration.test.ts" time="0.036">
+<failure message="api-integration.test.ts:193:3 库存API测试" type="FAILURE">
+<![CDATA[  [chromium] › api/api-integration.test.ts:193:3 › API集成测试 › 库存API测试 ───────────────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      203 |     })
+      204 |     
+    > 205 |     expect(loginResponse.status()).toBe(200)
+          |                                    ^
+      206 |     const loginData = await loginResponse.json()
+      207 |     const token = loginData.data.accessToken
+      208 |     
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/api/api-integration.test.ts:205:36
+]]>
+</failure>
+</testcase>
+<testcase name="API集成测试 › API响应时间测试" classname="api/api-integration.test.ts" time="0.033">
+<system-out>
+<![CDATA[API响应时间: [33m23[39m ms
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="api/comprehensive-api.test.ts" timestamp="2025-08-21T18:32:42.448Z" hostname="chromium" tests="8" failures="1" skipped="7" time="0" errors="0">
+<testcase name="ERP系统全面API测试 › 用户管理完整流程测试" classname="api/comprehensive-api.test.ts" time="0">
+<failure message="comprehensive-api.test.ts:34:3 用户管理完整流程测试" type="FAILURE">
+<![CDATA[  [chromium] › api/comprehensive-api.test.ts:34:3 › ERP系统全面API测试 › 用户管理完整流程测试 ──────────────────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      25 |     })
+      26 |     
+    > 27 |     expect(loginResponse.status()).toBe(200)
+         |                                    ^
+      28 |     const loginData = await loginResponse.json()
+      29 |     authToken = loginData.data.accessToken
+      30 |     
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/api/comprehensive-api.test.ts:27:36
+]]>
+</failure>
+</testcase>
+<testcase name="ERP系统全面API测试 › 权限和角色管理测试" classname="api/comprehensive-api.test.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="ERP系统全面API测试 › 商品管理API测试" classname="api/comprehensive-api.test.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="ERP系统全面API测试 › 订单管理API测试" classname="api/comprehensive-api.test.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="ERP系统全面API测试 › 库存管理API测试" classname="api/comprehensive-api.test.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="ERP系统全面API测试 › API性能和稳定性测试" classname="api/comprehensive-api.test.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="ERP系统全面API测试 › 错误处理和边界条件测试" classname="api/comprehensive-api.test.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="ERP系统全面API测试 › 数据一致性和完整性测试" classname="api/comprehensive-api.test.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="e2e/basic-e2e.test.ts" timestamp="2025-08-21T18:32:42.448Z" hostname="chromium" tests="5" failures="2" skipped="0" time="24.429" errors="0">
+<testcase name="ERP系统基础功能测试 › 用户登录流程" classname="e2e/basic-e2e.test.ts" time="13.439">
+<failure message="basic-e2e.test.ts:12:3 用户登录流程" type="FAILURE">
+<![CDATA[  [chromium] › e2e/basic-e2e.test.ts:12:3 › ERP系统基础功能测试 › 用户登录流程 ───────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('[data-test="main-layout"]')
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('[data-test="main-layout"]')
+
+
+      41 |     
+      42 |     // 验证主布局加载
+    > 43 |     await expect(page.locator('[data-test="main-layout"]')).toBeVisible()
+         |                                                             ^
+      44 |   })
+      45 |
+      46 |   test('导航功能测试', async ({ page }) => {
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/basic-e2e.test.ts:43:61
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-basic-e2e-ERP系统基础功能测试-用户登录流程-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-basic-e2e-ERP系统基础功能测试-用户登录流程-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-basic-e2e-ERP系统基础功能测试-用户登录流程-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[当前URL: http://localhost:3000/login?redirect=/dashboard
+
+[[ATTACHMENT|../test-results/e2e-basic-e2e-ERP系统基础功能测试-用户登录流程-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-basic-e2e-ERP系统基础功能测试-用户登录流程-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-basic-e2e-ERP系统基础功能测试-用户登录流程-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统基础功能测试 › 导航功能测试" classname="e2e/basic-e2e.test.ts" time="8.941">
+<failure message="basic-e2e.test.ts:46:3 导航功能测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/basic-e2e.test.ts:46:3 › ERP系统基础功能测试 › 导航功能测试 ───────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('[data-test="user-avatar"]')
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('[data-test="user-avatar"]')
+
+
+      62 |     
+      63 |     // 验证用户头像存在
+    > 64 |     await expect(page.locator('[data-test="user-avatar"]')).toBeVisible()
+         |                                                             ^
+      65 |   })
+      66 |
+      67 |   test('API连接测试', async ({ page }) => {
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/basic-e2e.test.ts:64:61
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-basic-e2e-ERP系统基础功能测试-导航功能测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-basic-e2e-ERP系统基础功能测试-导航功能测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-basic-e2e-ERP系统基础功能测试-导航功能测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-basic-e2e-ERP系统基础功能测试-导航功能测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-basic-e2e-ERP系统基础功能测试-导航功能测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-basic-e2e-ERP系统基础功能测试-导航功能测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统基础功能测试 › API连接测试" classname="e2e/basic-e2e.test.ts" time="0.283">
+</testcase>
+<testcase name="ERP系统基础功能测试 › 页面加载性能测试" classname="e2e/basic-e2e.test.ts" time="1.016">
+<system-out>
+<![CDATA[页面加载时间: [33m724[39m ms
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统基础功能测试 › 响应式布局测试" classname="e2e/basic-e2e.test.ts" time="0.75">
+</testcase>
+</testsuite>
+<testsuite name="e2e/comprehensive-e2e.test.ts" timestamp="2025-08-21T18:32:42.448Z" hostname="chromium" tests="11" failures="10" skipped="0" time="94.173" errors="0">
+<testcase name="ERP系统全面端到端测试 › 完整的用户登录流程测试" classname="e2e/comprehensive-e2e.test.ts" time="6.622">
+<failure message="comprehensive-e2e.test.ts:14:3 完整的用户登录流程测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:14:3 › ERP系统全面端到端测试 › 完整的用户登录流程测试 ─────────────────────
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('h2')
+    Expected string: "登录"
+    Received: <element(s) not found>
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for locator('h2')
+
+
+      14 |   test('完整的用户登录流程测试', async ({ page }) => {
+      15 |     // 验证登录页面元素
+    > 16 |     await expect(page.locator('h2')).toContainText('登录')
+         |                                      ^
+      17 |     await expect(page.locator('input[placeholder="请输入用户名"]')).toBeVisible()
+      18 |     await expect(page.locator('input[placeholder="请输入密码"]')).toBeVisible()
+      19 |     
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:16:38
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-完整的用户登录流程测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-完整的用户登录流程测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-完整的用户登录流程测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-完整的用户登录流程测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-完整的用户登录流程测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-完整的用户登录流程测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 仪表板功能测试" classname="e2e/comprehensive-e2e.test.ts" time="5.848">
+<failure message="comprehensive-e2e.test.ts:38:3 仪表板功能测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:38:3 › ERP系统全面端到端测试 › 仪表板功能测试 ─────────────────────────
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.dashboard-title')
+    Expected string: "仪表板"
+    Received: <element(s) not found>
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for locator('.dashboard-title')
+
+
+      45 |     
+      46 |     // 验证仪表板元素
+    > 47 |     await expect(page.locator('.dashboard-title')).toContainText('仪表板')
+         |                                                    ^
+      48 |     
+      49 |     // 验证统计卡片
+      50 |     const statCards = page.locator('.stat-card')
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:47:52
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-仪表板功能测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-仪表板功能测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-仪表板功能测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-仪表板功能测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-仪表板功能测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-仪表板功能测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 用户管理功能测试" classname="e2e/comprehensive-e2e.test.ts" time="10.909">
+<failure message="comprehensive-e2e.test.ts:62:3 用户管理功能测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:62:3 › ERP系统全面端到端测试 › 用户管理功能测试 ────────────────────────
+
+    TimeoutError: page.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('text=用户管理')
+
+
+      69 |     
+      70 |     // 导航到用户管理
+    > 71 |     await page.click('text=用户管理')
+         |                ^
+      72 |     await expect(page).toHaveURL(/.*users/)
+      73 |     
+      74 |     // 验证用户管理页面元素
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:71:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-用户管理功能测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-用户管理功能测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-用户管理功能测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-用户管理功能测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-用户管理功能测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-用户管理功能测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 商品管理功能测试" classname="e2e/comprehensive-e2e.test.ts" time="10.763">
+<failure message="comprehensive-e2e.test.ts:92:3 商品管理功能测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:92:3 › ERP系统全面端到端测试 › 商品管理功能测试 ────────────────────────
+
+    TimeoutError: page.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('text=商品管理')
+
+
+       99 |     
+      100 |     // 导航到商品管理
+    > 101 |     await page.click('text=商品管理')
+          |                ^
+      102 |     await expect(page).toHaveURL(/.*products/)
+      103 |     
+      104 |     // 验证商品管理页面
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:101:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-商品管理功能测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-商品管理功能测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-商品管理功能测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-商品管理功能测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-商品管理功能测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-商品管理功能测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 订单管理功能测试" classname="e2e/comprehensive-e2e.test.ts" time="10.751">
+<failure message="comprehensive-e2e.test.ts:119:3 订单管理功能测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:119:3 › ERP系统全面端到端测试 › 订单管理功能测试 ───────────────────────
+
+    TimeoutError: page.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('text=订单管理')
+
+
+      126 |     
+      127 |     // 导航到订单管理
+    > 128 |     await page.click('text=订单管理')
+          |                ^
+      129 |     await expect(page).toHaveURL(/.*orders/)
+      130 |     
+      131 |     // 验证订单管理页面
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:128:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-订单管理功能测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-订单管理功能测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-订单管理功能测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-订单管理功能测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-订单管理功能测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-订单管理功能测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 库存管理功能测试" classname="e2e/comprehensive-e2e.test.ts" time="10.691">
+<failure message="comprehensive-e2e.test.ts:143:3 库存管理功能测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:143:3 › ERP系统全面端到端测试 › 库存管理功能测试 ───────────────────────
+
+    TimeoutError: page.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('text=库存管理')
+
+
+      150 |     
+      151 |     // 导航到库存管理
+    > 152 |     await page.click('text=库存管理')
+          |                ^
+      153 |     await expect(page).toHaveURL(/.*inventory/)
+      154 |     
+      155 |     // 验证库存管理页面
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:152:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-库存管理功能测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-库存管理功能测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-库存管理功能测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-库存管理功能测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-库存管理功能测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-库存管理功能测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 响应式布局测试" classname="e2e/comprehensive-e2e.test.ts" time="5.719">
+<failure message="comprehensive-e2e.test.ts:166:3 响应式布局测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:166:3 › ERP系统全面端到端测试 › 响应式布局测试 ────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('.main-layout')
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('.main-layout')
+
+
+      184 |       
+      185 |       // 验证布局适应性
+    > 186 |       await expect(page.locator('.main-layout')).toBeVisible()
+          |                                                  ^
+      187 |       await expect(page.locator('.sidebar')).toBeVisible()
+      188 |       await expect(page.locator('.main-content')).toBeVisible()
+      189 |       
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:186:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-响应式布局测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-响应式布局测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-响应式布局测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-响应式布局测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-响应式布局测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-响应式布局测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 主题切换功能测试" classname="e2e/comprehensive-e2e.test.ts" time="0.658">
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 导航和面包屑测试" classname="e2e/comprehensive-e2e.test.ts" time="10.675">
+<failure message="comprehensive-e2e.test.ts:222:3 导航和面包屑测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:222:3 › ERP系统全面端到端测试 › 导航和面包屑测试 ───────────────────────
+
+    TimeoutError: page.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('text=用户管理')
+
+
+      237 |     
+      238 |     for (const item of menuItems) {
+    > 239 |       await page.click(`text=${item.text}`)
+          |                  ^
+      240 |       await expect(page).toHaveURL(item.url)
+      241 |       
+      242 |       // 验证面包屑
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:239:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-导航和面包屑测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-导航和面包屑测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-导航和面包屑测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-导航和面包屑测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-导航和面包屑测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-导航和面包屑测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 错误处理和用户反馈测试" classname="e2e/comprehensive-e2e.test.ts" time="10.754">
+<failure message="comprehensive-e2e.test.ts:254:3 错误处理和用户反馈测试" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:254:3 › ERP系统全面端到端测试 › 错误处理和用户反馈测试 ────────────────────
+
+    TimeoutError: page.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('text=用户管理')
+
+
+      265 |     
+      266 |     // 尝试访问需要API的页面
+    > 267 |     await page.click('text=用户管理')
+          |                ^
+      268 |     
+      269 |     // 验证错误提示
+      270 |     await expect(page.locator('.error-message, .el-message--error')).toBeVisible({ timeout: 5000 })
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:267:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-错误处理和用户反馈测试-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-错误处理和用户反馈测试-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-错误处理和用户反馈测试-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-错误处理和用户反馈测试-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-错误处理和用户反馈测试-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-错误处理和用户反馈测试-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="ERP系统全面端到端测试 › 性能测试 - 页面加载时间" classname="e2e/comprehensive-e2e.test.ts" time="10.783">
+<failure message="comprehensive-e2e.test.ts:276:3 性能测试 - 页面加载时间" type="FAILURE">
+<![CDATA[  [chromium] › e2e/comprehensive-e2e.test.ts:276:3 › ERP系统全面端到端测试 › 性能测试 - 页面加载时间 ──────────────────
+
+    TimeoutError: page.click: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('text=用户管理')
+
+
+      292 |     // 测试页面切换性能
+      293 |     const navigationStartTime = Date.now()
+    > 294 |     await page.click('text=用户管理')
+          |                ^
+      295 |     await expect(page).toHaveURL(/.*users/)
+      296 |     
+      297 |     const navigationTime = Date.now() - navigationStartTime
+        at /Users/yguangfu/project/ecommerce-erp-system/erp-frontend/tests/e2e/comprehensive-e2e.test.ts:294:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-性能测试---页面加载时间-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-性能测试---页面加载时间-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-性能测试---页面加载时间-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[登录到仪表板加载时间: [33m139[39m ms
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-性能测试---页面加载时间-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-性能测试---页面加载时间-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/e2e-comprehensive-e2e-ERP系统全面端到端测试-性能测试---页面加载时间-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

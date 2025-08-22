@@ -22,9 +22,24 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
+                // 认证服务路由
+                .route("auth-service", r -> r
+                        .path("/api/auth/**")
+                        .uri("lb://erp-user-service"))
+                
                 // 用户服务路由
                 .route("user-service", r -> r
                         .path("/api/users/**")
+                        .uri("lb://erp-user-service"))
+                
+                // 角色服务路由
+                .route("role-service", r -> r
+                        .path("/api/roles/**")
+                        .uri("lb://erp-user-service"))
+                
+                // 权限服务路由
+                .route("permission-service", r -> r
+                        .path("/api/permissions/**")
                         .uri("lb://erp-user-service"))
                 
                 // 商品服务路由
@@ -68,6 +83,8 @@ public class GatewayConfig {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowCredentials(true);
         // 明确允许前端端口
+        corsConfig.addAllowedOrigin("http://localhost:3000");
+        corsConfig.addAllowedOrigin("http://127.0.0.1:3000");
         corsConfig.addAllowedOrigin("http://localhost:5174");
         corsConfig.addAllowedOrigin("http://127.0.0.1:5174");
         corsConfig.addAllowedOriginPattern("*");

@@ -165,17 +165,11 @@ public class PermissionServiceImpl implements PermissionService {
     private List<Permission> buildPermissionTree(List<Permission> permissions, Long parentId) {
         List<Permission> tree = new ArrayList<>();
         
-        // 按父ID分组
-        Map<Long, List<Permission>> permissionMap = permissions.stream()
-                .collect(Collectors.groupingBy(Permission::getParentId));
-        
-        // 获取指定父ID的权限列表
-        List<Permission> children = permissionMap.get(parentId);
-        if (children != null) {
-            for (Permission permission : children) {
+        for (Permission permission : permissions) {
+            if (permission.getParentId() != null && permission.getParentId().equals(parentId)) {
                 // 递归构建子权限树
-                buildPermissionTree(permissions, permission.getId());
-                // 这里可以设置children属性，如果Permission实体有children字段的话
+                List<Permission> children = buildPermissionTree(permissions, permission.getId());
+                permission.setChildren(children);
                 tree.add(permission);
             }
         }

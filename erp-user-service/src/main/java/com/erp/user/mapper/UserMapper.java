@@ -1,6 +1,7 @@
 package com.erp.user.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.erp.user.dto.RoleDTO;
 import com.erp.user.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -46,6 +47,14 @@ public interface UserMapper extends BaseMapper<User> {
      * @return 角色列表
      */
     List<String> selectRoleCodesByUserId(@Param("userId") Long userId);
+
+    /**
+     * 根据用户ID查询用户角色详细信息
+     *
+     * @param userId 用户ID
+     * @return 角色详细信息列表
+     */
+    List<RoleDTO> selectRolesByUserId(@Param("userId") Long userId);
 
     /**
      * 根据用户ID查询用户权限

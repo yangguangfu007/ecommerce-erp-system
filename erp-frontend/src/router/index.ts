@@ -149,6 +149,28 @@ const routes: RouteRecordRaw[] = [
           permissions: ['logistics:view']
         }
       },
+      {
+        path: '/logistics/shipping-labels',
+        name: 'ShippingLabels',
+        component: () => import('@/views/logistics/ShippingLabels.vue'),
+        meta: {
+          title: '面单管理',
+          requiresAuth: true,
+          permissions: ['logistics:label'],
+          hideInMenu: true
+        }
+      },
+      {
+        path: '/logistics/exceptions',
+        name: 'LogisticsExceptionHandling',
+        component: () => import('@/views/logistics/LogisticsExceptionHandling.vue'),
+        meta: {
+          title: '异常处理',
+          requiresAuth: true,
+          permissions: ['logistics:exception'],
+          hideInMenu: true
+        }
+      },
       // 店铺管理
       {
         path: '/stores',
@@ -185,6 +207,53 @@ const routes: RouteRecordRaw[] = [
           permissions: ['notification:view']
         }
       },
+      // 通知发送与统计
+      {
+        path: '/notifications/send-stats',
+        name: 'NotificationSendStats',
+        component: () => import('@/views/notifications/NotificationSendStats.vue'),
+        meta: {
+          title: '通知发送与统计',
+          icon: 'DataAnalysis',
+          requiresAuth: true,
+          permissions: ['notification:send', 'notification:stats']
+        }
+      },
+      // 报表管理
+      {
+        path: '/reports',
+        name: 'ReportGeneration',
+        component: () => import('@/views/reports/ReportGeneration.vue'),
+        meta: {
+          title: '报表生成',
+          icon: 'DataAnalysis',
+          requiresAuth: true,
+          permissions: ['report:view']
+        }
+      },
+      {
+        path: '/reports/data-filter-query',
+        name: 'DataFilterQuery',
+        component: () => import('@/views/reports/DataFilterQuery.vue'),
+        meta: {
+          title: '数据筛选查询',
+          icon: 'Search',
+          requiresAuth: true,
+          permissions: ['report:query']
+        }
+      },
+      // 系统监控
+      {
+        path: '/monitor',
+        name: 'SystemMonitor',
+        component: () => import('@/views/monitor/SystemMonitor.vue'),
+        meta: {
+          title: '系统监控',
+          icon: 'Monitor',
+          requiresAuth: true,
+          permissions: ['system:monitor']
+        }
+      },
       // 系统设置
       {
         path: '/settings',
@@ -216,8 +285,9 @@ const router = createRouter({
   routes
 })
 
-// 路由守卫
-router.beforeEach(async (to, from, next) => {
+// 路由守卫 - 只在非测试环境中添加
+if (typeof window !== 'undefined' && !import.meta.env.VITEST) {
+  router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   
   // 设置页面标题
@@ -261,6 +331,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   next()
-})
+  })
+}
 
 export default router

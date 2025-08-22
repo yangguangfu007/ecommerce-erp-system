@@ -415,6 +415,14 @@ public class InventoryServiceImpl implements InventoryService {
         redisTemplate.delete(cacheKey);
     }
 
+    @Override
+    public List<InventoryDTO> getAllInventories() {
+        List<Inventory> inventories = inventoryMapper.selectList(null);
+        return inventories.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     /**
      * 转换为DTO
      */

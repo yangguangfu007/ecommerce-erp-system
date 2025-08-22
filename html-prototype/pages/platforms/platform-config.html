@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>平台配置 - 电商ERP管理系统</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../../assets/css/reset.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/pages.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="../../assets/images/logo.svg" alt="ERP系统" class="logo">
+                <h1 class="system-title">电商ERP管理系统</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="搜索功能..." class="search-input">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="header-user">
+                    <img src="../../assets/images/avatars/admin.svg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">管理员</span>
+                    <div class="user-dropdown">
+                        <a href="#" onclick="showProfile()">个人资料</a>
+                        <a href="#" onclick="showSettings()">系统设置</a>
+                        <a href="#" onclick="logout()">退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 侧边菜单 -->
+        <aside class="app-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="../../dashboard.html" class="nav-link" data-menu-id="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>仪表板</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="user-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-users"></i>
+                            <span>用户管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../users/user-list.html" data-submenu-id="user-list">用户列表</a></li>
+                            <li><a href="../users/role-management.html" data-submenu-id="role-management">角色管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="product-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-box"></i>
+                            <span>商品管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../products/product-list.html" data-submenu-id="product-list">商品列表</a></li>
+                            <li><a href="../products/product-import.html" data-submenu-id="product-import">商品导入</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="order-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>订单管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../orders/order-list.html" data-submenu-id="order-list">订单列表</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="inventory-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-warehouse"></i>
+                            <span>库存管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../inventory/inventory-list.html" data-submenu-id="inventory-list">库存列表</a></li>
+                            <li><a href="../inventory/inventory-alerts.html" data-submenu-id="inventory-alerts">库存预警</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu active">
+                        <a href="#" class="nav-link" data-menu-id="platform-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-store"></i>
+                            <span>平台管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu show">
+                            <li><a href="platform-list.html" data-submenu-id="platform-list">平台列表</a></li>
+                            <li><a href="platform-config.html" data-submenu-id="platform-config" class="active">平台配置</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="logistics-management" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-truck"></i>
+                            <span>物流管理</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../logistics/logistics-list.html" data-submenu-id="logistics-list">物流列表</a></li>
+                            <li><a href="../logistics/shipping-labels.html" data-submenu-id="shipping-labels">面单管理</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="../notifications/notification-center.html" class="nav-link" data-menu-id="notification-center">
+                            <i class="fas fa-bell"></i>
+                            <span>通知中心</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link" data-menu-id="system-settings" onclick="toggleSubmenu(this)">
+                            <i class="fas fa-cog"></i>
+                            <span>系统设置</span>
+                            <i class="fas fa-chevron-down submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="../settings/system-config.html" data-submenu-id="system-config">系统配置</a></li>
+                            <li><a href="../settings/system-logs.html" data-submenu-id="system-logs">系统日志</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="app-main">
+            <!-- 面包屑导航 -->
+            <nav class="breadcrumb">
+                <div class="breadcrumb-list">
+                    <a href="../../dashboard.html" class="breadcrumb-item">仪表板</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item">平台管理</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item active">平台配置</span>
+                </div>
+            </nav>
+
+            <!-- 页面内容 -->
+            <div class="page-content">
+                <div class="page-header">
+                    <h2 class="page-title">平台配置</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-outline" onclick="testConnection()">
+                            <i class="fas fa-plug"></i> 测试连接
+                        </button>
+                        <button class="btn btn-primary" onclick="savePlatformConfig()">
+                            <i class="fas fa-save"></i> 保存配置
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 平台选择 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">选择平台类型</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="platform-types">
+                            <div class="platform-type-card active" data-type="walmart" onclick="selectPlatformType('walmart')">
+                                <div class="platform-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <h4>沃尔玛</h4>
+                                <p>Walmart Marketplace</p>
+                            </div>
+                            
+                            <div class="platform-type-card" data-type="amazon" onclick="selectPlatformType('amazon')">
+                                <div class="platform-icon">
+                                    <i class="fab fa-amazon"></i>
+                                </div>
+                                <h4>亚马逊</h4>
+                                <p>Amazon Marketplace</p>
+                            </div>
+                            
+                            <div class="platform-type-card" data-type="ebay" onclick="selectPlatformType('ebay')">
+                                <div class="platform-icon">
+                                    <i class="fab fa-ebay"></i>
+                                </div>
+                                <h4>eBay</h4>
+                                <p>eBay Marketplace</p>
+                            </div>
+                            
+                            <div class="platform-type-card" data-type="shopify" onclick="selectPlatformType('shopify')">
+                                <div class="platform-icon">
+                                    <i class="fab fa-shopify"></i>
+                                </div>
+                                <h4>Shopify</h4>
+                                <p>Shopify Store</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 配置表单 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">平台配置信息</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="platformConfigForm" class="config-form">
+                            <!-- 基本信息 -->
+                            <div class="form-section">
+                                <h4 class="section-title">基本信息</h4>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="platformName">平台名称</label>
+                                        <input type="text" id="platformName" name="platformName" class="form-input" placeholder="请输入平台名称" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="platformUrl">平台地址</label>
+                                        <input type="url" id="platformUrl" name="platformUrl" class="form-input" placeholder="https://example.com" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="description">描述</label>
+                                        <textarea id="description" name="description" class="form-textarea" rows="3" placeholder="请输入平台描述"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- API配置 -->
+                            <div class="form-section">
+                                <h4 class="section-title">API配置</h4>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="apiEndpoint">API端点</label>
+                                        <input type="url" id="apiEndpoint" name="apiEndpoint" class="form-input" placeholder="https://api.example.com" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="apiVersion">API版本</label>
+                                        <select id="apiVersion" name="apiVersion" class="form-select" required>
+                                            <option value="">请选择API版本</option>
+                                            <option value="v1">v1</option>
+                                            <option value="v2">v2</option>
+                                            <option value="v3">v3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="clientId">客户端ID</label>
+                                        <input type="text" id="clientId" name="clientId" class="form-input" placeholder="请输入客户端ID" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="clientSecret">客户端密钥</label>
+                                        <div class="input-wrapper">
+                                            <input type="password" id="clientSecret" name="clientSecret" class="form-input" placeholder="请输入客户端密钥" required>
+                                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('clientSecret')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="accessToken">访问令牌</label>
+                                        <div class="input-wrapper">
+                                            <input type="password" id="accessToken" name="accessToken" class="form-input" placeholder="请输入访问令牌">
+                                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('accessToken')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="refreshToken">刷新令牌</label>
+                                        <div class="input-wrapper">
+                                            <input type="password" id="refreshToken" name="refreshToken" class="form-input" placeholder="请输入刷新令牌">
+                                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('refreshToken')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 同步设置 -->
+                            <div class="form-section">
+                                <h4 class="section-title">同步设置</h4>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="syncInterval">同步间隔（分钟）</label>
+                                        <input type="number" id="syncInterval" name="syncInterval" class="form-input" min="1" max="1440" value="30" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="batchSize">批量大小</label>
+                                        <input type="number" id="batchSize" name="batchSize" class="form-input" min="1" max="1000" value="100" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="checkbox-wrapper">
+                                            <input type="checkbox" id="autoSync" name="autoSync" checked>
+                                            <span class="checkbox-label">启用自动同步</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="checkbox-wrapper">
+                                            <input type="checkbox" id="syncProducts" name="syncProducts" checked>
+                                            <span class="checkbox-label">同步商品信息</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="checkbox-wrapper">
+                                            <input type="checkbox" id="syncOrders" name="syncOrders" checked>
+                                            <span class="checkbox-label">同步订单信息</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="checkbox-wrapper">
+                                            <input type="checkbox" id="syncInventory" name="syncInventory" checked>
+                                            <span class="checkbox-label">同步库存信息</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 高级设置 -->
+                            <div class="form-section">
+                                <h4 class="section-title">高级设置</h4>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="timeout">请求超时（秒）</label>
+                                        <input type="number" id="timeout" name="timeout" class="form-input" min="1" max="300" value="30" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="retryCount">重试次数</label>
+                                        <input type="number" id="retryCount" name="retryCount" class="form-input" min="0" max="10" value="3" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="webhookUrl">Webhook地址</label>
+                                        <input type="url" id="webhookUrl" name="webhookUrl" class="form-input" placeholder="https://your-domain.com/webhook">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="webhookSecret">Webhook密钥</label>
+                                        <div class="input-wrapper">
+                                            <input type="password" id="webhookSecret" name="webhookSecret" class="form-input" placeholder="请输入Webhook密钥">
+                                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('webhookSecret')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="checkbox-wrapper">
+                                            <input type="checkbox" id="enableLogging" name="enableLogging" checked>
+                                            <span class="checkbox-label">启用日志记录</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="checkbox-wrapper">
+                                            <input type="checkbox" id="enableNotifications" name="enableNotifications" checked>
+                                            <span class="checkbox-label">启用通知</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 连接状态 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">连接状态</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="connection-status" id="connectionStatus">
+                            <div class="status-item">
+                                <div class="status-icon status-unknown">
+                                    <i class="fas fa-question"></i>
+                                </div>
+                                <div class="status-info">
+                                    <h4>未测试</h4>
+                                    <p>请点击"测试连接"按钮验证配置</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- JavaScript Files --><script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/components.js"></script>
+    <script src="../../assets/js/mock-data.js"></script>
+    <script src="../../assets/js/app.js"></script>
+    <script src="platform-config.js"></script>
+</body>
+</html>

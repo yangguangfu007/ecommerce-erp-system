@@ -16,14 +16,34 @@
 
 ## ⚡ 一键启动
 
-### 方式一：自动化脚本（推荐）
+### 方式一：开发环境启动脚本（推荐）
 
 ```bash
 # 1. 克隆项目
 git clone https://github.com/yangguangfu007/ecommerce-erp-system.git
 cd ecommerce-erp-system
 
-# 2. 执行一键部署脚本
+# 2. 执行一键启动脚本
+./scripts/start-services.sh
+
+# 3. 等待启动完成（约 3-5 分钟）
+# 脚本会按顺序自动启动：
+# - 基础设施服务（MySQL、Redis、Kafka、Nacos）
+# - 后端微服务（用户服务、网关服务）
+# - 前端应用（Vue.js开发服务器）
+
+# 4. 查看服务状态
+./scripts/start-services.sh status
+```
+
+### 方式二：生产环境部署脚本
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/yangguangfu007/ecommerce-erp-system.git
+cd ecommerce-erp-system
+
+# 2. 执行生产部署脚本
 chmod +x scripts/deploy/deploy.sh
 ./scripts/deploy/deploy.sh local
 
@@ -37,7 +57,7 @@ chmod +x scripts/deploy/deploy.sh
 # - 执行健康检查
 ```
 
-### 方式二：Docker Compose
+### 方式三：Docker Compose
 
 ```bash
 # 1. 克隆项目
@@ -52,6 +72,29 @@ docker-compose ps
 
 # 4. 初始化数据（可选）
 docker-compose exec mysql mysql -uroot -proot123 -e "source /docker-entrypoint-initdb.d/init.sql"
+```
+
+### 方式四：分步启动（开发调试）
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/yangguangfu007/ecommerce-erp-system.git
+cd ecommerce-erp-system
+
+# 2. 分步启动服务
+# 第一步：启动基础设施服务
+./scripts/start-infrastructure.sh
+
+# 第二步：启动后端服务
+./scripts/start-backend.sh
+
+# 第三步：启动前端服务
+./scripts/start-frontend.sh
+
+# 3. 查看各服务状态
+./scripts/start-infrastructure.sh status
+./scripts/start-backend.sh status
+./scripts/start-frontend.sh status
 ```
 
 ## 🎯 验证部署
@@ -69,8 +112,10 @@ docker-compose ps
 
 打开浏览器访问以下地址：
 
-- **前端管理界面**: http://localhost:3000
+- **前端管理界面**: http://localhost:3000 (开发模式) 或 http://localhost:5174 (备用端口)
+- **API 网关**: http://localhost:8080/api
 - **API 文档**: http://localhost:8080/swagger-ui.html
+- **Nacos 控制台**: http://localhost:8848/nacos (nacos/nacos)
 - **监控面板**: http://localhost:3001 (admin/admin123)
 
 ### 3. 登录测试
@@ -149,16 +194,22 @@ docker-compose up -d
 
 ### 问题 4：前端页面无法访问
 
-**现象**: 浏览器无法打开 http://localhost:3000
+**现象**: 浏览器无法打开前端页面
 
 **解决方案**:
 ```bash
-# 检查前端容器状态
-docker-compose logs erp-frontend
+# 检查前端服务状态
+./scripts/start-frontend.sh status
 
-# 重新构建前端镜像
-docker-compose build erp-frontend
-docker-compose up -d erp-frontend
+# 查看前端服务日志
+./scripts/start-frontend.sh logs
+
+# 重启前端服务
+./scripts/start-frontend.sh restart
+
+# 如果使用Docker方式，检查前端容器状态
+docker-compose logs erp-frontend
+docker-compose restart erp-frontend
 ```
 
 ## 🛠️ 高级配置
@@ -183,15 +234,21 @@ vim erp-frontend/src/config/index.ts
 如果需要进行开发调试：
 
 ```bash
+# 方式一：使用启动脚本（推荐）
+./scripts/start-infrastructure.sh    # 启动基础设施
+./scripts/start-backend.sh          # 启动后端服务
+./scripts/start-frontend.sh         # 启动前端开发服务器
+
+# 方式二：手动启动
 # 启动基础设施服务
-docker-compose up -d mysql redis kafka
+docker-compose up -d mysql redis kafka nacos
 
 # 本地启动前端开发服务器
 cd erp-frontend
 npm install
 npm run dev
 
-# 前端开发服务器会在 http://localhost:5173 启动
+# 前端开发服务器会在 http://localhost:3000 启动
 ```
 
 ### 生产部署

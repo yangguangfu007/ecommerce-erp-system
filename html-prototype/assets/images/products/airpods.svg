@@ -1,0 +1,32 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="airpodsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f0f0f0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 充电盒 -->
+  <rect x="60" y="80" width="80" height="60" rx="25" ry="25" fill="url(#airpodsGradient)" stroke="#ddd" stroke-width="2"/>
+  
+  <!-- 充电盒盖子 -->
+  <path d="M 60 110 Q 60 85 85 85 L 115 85 Q 140 85 140 110" fill="none" stroke="#ccc" stroke-width="1"/>
+  
+  <!-- 左耳机 -->
+  <ellipse cx="80" cy="60" rx="12" ry="18" fill="url(#airpodsGradient)" stroke="#ddd" stroke-width="1"/>
+  <rect x="76" y="78" width="8" height="25" rx="4" ry="4" fill="url(#airpodsGradient)" stroke="#ddd" stroke-width="1"/>
+  
+  <!-- 右耳机 -->
+  <ellipse cx="120" cy="60" rx="12" ry="18" fill="url(#airpodsGradient)" stroke="#ddd" stroke-width="1"/>
+  <rect x="116" y="78" width="8" height="25" rx="4" ry="4" fill="url(#airpodsGradient)" stroke="#ddd" stroke-width="1"/>
+  
+  <!-- 充电指示灯 -->
+  <circle cx="100" cy="120" r="3" fill="#00ff00" opacity="0.8"/>
+  
+  <!-- 音响孔 -->
+  <circle cx="80" cy="100" r="2" fill="#333"/>
+  <circle cx="120" cy="100" r="2" fill="#333"/>
+  
+  <!-- 品牌标识 -->
+  <text x="100" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">AirPods Pro</text>
+</svg>

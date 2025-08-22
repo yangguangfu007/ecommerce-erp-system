@@ -1,0 +1,34 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="phoneGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a4a4a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 手机外框 -->
+  <rect x="40" y="20" width="120" height="160" rx="20" ry="20" fill="url(#phoneGradient)" stroke="#333" stroke-width="2"/>
+  
+  <!-- 屏幕 -->
+  <rect x="50" y="35" width="100" height="130" rx="15" ry="15" fill="#000"/>
+  
+  <!-- 屏幕内容 -->
+  <rect x="55" y="40" width="90" height="120" rx="10" ry="10" fill="#1e90ff"/>
+  
+  <!-- 应用图标 -->
+  <circle cx="70" cy="60" r="8" fill="#fff" opacity="0.8"/>
+  <circle cx="90" cy="60" r="8" fill="#fff" opacity="0.8"/>
+  <circle cx="110" cy="60" r="8" fill="#fff" opacity="0.8"/>
+  <circle cx="130" cy="60" r="8" fill="#fff" opacity="0.8"/>
+  
+  <circle cx="70" cy="80" r="8" fill="#fff" opacity="0.8"/>
+  <circle cx="90" cy="80" r="8" fill="#fff" opacity="0.8"/>
+  <circle cx="110" cy="80" r="8" fill="#fff" opacity="0.8"/>
+  <circle cx="130" cy="80" r="8" fill="#fff" opacity="0.8"/>
+  
+  <!-- Home按钮 -->
+  <circle cx="100" cy="175" r="8" fill="#333" stroke="#666" stroke-width="1"/>
+  
+  <!-- 品牌标识 -->
+  <text x="100" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">iPhone 15 Pro</text>
+</svg>

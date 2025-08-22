@@ -1,28 +1,25 @@
-# Product Overview
+# 产品概述
 
-## What is this system?
+这是一个综合性的电商ERP（企业资源规划）系统，专为管理多平台电商运营而设计。系统集成了沃尔玛电商平台和云途物流服务，提供自动化的订单管理、商品管理、库存控制和物流协调功能。
 
-This is a comprehensive **E-commerce ERP System** (电商 ERP 系统) designed for modern e-commerce businesses. It's a microservices-based platform that integrates order management, inventory control, product management, and logistics coordination.
+## 核心业务功能
 
-## Core Purpose
+- **多平台集成**：沃尔玛平台订单同步和商品上传
+- **订单管理**：订单创建、状态跟踪、批量处理
+- **商品管理**：商品信息管理、分类管理、批量导入导出
+- **库存管理**：实时库存跟踪、安全库存预警、库存调整
+- **物流集成**：云途物流订单创建、运单跟踪、状态同步
+- **用户管理**：完整的用户注册、登录和RBAC权限系统
+- **通知系统**：邮件通知、短信通知、系统消息推送
 
-The system automates e-commerce operations by:
-- **Platform Integration**: Seamlessly connects with Walmart Marketplace and other e-commerce platforms
-- **Logistics Management**: Integrates with YunExpress and other shipping providers
-- **Inventory Control**: Real-time inventory tracking with automated alerts
-- **Order Processing**: End-to-end order lifecycle management
-- **Multi-tenant Support**: Designed for businesses managing multiple stores/platforms
+## 目标用户
 
-## Key Business Value
+- 电商业务经理
+- 库存协调员
+- 订单履行团队
+- 系统管理员
+- 平台集成专员
 
-- **Automation**: Reduces manual order processing by 80%
-- **Real-time Sync**: Instant inventory and order status updates across platforms
-- **Scalability**: Cloud-native architecture supports business growth
-- **Integration**: Pre-built connectors for major e-commerce platforms and logistics providers
+## 核心业务价值
 
-## Target Users
-
-- E-commerce businesses selling on multiple platforms
-- Companies needing automated inventory management
-- Businesses requiring integrated logistics solutions
-- Organizations seeking to streamline their order fulfillment process
+系统通过集成化工作流程和实时数据同步，自动化复杂的多平台电商运营，减少人工操作，提高运营效率。

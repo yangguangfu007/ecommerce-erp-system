@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -119,13 +120,22 @@ public class UserController {
      * 分页查询用户列表
      */
     @GetMapping
-    public Result<Page<UserDTO>> getUserList(@RequestParam(defaultValue = "1") int page,
-                                           @RequestParam(defaultValue = "10") int size,
-                                           @RequestParam(required = false) String username,
-                                           @RequestParam(required = false) String realName,
-                                           @RequestParam(required = false) Integer status) {
+    public Result<PageResponse<UserDTO>> getUserList(@RequestParam(defaultValue = "1") int page,
+                                                   @RequestParam(defaultValue = "10") int size,
+                                                   @RequestParam(required = false) String username,
+                                                   @RequestParam(required = false) String realName,
+                                                   @RequestParam(required = false) Integer status) {
         Page<UserDTO> userPage = userService.getUserList(page, size, username, realName, status);
-        return Result.success(userPage);
+        
+        // 转换为前端期望的数据结构
+        PageResponse<UserDTO> response = new PageResponse<>();
+        response.setList(userPage.getRecords());
+        response.setTotal((int) userPage.getTotal());
+        response.setPage((int) userPage.getCurrent());
+        response.setSize((int) userPage.getSize());
+        response.setPages((int) userPage.getPages());
+        
+        return Result.success(response);
     }
 
     /**
@@ -180,5 +190,15 @@ public class UserController {
     public Result<Boolean> checkPhone(@RequestParam String phone) {
         boolean exists = userService.existsByPhone(phone);
         return Result.success(exists);
+    }
+
+    /**
+     * 获取用户关联的店铺列表
+     */
+    @GetMapping("/stores")
+    public Result<List<StoreDTO>> getUserStores() {
+        // 暂时返回空列表，实际应该从数据库查询用户关联的店铺
+        List<StoreDTO> stores = new ArrayList<>();
+        return Result.success(stores);
     }
 }

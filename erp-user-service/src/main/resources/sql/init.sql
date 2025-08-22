@@ -179,12 +179,14 @@ ON DUPLICATE KEY UPDATE role_id = VALUES(role_id);
 
 -- 插入默认管理员用户
 INSERT INTO sys_user (id, username, password, real_name, email, phone, status, locked, create_by) VALUES
-(1, 'admin', '$2a$10$7JB720yubVSOfvVWbGRCu.VGaLxnqxdWfGD5rtJkjdN.YFqiOrAzG', '系统管理员', 'admin@erp.com', '13800138000', 1, 0, 1)
+(1, 'admin', '$2a$10$7JB720yubVSOfvVWbGRCu.VGaLxnqxdWfGD5rtJkjdN.YFqiOrAzG', '系统管理员', 'admin@erp.com', '13800138000', 1, 0, 1),
+(2, 'test', '$2a$10$7JB720yubVSOfvVWbGRCu.VGaLxnqxdWfGD5rtJkjdN.YFqiOrAzG', '测试用户', 'test@erp.com', '13800138001', 1, 0, 1)
 ON DUPLICATE KEY UPDATE real_name = VALUES(real_name);
 
 -- 插入管理员用户角色关联
 INSERT INTO sys_user_role (id, user_id, role_id, create_by) VALUES
-(1, 1, 1, 1)
+(1, 1, 1, 1),
+(2, 2, 2, 1)
 ON DUPLICATE KEY UPDATE user_id = VALUES(user_id);
 
 -- 登录日志表

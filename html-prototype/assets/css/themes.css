@@ -1,0 +1,497 @@
+/* Theme Styles - 主题样式 */
+
+/* 默认主题 (浅色) */
+[data-theme="light"],
+:root {
+  /* 主题已在 variables.css 中定义 */
+}
+
+/* 暗色主题 */
+[data-theme="dark"] {
+  --primary-color: #409EFF;
+  --primary-color-light: #79BBFF;
+  --primary-color-lighter: #A0CFFF;
+  --primary-color-dark: #337ECC;
+  --primary-color-darker: #2B73B3;
+
+  --success-color: #67C23A;
+  --success-color-light: #95D475;
+  --success-color-lighter: #B3E19D;
+  --success-color-dark: #529B2E;
+
+  --warning-color: #E6A23C;
+  --warning-color-light: #EEBC69;
+  --warning-color-lighter: #F3D19E;
+  --warning-color-dark: #B88230;
+
+  --danger-color: #F56C6C;
+  --danger-color-light: #F89898;
+  --danger-color-lighter: #FAB6B6;
+  --danger-color-dark: #C45656;
+
+  --info-color: #909399;
+  --info-color-light: #B1B3B8;
+  --info-color-lighter: #C8C9CC;
+  --info-color-dark: #73767A;
+
+  --text-color-primary: #E4E7ED;
+  --text-color-regular: #CFD3DC;
+  --text-color-secondary: #A4A9B0;
+  --text-color-placeholder: #6C6E72;
+  --text-color-disabled: #6C6E72;
+  --text-color-white: #FFFFFF;
+
+  --bg-color-primary: #1D1E1F;
+  --bg-color-secondary: #25262B;
+  --bg-color-tertiary: #2C2E33;
+  --bg-color-dark: #141414;
+  --bg-color-darker: #0A0A0A;
+
+  --border-color-base: #4C4D4F;
+  --border-color-light: #414243;
+  --border-color-lighter: #363637;
+  --border-color-extra-light: #2B2B2C;
+  --border-color-dark: #58585B;
+  --border-color-darker: #636466;
+
+  --box-shadow-base: 0 2px 4px rgba(0, 0, 0, 0.24), 0 0 6px rgba(0, 0, 0, 0.16);
+  --box-shadow-dark: 0 2px 4px rgba(0, 0, 0, 0.24), 0 0 6px rgba(0, 0, 0, 0.24);
+  --box-shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+
+  --table-header-bg: #25262B;
+  --table-row-hover-bg: #2C2E33;
+  --table-border-color: #414243;
+}
+
+/* 暗色主题特殊样式 */
+[data-theme="dark"] .login-page {
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d1117 100%);
+}
+
+[data-theme="dark"] .login-page::before {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+}
+
+[data-theme="dark"] .app-sidebar {
+  background: var(--bg-color-darker);
+}
+
+[data-theme="dark"] .nav-link {
+  color: #CFD3DC;
+}
+
+[data-theme="dark"] .nav-link:hover {
+  background: rgba(64, 158, 255, 0.1);
+  color: var(--primary-color-light);
+}
+
+[data-theme="dark"] .nav-item.active .nav-link {
+  background: var(--primary-color);
+  color: var(--text-color-white);
+}
+
+[data-theme="dark"] .submenu {
+  background: var(--bg-color-darker);
+  border: 1px solid var(--border-color-base);
+}
+
+[data-theme="dark"] .submenu a {
+  color: #A4A9B0;
+}
+
+[data-theme="dark"] .submenu a:hover {
+  background: rgba(64, 158, 255, 0.1);
+  color: var(--primary-color-light);
+}
+
+/* 高对比度主题 */
+[data-theme="high-contrast"] {
+  --primary-color: #0066CC;
+  --primary-color-light: #3385D6;
+  --primary-color-lighter: #66A3E0;
+  --primary-color-dark: #0052A3;
+  --primary-color-darker: #003D7A;
+
+  --success-color: #008000;
+  --success-color-light: #339933;
+  --success-color-lighter: #66B366;
+  --success-color-dark: #006600;
+
+  --warning-color: #FF8C00;
+  --warning-color-light: #FFA533;
+  --warning-color-lighter: #FFBE66;
+  --warning-color-dark: #CC7000;
+
+  --danger-color: #CC0000;
+  --danger-color-light: #D63333;
+  --danger-color-lighter: #E06666;
+  --danger-color-dark: #A30000;
+
+  --info-color: #666666;
+  --info-color-light: #808080;
+  --info-color-lighter: #999999;
+  --info-color-dark: #4D4D4D;
+
+  --text-color-primary: #000000;
+  --text-color-regular: #333333;
+  --text-color-secondary: #666666;
+  --text-color-placeholder: #999999;
+  --text-color-disabled: #CCCCCC;
+  --text-color-white: #FFFFFF;
+
+  --bg-color-primary: #FFFFFF;
+  --bg-color-secondary: #F5F5F5;
+  --bg-color-tertiary: #EEEEEE;
+  --bg-color-dark: #333333;
+  --bg-color-darker: #1A1A1A;
+
+  --border-color-base: #000000;
+  --border-color-light: #333333;
+  --border-color-lighter: #666666;
+  --border-color-extra-light: #999999;
+  --border-color-dark: #000000;
+  --border-color-darker: #000000;
+
+  --border-width-base: 2px;
+  --border-width-medium: 3px;
+  --border-width-thick: 4px;
+
+  --box-shadow-base: 0 0 0 2px #000000;
+  --box-shadow-dark: 0 0 0 3px #000000;
+  --box-shadow-light: 0 0 0 2px #000000;
+}
+
+[data-theme="high-contrast"] .btn {
+  border-width: 2px;
+  font-weight: var(--font-weight-bold);
+}
+
+[data-theme="high-contrast"] .form-input,
+[data-theme="high-contrast"] .form-textarea,
+[data-theme="high-contrast"] .form-select {
+  border-width: 2px;
+}
+
+[data-theme="high-contrast"] .data-table th,
+[data-theme="high-contrast"] .data-table td {
+  border-width: 2px;
+}
+
+[data-theme="high-contrast"] .nav-link {
+  border: 2px solid transparent;
+}
+
+[data-theme="high-contrast"] .nav-link:hover,
+[data-theme="high-contrast"] .nav-item.active .nav-link {
+  border-color: var(--primary-color);
+}
+
+/* 蓝色主题 */
+[data-theme="blue"] {
+  --primary-color: #1890FF;
+  --primary-color-light: #40A9FF;
+  --primary-color-lighter: #69C0FF;
+  --primary-color-dark: #096DD9;
+  --primary-color-darker: #0050B3;
+}
+
+[data-theme="blue"] .login-page {
+  background: linear-gradient(135deg, #1890FF 0%, #096DD9 100%);
+}
+
+/* 绿色主题 */
+[data-theme="green"] {
+  --primary-color: #52C41A;
+  --primary-color-light: #73D13D;
+  --primary-color-lighter: #95DE64;
+  --primary-color-dark: #389E0D;
+  --primary-color-darker: #237804;
+}
+
+[data-theme="green"] .login-page {
+  background: linear-gradient(135deg, #52C41A 0%, #389E0D 100%);
+}
+
+/* 紫色主题 */
+[data-theme="purple"] {
+  --primary-color: #722ED1;
+  --primary-color-light: #9254DE;
+  --primary-color-lighter: #B37FEB;
+  --primary-color-dark: #531DAB;
+  --primary-color-darker: #391085;
+}
+
+[data-theme="purple"] .login-page {
+  background: linear-gradient(135deg, #722ED1 0%, #531DAB 100%);
+}
+
+/* 橙色主题 */
+[data-theme="orange"] {
+  --primary-color: #FA8C16;
+  --primary-color-light: #FFA940;
+  --primary-color-lighter: #FFC069;
+  --primary-color-dark: #D46B08;
+  --primary-color-darker: #AD4E00;
+}
+
+[data-theme="orange"] .login-page {
+  background: linear-gradient(135deg, #FA8C16 0%, #D46B08 100%);
+}
+
+/* 红色主题 */
+[data-theme="red"] {
+  --primary-color: #F5222D;
+  --primary-color-light: #FF4D4F;
+  --primary-color-lighter: #FF7875;
+  --primary-color-dark: #CF1322;
+  --primary-color-darker: #A8071A;
+}
+
+[data-theme="red"] .login-page {
+  background: linear-gradient(135deg, #F5222D 0%, #CF1322 100%);
+}
+
+/* 自动主题 (跟随系统) */
+[data-theme="auto"] {
+  /* 默认使用浅色主题变量 */
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    --text-color-primary: #E4E7ED;
+    --text-color-regular: #CFD3DC;
+    --text-color-secondary: #A4A9B0;
+    --text-color-placeholder: #6C6E72;
+    --text-color-disabled: #6C6E72;
+    --text-color-white: #FFFFFF;
+
+    --bg-color-primary: #1D1E1F;
+    --bg-color-secondary: #25262B;
+    --bg-color-tertiary: #2C2E33;
+    --bg-color-dark: #141414;
+    --bg-color-darker: #0A0A0A;
+
+    --border-color-base: #4C4D4F;
+    --border-color-light: #414243;
+    --border-color-lighter: #363637;
+    --border-color-extra-light: #2B2B2C;
+    --border-color-dark: #58585B;
+    --border-color-darker: #636466;
+
+    --box-shadow-base: 0 2px 4px rgba(0, 0, 0, 0.24), 0 0 6px rgba(0, 0, 0, 0.16);
+    --box-shadow-dark: 0 2px 4px rgba(0, 0, 0, 0.24), 0 0 6px rgba(0, 0, 0, 0.24);
+    --box-shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+
+    --table-header-bg: #25262B;
+    --table-row-hover-bg: #2C2E33;
+    --table-border-color: #414243;
+  }
+  
+  [data-theme="auto"] .login-page {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0d1117 100%);
+  }
+  
+  [data-theme="auto"] .login-page::before {
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+  }
+  
+  [data-theme="auto"] .app-sidebar {
+    background: var(--bg-color-darker);
+  }
+}
+
+/* 主题切换动画 */
+* {
+  transition: 
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* 主题切换器样式 */
+.theme-switcher {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--border-radius-base);
+  color: var(--text-color-regular);
+  transition: var(--transition-base);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: var(--bg-color-secondary);
+  color: var(--primary-color);
+}
+
+.theme-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 150px;
+  background: var(--bg-color-primary);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius-base);
+  box-shadow: var(--box-shadow-base);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: var(--transition-md-fade);
+  z-index: var(--z-index-popper);
+}
+
+.theme-switcher:hover .theme-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  color: var(--text-color-regular);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.theme-option:hover {
+  background: var(--bg-color-secondary);
+  color: var(--primary-color);
+}
+
+.theme-option.active {
+  background: var(--primary-color-lighter);
+  color: var(--primary-color-dark);
+}
+
+.theme-color {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--border-radius-circle);
+  border: 2px solid var(--border-color-light);
+}
+
+.theme-color.light {
+  background: linear-gradient(45deg, #409EFF, #79BBFF);
+}
+
+.theme-color.dark {
+  background: linear-gradient(45deg, #1D1E1F, #25262B);
+}
+
+.theme-color.blue {
+  background: linear-gradient(45deg, #1890FF, #40A9FF);
+}
+
+.theme-color.green {
+  background: linear-gradient(45deg, #52C41A, #73D13D);
+}
+
+.theme-color.purple {
+  background: linear-gradient(45deg, #722ED1, #9254DE);
+}
+
+.theme-color.orange {
+  background: linear-gradient(45deg, #FA8C16, #FFA940);
+}
+
+.theme-color.red {
+  background: linear-gradient(45deg, #F5222D, #FF4D4F);
+}
+
+.theme-color.high-contrast {
+  background: linear-gradient(45deg, #000000, #333333);
+}
+
+.theme-color.auto {
+  background: conic-gradient(from 0deg, #409EFF, #1D1E1F, #409EFF);
+}
+
+/* 主题预览 */
+.theme-preview {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 200px;
+  background: var(--bg-color-primary);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--box-shadow-dark);
+  z-index: var(--z-index-modal);
+  overflow: hidden;
+}
+
+.theme-preview.show {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.theme-preview-header {
+  height: 40px;
+  background: var(--primary-color);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+  color: var(--text-color-white);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+}
+
+.theme-preview-body {
+  padding: var(--spacing-lg);
+  background: var(--bg-color-secondary);
+  height: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.theme-preview-card {
+  background: var(--bg-color-primary);
+  border-radius: var(--border-radius-base);
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-color-light);
+}
+
+.theme-preview-text {
+  color: var(--text-color-primary);
+  font-size: var(--font-size-small);
+  margin-bottom: var(--spacing-xs);
+}
+
+.theme-preview-button {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--primary-color);
+  color: var(--text-color-white);
+  border-radius: var(--border-radius-base);
+  font-size: var(--font-size-extra-small);
+}
