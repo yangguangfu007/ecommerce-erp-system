@@ -113,32 +113,115 @@ export const useInventoryStore = defineStore('inventory', () => {
 
   // 获取库存列表
   const fetchInventories = async (query: Partial<InventoryQuery> = {}) => {
+    // 防止重复请求
+    if (baseStore.isLoading.value) {
+      console.log('Store: 正在加载中，跳过重复请求')
+      return {
+        records: state.value.inventories,
+        total: state.value.total,
+        current: state.value.currentPage,
+        size: state.value.pageSize
+      }
+    }
+
     return await baseStore.withLoading(async () => {
       const params: InventoryQuery = {
         page: query.page || state.value.currentPage,
-        pageSize: query.pageSize || state.value.pageSize,
+        size: query.size || state.value.pageSize,
         ...state.value.filters,
         ...query
       }
 
+      console.log('Store: fetchInventories 请求参数:', params)
       const response = await inventoryApi.getInventoryList(params)
+      console.log('Store: API 响应:', response)
       
-      state.value.inventories = response.records || []
-      state.value.total = response.total || 0
-      state.value.currentPage = response.current || 1
-      state.value.pageSize = response.size || 20
+      // 处理后端返回的数据结构
+      console.log('Store: 开始处理API响应数据')
+      if (Array.isArray(response.data)) {
+        console.log('Store: 响应数据是数组，长度:', response.data.length)
+        // 如果返回的是数组，直接使用
+        const processedData = response.data.map(item => ({
+          id: item.id,
+          sku: item.sku,
+          productName: item.productName || `商品-${item.sku}`, // 如果没有商品名称，使用SKU
+          productImage: item.productImage,
+          storeId: item.storeId,
+          storeName: item.storeName || `店铺-${item.storeId}`,
+          availableQuantity: item.availableQuantity,
+          reservedQuantity: item.reservedQuantity,
+          totalQuantity: item.totalQuantity,
+          safetyStock: item.safetyStock,
+          status: getInventoryStatus(item),
+          warehouseLocation: item.warehouseLocation,
+          cost: item.cost || 0,
+          totalValue: (item.cost || 0) * item.totalQuantity,
+          lastUpdated: item.updatedAt || item.createdAt || new Date().toISOString(),
+          createTime: item.createdAt || new Date().toISOString(),
+          updateTime: item.updatedAt || new Date().toISOString()
+        }))
+        
+        console.log('Store: 处理后的数据:', processedData)
+        state.value.inventories = processedData
+        state.value.total = response.data.length
+        state.value.currentPage = params.page || 1
+        state.value.pageSize = params.size || 20
+        console.log('Store: 更新状态完成，inventories长度:', state.value.inventories.length)
+      } else {
+        console.log('Store: 响应数据是分页格式')
+        // 如果返回的是分页格式
+        state.value.inventories = response.data.records || response.data.content || []
+        state.value.total = response.data.total || 0
+        state.value.currentPage = response.data.current || response.data.page || 1
+        state.value.pageSize = response.data.size || 20
+      }
+      
       state.value.lastFetchTime = Date.now()
       
       // 更新库存统计
       updateInventoryStats()
       
-      return response
+      return {
+        records: state.value.inventories,
+        total: state.value.total,
+        current: state.value.currentPage,
+        size: state.value.pageSize
+      }
     })
+  }
+
+  // 根据库存数据判断状态
+  const getInventoryStatus = (inventory: any): string => {
+    if (inventory.availableQuantity <= 0) {
+      return 'out_of_stock'
+    } else if (inventory.availableQuantity <= inventory.safetyStock * 0.5) {
+      return 'critical'
+    } else if (inventory.availableQuantity <= inventory.safetyStock) {
+      return 'low'
+    } else {
+      return 'normal'
+    }
   }
 
   // 获取库存列表（兼容方法）
   const getInventoryList = async (params: any) => {
-    return await fetchInventories(params)
+    console.log('Store: getInventoryList 被调用，参数:', params)
+    
+    // 防止重复调用
+    if (baseStore.isLoading.value) {
+      console.log('Store: getInventoryList 正在加载中，返回缓存数据')
+      return {
+        records: state.value.inventories,
+        total: state.value.total,
+        current: state.value.currentPage,
+        size: state.value.pageSize
+      }
+    }
+    
+    const result = await fetchInventories(params)
+    console.log('Store: getInventoryList 返回结果:', result)
+    console.log('Store: 当前库存数据:', state.value.inventories)
+    return result
   }
 
   // 获取库存详情
@@ -472,7 +555,9 @@ export const useInventoryStore = defineStore('inventory', () => {
   })
 
   // 库存列表（兼容属性）
-  const inventoryList = computed(() => state.value.inventories)
+  const inventoryList = computed(() => {
+    return state.value.inventories
+  })
 
   // 刷新数据
   const refresh = async () => {

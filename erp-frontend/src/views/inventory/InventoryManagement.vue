@@ -68,87 +68,53 @@
       </div>
       <div class="card-body">
         <div class="table-wrapper">
-          <BaseTable
+          <!-- 调试信息 -->
+          <div v-if="inventoryList.length === 0 && !loading" style="padding: 20px; text-align: center; color: #999;">
+            暂无库存数据 (总数: {{ pagination.total }})
+          </div>
+          <div v-if="inventoryList.length > 0" style="padding: 10px; background: #f0f9ff; margin-bottom: 10px;">
+            已加载 {{ inventoryList.length }} 条库存记录
+          </div>
+          
+          <el-table
             :data="inventoryList"
             :loading="loading"
-            v-model:selection="selectedInventory"
             @selection-change="handleSelectionChange"
+            style="width: 100%"
+            stripe
+            border
           >
             <el-table-column type="selection" width="55" />
             
-            <el-table-column label="商品信息" min-width="200">
-              <template #default="{ row }">
-                <div class="product-info">
-                  <div class="product-name">{{ row.productName }}</div>
-                  <div class="product-sku">SKU: {{ row.sku }}</div>
-                </div>
-              </template>
+            <el-table-column label="SKU" prop="sku" width="150">
+            </el-table-column>
+            
+            <el-table-column label="商品名称" prop="productName" min-width="200">
             </el-table-column>
 
-            <el-table-column label="总库存" prop="totalStock" width="100" align="center">
-              <template #default="{ row }">
-                <span class="stock-number">{{ row.totalStock }}</span>
-              </template>
+            <el-table-column label="总库存" prop="totalQuantity" width="100" align="center">
             </el-table-column>
 
-            <el-table-column label="可用库存" prop="availableStock" width="100" align="center">
-              <template #default="{ row }">
-                <span class="stock-number available">{{ row.availableStock }}</span>
-              </template>
+            <el-table-column label="可用库存" prop="availableQuantity" width="100" align="center">
             </el-table-column>
 
-            <el-table-column label="预留库存" prop="reservedStock" width="100" align="center">
-              <template #default="{ row }">
-                <span class="stock-number reserved">{{ row.reservedStock }}</span>
-              </template>
+            <el-table-column label="预留库存" prop="reservedQuantity" width="100" align="center">
             </el-table-column>
 
-            <el-table-column label="预警阈值" prop="alertThreshold" width="100" align="center">
-              <template #default="{ row }">
-                <span class="threshold-number">{{ row.alertThreshold }}</span>
-              </template>
+            <el-table-column label="安全库存" prop="safetyStock" width="100" align="center">
             </el-table-column>
 
-            <el-table-column label="库存状态" prop="status" width="120" align="center">
+            <el-table-column label="操作" width="150" align="center">
               <template #default="{ row }">
-                <StatusBadge 
-                  :status="row.status" 
-                  :type="getStatusType(row.status)"
-                  :text="getStatusText(row.status)"
-                />
+                <el-button type="primary" size="small" @click="adjustStock(row)">
+                  调整
+                </el-button>
+                <el-button type="default" size="small" @click="viewHistory(row)">
+                  历史
+                </el-button>
               </template>
             </el-table-column>
-
-            <el-table-column label="最后更新" prop="lastUpdated" width="160" align="center">
-              <template #default="{ row }">
-                <div class="time-info">
-                  <div>{{ formatDate(row.lastUpdated) }}</div>
-                  <div class="time-detail">{{ formatTime(row.lastUpdated) }}</div>
-                </div>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="操作" width="150" align="center" fixed="right">
-              <template #default="{ row }">
-                <div class="action-buttons">
-                  <el-button
-                    type="primary"
-                    size="small"
-                    :icon="Edit"
-                    @click="adjustStock(row)"
-                    title="调整库存"
-                  />
-                  <el-button
-                    type="default"
-                    size="small"
-                    :icon="Clock"
-                    @click="viewHistory(row)"
-                    title="查看历史"
-                  />
-                </div>
-              </template>
-            </el-table-column>
-          </BaseTable>
+          </el-table>
         </div>
 
         <!-- 分页 -->
@@ -198,7 +164,7 @@ import { useInventoryStore } from '@/stores/inventory'
 import BreadcrumbNav from '@/components/business/BreadcrumbNav.vue'
 import SearchFilter from '@/components/business/SearchFilter.vue'
 import BatchOperations from '@/components/business/BatchOperations.vue'
-import BaseTable from '@/components/common/BaseTable.vue'
+
 import StatusBadge from '@/components/business/StatusBadge.vue'
 import InventoryAdjustDialog from '@/components/business/InventoryAdjustDialog.vue'
 import InventoryHistoryDialog from '@/components/business/InventoryHistoryDialog.vue'
@@ -209,12 +175,12 @@ interface InventoryItem {
   sku: string
   productName: string
   productImage?: string
-  totalStock: number
-  availableStock: number
-  reservedStock: number
-  alertThreshold: number
+  totalQuantity: number
+  availableQuantity: number
+  reservedQuantity: number
+  safetyStock: number
   status: 'normal' | 'low' | 'critical' | 'out_of_stock'
-  lastUpdated: string
+  updateTime: string
   warehouseLocation?: string
 }
 
@@ -228,6 +194,9 @@ const showBatchAdjustDialog = ref(false)
 const showHistoryDialog = ref(false)
 const selectedInventory = ref<InventoryItem[]>([])
 const currentInventory = ref<InventoryItem | null>(null)
+
+// 防止重复请求的标志
+const isInitialized = ref(false)
 
 // 搜索参数
 const searchParams = reactive({
@@ -244,6 +213,11 @@ const pagination = reactive({
   size: 10,
   total: 0
 })
+
+// 调试信息
+console.log('库存管理组件初始化完成')
+console.log('初始状态 - loading:', loading.value)
+console.log('初始状态 - pagination:', pagination)
 
 
 
@@ -284,10 +258,17 @@ const batchActions = [
 
 
 // 计算属性
-const inventoryList = computed(() => inventoryStore.inventoryList)
+const inventoryList = computed(() => {
+  return inventoryStore.inventoryList
+})
 
 // 方法
 const loadInventoryList = async () => {
+  if (loading.value) {
+    console.log('正在加载中，跳过重复请求')
+    return
+  }
+  
   loading.value = true
   try {
     const params = {
@@ -296,9 +277,19 @@ const loadInventoryList = async () => {
       size: pagination.size
     }
     
+    console.log('发起库存列表请求，参数:', params)
     const response = await inventoryStore.getInventoryList(params)
-    pagination.total = response.total
+    console.log('库存列表响应:', response)
+    
+    if (response && response.total !== undefined) {
+      pagination.total = response.total
+      console.log('更新分页信息，总数:', response.total)
+    }
+    
+    console.log('当前库存列表数据:', inventoryList.value)
+    isInitialized.value = true
   } catch (error) {
+    console.error('加载库存列表详细错误:', error)
     ElMessage.error('加载库存列表失败')
   } finally {
     loading.value = false
@@ -379,11 +370,15 @@ const getStatusText = (status: string) => {
 
 // 时间格式化
 const formatDate = (dateStr: string) => {
-  return dateStr.split(' ')[0]
+  if (!dateStr) return '-'
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('zh-CN')
 }
 
 const formatTime = (dateStr: string) => {
-  return dateStr.split(' ')[1]
+  if (!dateStr) return '-'
+  const date = new Date(dateStr)
+  return date.toLocaleTimeString('zh-CN')
 }
 
 // 库存调整
@@ -441,7 +436,10 @@ const exportSelectedInventory = async () => {
 
 // 生命周期
 onMounted(() => {
-  loadInventoryList()
+  console.log('库存管理页面已挂载，开始加载数据...')
+  if (!isInitialized.value) {
+    loadInventoryList()
+  }
 })
 </script>
 

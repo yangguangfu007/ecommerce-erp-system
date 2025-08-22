@@ -13,7 +13,7 @@
         <div class="product-card">
           <div class="product-image">
             <img 
-              :src="currentInventory?.productImage || '/placeholder-product.png'" 
+              :src="currentInventory?.productImage || placeholderImage" 
               :alt="currentInventory?.productName"
               @error="handleImageError"
             />
@@ -422,9 +422,12 @@ const handleTypeChange = () => {
   adjustForm.quantity = 1
 }
 
+// 创建一个简单的占位符图片 data URL
+const placeholderImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjVGNUY1Ii8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iNDAiIHI9IjUiIGZpbGw9IiNEOUQ5RDkiLz4KPHBhdGggZD0iTTMwIDYwTDQ1IDQ1TDU1IDU1TDcwIDQwVjcwSDMwVjYwWiIgZmlsbD0iI0Q5RDlEOSIvPgo8L3N2Zz4K'
+
 const handleImageError = (event: Event) => {
   const target = event.target as HTMLImageElement
-  target.src = '/placeholder-product.png'
+  target.src = placeholderImage
 }
 
 const handleClose = () => {

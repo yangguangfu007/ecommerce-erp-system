@@ -60,8 +60,8 @@ export interface Notification {
   readAt?: string
   archivedAt?: string
   expiresAt?: string
-  createdAt: string
-  updatedAt: string
+  createTime: string
+  updateTime: string
 }
 
 // 通知模板接口
@@ -78,8 +78,8 @@ export interface NotificationTemplate {
   isActive: boolean
   description?: string
   metadata?: Record<string, any>
-  createdAt: string
-  updatedAt: string
+  createTime: string
+  updateTime: string
 }
 
 // 模板变量接口
@@ -107,8 +107,8 @@ export interface NotificationRule {
   priority: NotificationPriority
   description?: string
   metadata?: Record<string, any>
-  createdAt: string
-  updatedAt: string
+  createTime: string
+  updateTime: string
 }
 
 // 通知接收者接口
@@ -410,7 +410,7 @@ export const notificationApi = {
    * @param template 模板信息
    * @returns 创建结果
    */
-  createNotificationTemplate(template: Omit<NotificationTemplate, 'id' | 'createdAt' | 'updatedAt'>): Promise<ApiResponse<NotificationTemplate>> {
+  createNotificationTemplate(template: Omit<NotificationTemplate, 'id' | 'createTime' | 'updateTime'>): Promise<ApiResponse<NotificationTemplate>> {
     return api.post('/notifications/templates', template)
   },
 
@@ -479,7 +479,7 @@ export const notificationApi = {
    * @param rule 规则信息
    * @returns 创建结果
    */
-  createNotificationRule(rule: Omit<NotificationRule, 'id' | 'createdAt' | 'updatedAt'>): Promise<ApiResponse<NotificationRule>> {
+  createNotificationRule(rule: Omit<NotificationRule, 'id' | 'createTime' | 'updateTime'>): Promise<ApiResponse<NotificationRule>> {
     return api.post('/notifications/rules', rule)
   },
 

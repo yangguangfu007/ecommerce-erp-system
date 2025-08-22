@@ -1,11 +1,11 @@
 export interface Inventory {
-  id: string
+  id: string | number
   sku: string
-  productId: string
-  productName: string
+  productId?: string
+  productName?: string
   productImage?: string
-  storeId: string
-  storeName: string
+  storeId: string | number
+  storeName?: string
   availableQuantity: number
   reservedQuantity: number
   totalQuantity: number
@@ -13,12 +13,16 @@ export interface Inventory {
   maxStock?: number
   status: InventoryStatus
   warehouseLocation?: string
-  cost: number
-  totalValue: number
-  lastUpdated: string
+  cost?: number
+  totalValue?: number
+  lastUpdated?: string
   recentTransactions?: InventoryTransaction[]
-  createTime: string
-  updateTime: string
+  createTime?: string
+  updateTime?: string
+  createdAt?: string
+  updatedAt?: string
+  version?: number
+  needsAlert?: boolean
 }
 
 export interface InventoryTransaction {

@@ -54,7 +54,7 @@ export interface PendingTask {
   description: string
   type: 'order' | 'product' | 'inventory' | 'platform' | 'logistics'
   priority: 'high' | 'medium' | 'low'
-  createdAt: string
+  createTime: string
   route?: string
 }
 
@@ -74,7 +74,7 @@ export interface SystemNotification {
   content: string
   type: 'info' | 'warning' | 'error' | 'success'
   isRead: boolean
-  createdAt: string
+  createTime: string
 }
 
 // 仪表板数据接口

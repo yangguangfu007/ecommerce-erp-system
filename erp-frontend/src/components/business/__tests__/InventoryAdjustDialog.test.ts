@@ -408,7 +408,7 @@ describe('InventoryAdjustDialog', () => {
       
       wrapper.vm.handleImageError(mockEvent)
       
-      expect(mockEvent.target.src).toBe('/placeholder-product.png')
+      expect(mockEvent.target.src).toContain('data:image/svg+xml')
     })
   })
 

@@ -1,114 +1,99 @@
-# 技术栈与构建系统
+---
+inclusion: always
+---
 
-## 后端技术栈
+# 技术栈与开发标准
 
-- **Java**: OpenJDK 17 LTS
-- **框架**: Spring Boot 3.1.5, Spring Cloud 2022.0.4
-- **架构**: 基于Spring Cloud Gateway的微服务架构
-- **数据库**: MySQL 8.0.33 + MyBatis Plus 3.5.4
-- **缓存**: Redis 7.2.3 + Jedis客户端
-- **消息队列**: Apache Kafka 3.6.0
-- **服务发现**: Nacos 2.3.0
-- **熔断器**: Sentinel 1.8.6 + Resilience4j
-- **安全**: Spring Security + JWT (JJWT 0.12.3)
-- **文档**: SpringDoc OpenAPI 2.2.0
+## 核心技术栈
 
-## 前端技术栈
+### 后端（Java/Spring）
+- **Java 17 LTS** 配合 Spring Boot 3.2.0 + Spring Cloud 2023.0.0
+- **数据库**: MySQL 8.0.35 + MyBatis Plus 3.5.4 (表名snake_case，Java驼峰命名)
+- **缓存**: Redis 7.2.3 用于会话和缓存
+- **消息队列**: Apache Kafka 3.6.0 用于异步处理
+- **安全**: Spring Security + JWT认证
+- **网关**: Spring Cloud Gateway (端口 8080)
 
-- **框架**: Vue.js 3.5.17 + TypeScript 5.8+
-- **构建工具**: Vite 7.0.0
-- **UI组件库**: Element Plus 2.10.4
-- **状态管理**: Pinia 3.0.3 + 持久化
-- **路由**: Vue Router 4.x
-- **HTTP客户端**: Axios 1.10.0
-- **图表**: ECharts 6.0.0 + Chart.js 4.5.0
-- **测试**: Vitest 3.2.4 + Playwright 1.55.0
+### 前端（Vue/TypeScript）
+- **Vue 3.4+ 组合式API** + TypeScript 5.0+
+- **UI框架**: Element Plus 2.10+ (默认中文语言包)
+- **状态管理**: Pinia 3.0+ stores
+- **构建工具**: Vite 7.0+ 支持热重载
+- **HTTP客户端**: Axios 1.10+ 配合拦截器
 
-## 基础设施与运维
+### 基础设施
+- **开发环境**: Docker Compose 本地服务
+- **生产环境**: Kubernetes + Helm charts
+- **监控**: Prometheus + Grafana 技术栈
 
-- **容器化**: Docker + Docker Compose
-- **编排**: Kubernetes + Helm 3.8+
-- **监控**: Prometheus + Grafana + ELK Stack
-- **链路追踪**: Zipkin + Spring Cloud Sleuth
-- **CI/CD**: Maven 3.9+ 多阶段构建流水线
+## 开发命令与标准
 
-## 构建系统
+### 服务启动（使用启动脚本）
 
-### Maven (后端)
+**推荐使用项目启动脚本：**
+
 ```bash
-# 构建所有服务
-mvn clean package -DskipTests
+# 一键启动完整系统
+./scripts/start-services.sh
 
-# 运行特定服务
-mvn spring-boot:run -f erp-gateway/pom.xml
+# 分步启动
+./scripts/start-infrastructure.sh    # MySQL、Redis、Kafka、Nacos
+./scripts/start-backend.sh          # 用户服务、网关服务
+./scripts/start-frontend.sh         # Vue.js前端
 
-# 运行测试
-mvn test
-
-# 代码质量检查
-mvn checkstyle:check
-mvn spotbugs:check
+# 启动特定服务
+./scripts/start-backend.sh start user      # 只启动用户服务
+./scripts/start-frontend.sh build          # 构建生产版本
 ```
 
-### NPM (前端)
+**手动启动（备用方案）：**
+
 ```bash
-# 安装依赖
-npm install
+# 首先启动基础设施
+docker-compose up -d mysql redis kafka nacos > logs/infrastructure-startup.log 2>&1
 
-# 开发服务器
-npm run dev
+# 后端服务（后台运行并记录日志）
+nohup java -jar erp-gateway/target/erp-gateway-1.0.jar --spring.profiles.active=dev > logs/gateway-startup.log 2>&1 &
+nohup mvn spring-boot:run -Dspring-boot.run.profiles=dev > logs/service-startup.log 2>&1 &
 
-# 生产构建
-npm run build
-
-# 运行测试
-npm run test:unit
-npm run test:e2e
+# 前端（后台运行并记录日志）
+cd erp-frontend && nohup npm run dev > ../logs/frontend-startup.log 2>&1 &
 ```
 
-### Make命令 (编排)
+### 构建命令
+
+**使用启动脚本（推荐）：**
+
 ```bash
-# 一键部署
-make deploy
+# 前端构建和测试
+./scripts/start-frontend.sh build    # 生产构建
+./scripts/start-frontend.sh test     # 运行测试
+./scripts/start-frontend.sh lint     # 代码检查
 
-# 开发环境
-make dev-hot          # 热重载开发
-make dev-backend      # 仅后端服务
-make dev-frontend     # 仅前端
-
-# 特定服务开发
-make dev-gateway      # 仅网关服务
-make dev-user         # 仅用户服务
-
-# 测试
-make test             # 所有测试
-make test-backend     # 后端测试
-make test-frontend    # 前端测试
-make test-e2e         # 端到端测试
-
-# 维护
-make clean            # 清理构建产物
-make health           # 健康检查
-make logs             # 查看日志
+# 查看构建状态
+./scripts/start-frontend.sh status
 ```
 
-### Docker Compose (本地开发)
+**手动构建：**
+
 ```bash
-# 启动所有基础设施
-docker-compose up -d
+# 后端：Maven多模块构建
+mvn clean package -DskipTests  # 跳过测试以加快构建
+mvn test                       # 运行单元测试
 
-# 启动监控服务
-docker-compose --profile monitoring up -d
-
-# 查看日志
-docker-compose logs -f [service-name]
+# 前端：Vite构建
+cd erp-frontend
+npm install && npm run build   # 生产构建
+npm run dev                    # 开发模式（热重载）
 ```
 
-## 开发规范
+### 代码质量要求
+- **Java**: Google Java代码风格 + Checkstyle，必须使用中文注释
+- **TypeScript**: ESLint + Prettier，必须使用中文注释  
+- **测试覆盖率**: 后端 >80%，前端 >70%
+- **API文档**: 所有REST端点使用Swagger/OpenAPI
 
-- **Java**: 遵循Google Java代码规范，使用Checkstyle强制执行
-- **TypeScript**: ESLint + Prettier配置
-- **API**: RESTful设计，使用OpenAPI 3.0文档
-- **测试**: 最低80%代码覆盖率要求
-- **Git**: 遵循Conventional Commits规范
-- **版本**: 语义化版本控制 (SemVer)
+### 端口分配
+- 网关: 8080，用户: 8001，商品: 8002，订单: 8003
+- 库存: 8004，平台: 8005，物流: 8006，通知: 8007
+- 前端: 3000，Nacos: 8848

@@ -13,7 +13,7 @@
     - generic [ref=e16]:
       - generic [ref=e17]: 密码
       - generic [ref=e18]:
-        - textbox "密码" [ref=e19]: admin123
+        - textbox "密码" [ref=e19]
         - button
     - generic [ref=e20]:
       - generic [ref=e21] [cursor=pointer]:

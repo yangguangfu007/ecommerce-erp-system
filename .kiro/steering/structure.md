@@ -1,150 +1,112 @@
-# 项目结构与组织
+---
+inclusion: always
+---
 
-## 根目录结构
+# 项目结构与架构模式
+
+## 微服务架构（8个核心服务）
 
 ```
 ecommerce-erp-system/
-├── README.md                    # 项目文档
-├── pom.xml                      # Maven父POM
-├── package.json                 # 根目录package.json，用于E2E工具
-├── Makefile                     # 构建编排命令
-├── docker-compose.yml           # 本地开发环境
-├── checkstyle.xml              # Java代码规范配置
-├── .gitignore                  # Git忽略规则
-└── .kiro/                      # Kiro AI助手配置
+├── erp-common/              # 共享工具类、DTO、常量
+├── erp-gateway/             # API网关 (端口 8080)
+├── erp-user-service/        # 用户/权限管理 (端口 8001)
+├── erp-product-service/     # 商品目录 (端口 8002)
+├── erp-order-service/       # 订单处理 (端口 8003)
+├── erp-inventory-service/   # 库存管理 (端口 8004)
+├── erp-platform-service/    # 电商平台集成 (端口 8005)
+├── erp-logistics-service/   # 物流/跟踪 (端口 8006)
+├── erp-notification-service/# 邮件/短信通知 (端口 8007)
+├── erp-frontend/            # Vue 3 + TypeScript SPA
+├── scripts/                 # 自动化脚本
+└── docker-compose.yml       # 本地开发环境
 ```
 
-## 后端服务 (微服务)
+## 标准服务结构模式
 
-每个服务遵循相同的Maven结构：
+每个微服务都遵循以下精确结构：
 
 ```
-erp-{service-name}/
-├── pom.xml                     # 服务特定的Maven配置
-├── Dockerfile                  # 容器构建配置
-├── src/
-│   ├── main/
-│   │   ├── java/com/erp/       # Java源代码
-│   │   └── resources/          # 配置文件
-│   └── test/                   # 单元测试和集成测试
-├── target/                     # 构建输出 (生成)
-└── logs/                       # 服务日志 (运行时)
+erp-{service}-service/
+├── src/main/java/com/erp/{service}/
+│   ├── {Service}Application.java    # @SpringBootApplication 主类
+│   ├── controller/                  # @RestController 控制器类
+│   ├── service/                     # 业务逻辑接口
+│   │   └── impl/                    # @Service 实现类
+│   ├── entity/                      # @Entity JPA实体类 (驼峰命名)
+│   ├── dto/                         # 数据传输对象
+│   ├── mapper/                      # MyBatis @Mapper 接口
+│   ├── config/                      # @Configuration 配置类
+│   └── event/                       # Kafka事件处理器
+├── src/main/resources/
+│   ├── application.yml              # Spring配置
+│   ├── mapper/                      # MyBatis XML映射器
+│   └── sql/init.sql                 # 数据库模式 (snake_case)
+├── src/test/java/                   # 单元测试（中文@DisplayName）
+├── Dockerfile                       # 多阶段构建
+└── pom.xml                          # Maven依赖
 ```
 
-### 服务模块
+## 命名规范（严格遵守）
 
-- **erp-common**: 共享工具类、DTO和通用配置
-- **erp-gateway**: Spring Cloud Gateway (API网关)
-- **erp-user-service**: 用户管理和认证
-- **erp-product-service**: 商品目录管理
-- **erp-order-service**: 订单处理和管理
-- **erp-inventory-service**: 库存跟踪和预警
-- **erp-platform-service**: 外部平台集成 (沃尔玛)
-- **erp-logistics-service**: 物流和配送 (云途)
-- **erp-notification-service**: 通知和消息
+### Java类
+- 控制器: `{Entity}Controller` (例如：`UserController`)
+- 服务: `{Entity}Service` 接口 + `{Entity}ServiceImpl`
+- 实体: `{Entity}` (例如：`User`, `Product`)
+- DTO: `{Entity}DTO` (例如：`UserDTO`)
+- 映射器: `{Entity}Mapper` (例如：`UserMapper`)
 
-## 前端应用
+### 数据库模式
+- 表: `snake_case` (例如：`user_roles`, `order_items`)
+- 主键: `id` (Long类型，自增)
+- 时间戳: `created_at`, `updated_at` (必需)
+- 外键: `{table}_id` (例如：`user_id`)
+
+### API端点
+- 模式: `/api/{service}/{resource}`
+- 示例: `/api/users`, `/api/products/{id}`, `/api/orders/{id}/items`
+
+## 前端结构（Vue 3 + TypeScript）
 
 ```
 erp-frontend/
-├── package.json                # NPM依赖和脚本
-├── vite.config.ts             # Vite构建配置
-├── tsconfig.json              # TypeScript配置
-├── playwright.config.ts       # E2E测试配置
 ├── src/
-│   ├── main.ts                # 应用入口点
-│   ├── App.vue                # 根Vue组件
-│   ├── api/                   # API客户端模块
-│   │   ├── modules/           # 服务特定的API调用
-│   │   ├── request.ts         # HTTP客户端配置
-│   │   └── types.ts           # API类型定义
-│   ├── components/            # 可复用Vue组件
-│   │   ├── business/          # 业务特定组件
-│   │   ├── common/            # 通用UI组件
-│   │   └── charts/            # 图表组件
-│   ├── views/                 # 页面级组件
-│   │   ├── dashboard/         # 仪表板页面
-│   │   ├── orders/            # 订单管理页面
-│   │   ├── products/          # 商品管理页面
-│   │   ├── inventory/         # 库存页面
-│   │   └── auth/              # 认证页面
-│   ├── stores/                # Pinia状态管理
-│   ├── router/                # Vue Router配置
-│   ├── types/                 # TypeScript类型定义
-│   ├── utils/                 # 工具函数
-│   └── styles/                # 全局样式和主题
-├── tests/                     # 测试文件
-│   ├── e2e/                   # 端到端测试
-│   └── api/                   # API集成测试
-└── dist/                      # 构建输出 (生成)
+│   ├── views/                       # 页面组件 (PascalCase)
+│   │   ├── auth/LoginView.vue       # 认证页面
+│   │   ├── dashboard/DashboardView.vue
+│   │   ├── users/UserManagement.vue # 业务模块
+│   │   ├── products/ProductManagement.vue
+│   │   ├── orders/OrderManagement.vue
+│   │   ├── inventory/InventoryManagement.vue
+│   │   └── settings/SystemSettings.vue
+│   ├── components/
+│   │   ├── common/                  # 基础组件 (BaseButton, BaseTable)
+│   │   └── business/                # 业务特定组件
+│   ├── stores/                      # Pinia状态管理 (user.ts, product.ts)
+│   ├── api/modules/                 # 按域划分的API服务层
+│   ├── types/                       # TypeScript接口
+│   ├── layouts/MainLayout.vue       # 布局组件
+│   └── styles/                      # SCSS变量和主题
 ```
 
-## 基础设施与部署
+## 配置模式
 
-```
-k8s/                           # Kubernetes清单
-├── infrastructure/            # 数据库、缓存、消息队列
-├── monitoring/               # Prometheus、Grafana配置
-└── namespace.yaml            # Kubernetes命名空间
+### Spring Boot配置文件
+- `application.yml` - 基础配置
+- `application-dev.yml` - 开发环境（默认）
+- `application-prod.yml` - 生产环境
+- `application-test.yml` - 测试环境
 
-helm/                         # Helm图表
-└── erp-system/              # 主应用图表
-    ├── Chart.yaml           # 图表元数据
-    ├── values.yaml          # 默认值
-    ├── values-dev.yaml      # 开发环境
-    ├── values-prod.yaml     # 生产环境
-    └── templates/           # Kubernetes模板
+### 环境变量
+- 数据库: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`
+- Redis: `REDIS_HOST`, `REDIS_PORT`
+- Kafka: `KAFKA_BOOTSTRAP_SERVERS`
 
-scripts/                     # 自动化脚本
-├── deploy/                  # 部署脚本
-├── backup/                  # 数据库备份脚本
-├── sql/                     # 数据库初始化
-└── start-*.sh              # 服务启动脚本
-```
+## 架构模式（必需）
 
-## 文档
-
-```
-docs/                        # 项目文档
-├── project-overview.md      # 系统架构概述
-├── quick-start-guide.md     # 快速开始指南
-├── development-guide.md     # 开发设置和指南
-├── deployment-guide.md      # 生产环境部署指南
-├── api-documentation.md     # API参考文档
-├── user-guide.md           # 最终用户文档
-└── troubleshooting.md      # 常见问题和解决方案
-```
-
-## 命名规范
-
-### Java (后端)
-- **包名**: `com.erp.{service}.{layer}` (例如: `com.erp.user.controller`)
-- **类名**: PascalCase (例如: `UserController`, `OrderService`)
-- **方法名**: camelCase (例如: `getUserById`, `createOrder`)
-- **常量**: UPPER_SNAKE_CASE (例如: `MAX_RETRY_COUNT`)
-
-### TypeScript/Vue (前端)
-- **文件名**: kebab-case (例如: `user-list.vue`, `order-service.ts`)
-- **组件名**: PascalCase (例如: `UserList`, `OrderForm`)
-- **变量名**: camelCase (例如: `userName`, `orderList`)
-- **常量**: UPPER_SNAKE_CASE (例如: `API_BASE_URL`)
-
-### 数据库
-- **表名**: snake_case (例如: `user_accounts`, `order_items`)
-- **列名**: snake_case (例如: `user_id`, `created_at`)
-- **索引**: `idx_{table}_{column}` (例如: `idx_users_email`)
-
-## 配置管理
-
-- **环境变量**: 本地开发使用`.env`文件
-- **Spring配置文件**: `dev`, `test`, `prod`用于不同环境
-- **Nacos配置**: 微服务的集中化配置
-- **Kubernetes ConfigMaps**: 环境特定配置
-
-## 端口分配
-
-- **前端**: 3000 (开发服务器)
-- **网关**: 8080 (API网关)
-- **服务**: 8001-8007 (各个微服务)
-- **基础设施**: 3306 (MySQL), 6379 (Redis), 9092 (Kafka)
-- **监控**: 9090 (Prometheus), 3001 (Grafana)
+- **每服务一数据库**: 每个服务拥有自己的数据
+- **API网关**: 单一入口点 (erp-gateway:8080)
+- **事件驱动**: Kafka用于异步服务间通信
+- **CQRS**: 复杂域的读写分离模型
+- **断路器**: Resilience4j用于容错
+- **分布式追踪**: 跨服务请求关联

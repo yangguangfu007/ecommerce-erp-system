@@ -104,6 +104,16 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: '/inventory-test',
+        name: 'InventoryTest',
+        component: () => import('@/views/inventory/InventoryTest.vue'),
+        meta: {
+          title: '库存测试',
+          requiresAuth: true,
+          hideInMenu: true
+        }
+      },
+      {
         path: '/inventory/alerts',
         name: 'InventoryAlerts',
         component: () => import('@/views/inventory/InventoryAlerts.vue'),

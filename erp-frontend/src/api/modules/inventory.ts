@@ -53,10 +53,66 @@ export interface InventoryAlertConfig {
   updatedAt?: string
 }
 
+// 全局请求管理器
+class RequestManager {
+  private activeRequests = new Map<string, Promise<any>>()
+  private lastRequestTimes = new Map<string, number>()
+  private readonly DEBOUNCE_TIME = 1000 // 1秒防抖
+
+  private generateKey(url: string, params: any): string {
+    return `${url}_${JSON.stringify(params)}`
+  }
+
+  async execute<T>(url: string, params: any, requestFn: () => Promise<T>): Promise<T> {
+    const key = this.generateKey(url, params)
+    const now = Date.now()
+    
+    // 检查是否有正在进行的相同请求
+    if (this.activeRequests.has(key)) {
+      console.log(`API: 复用正在进行的请求 ${key}`)
+      return this.activeRequests.get(key)!
+    }
+    
+    // 防抖检查
+    const lastTime = this.lastRequestTimes.get(key) || 0
+    if (now - lastTime < this.DEBOUNCE_TIME) {
+      console.log(`API: 请求过于频繁，跳过 ${key}`)
+      return Promise.resolve({
+        code: 200,
+        message: '请求过于频繁',
+        data: [],
+        timestamp: new Date().toISOString()
+      } as any)
+    }
+    
+    // 记录请求时间
+    this.lastRequestTimes.set(key, now)
+    
+    // 执行请求
+    const request = requestFn()
+    this.activeRequests.set(key, request)
+    
+    // 请求完成后清理
+    request.finally(() => {
+      this.activeRequests.delete(key)
+    })
+    
+    return request
+  }
+}
+
+const requestManager = new RequestManager()
+
 export const inventoryApi = {
   // 获取库存列表
   getInventoryList(params: InventoryQuery): Promise<ApiResponse<Inventory[]>> {
-    return api.get('/inventory', { params })
+    console.log('API: getInventoryList 被调用，参数:', params)
+    
+    return requestManager.execute(
+      '/inventory',
+      params,
+      () => api.get('/inventory', { params })
+    )
   },
 
   // 获取库存详情
