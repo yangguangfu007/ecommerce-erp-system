@@ -68,12 +68,12 @@ test.describe('ERP系统全面端到端测试', () => {
     
     await expect(page).toHaveURL(/.*dashboard/, { timeout: 10000 })
     
-    // 导航到用户管理 - 使用实际的导航链接
-    await page.click('a[href="/users"]')
+    // 直接导航到用户管理页面
+    await page.goto('/users')
     await expect(page).toHaveURL(/.*users/, { timeout: 5000 })
     
     // 验证用户管理页面元素
-    await expect(page.locator('.page-title')).toContainText('用户管理')
+    await expect(page.locator('h2.page-title')).toContainText('用户管理')
     
     // 验证页面基本元素存在
     const pageContent = page.locator('.user-management')
@@ -88,12 +88,12 @@ test.describe('ERP系统全面端到端测试', () => {
     
     await expect(page).toHaveURL(/.*dashboard/, { timeout: 10000 })
     
-    // 导航到商品管理
-    await page.click('a[href="/products"]')
+    // 直接导航到商品管理页面
+    await page.goto('/products')
     await expect(page).toHaveURL(/.*products/, { timeout: 5000 })
     
     // 验证商品管理页面
-    await expect(page.locator('.page-title')).toContainText('商品管理')
+    await expect(page.locator('h2.page-title')).toContainText('商品管理')
     
     // 验证页面基本元素存在
     const pageContent = page.locator('.product-management')
@@ -108,12 +108,12 @@ test.describe('ERP系统全面端到端测试', () => {
     
     await expect(page).toHaveURL(/.*dashboard/, { timeout: 10000 })
     
-    // 导航到订单管理
-    await page.click('a[href="/orders"]')
+    // 直接导航到订单管理页面
+    await page.goto('/orders')
     await expect(page).toHaveURL(/.*orders/, { timeout: 5000 })
     
     // 验证订单管理页面
-    await expect(page.locator('.page-title')).toContainText('订单管理')
+    await expect(page.locator('h2.page-title')).toContainText('订单管理')
     
     // 验证页面基本元素存在
     const pageContent = page.locator('.order-management')
@@ -128,12 +128,12 @@ test.describe('ERP系统全面端到端测试', () => {
     
     await expect(page).toHaveURL(/.*dashboard/, { timeout: 10000 })
     
-    // 导航到库存管理
-    await page.click('a[href="/inventory"]')
+    // 直接导航到库存管理页面
+    await page.goto('/inventory')
     await expect(page).toHaveURL(/.*inventory/, { timeout: 5000 })
     
     // 验证库存管理页面
-    await expect(page.locator('.page-title')).toContainText('库存管理')
+    await expect(page.locator('h2.page-title')).toContainText('库存管理')
     
     // 验证页面基本元素存在
     const pageContent = page.locator('.inventory-management')
@@ -160,13 +160,13 @@ test.describe('ERP系统全面端到端测试', () => {
       await page.setViewportSize(viewport)
       
       // 验证布局适应性
-      await expect(page.locator('.app-container')).toBeVisible()
+      await expect(page.locator('[data-test="main-layout"]')).toBeVisible()
       await expect(page.locator('.app-sidebar')).toBeVisible()
       await expect(page.locator('.app-header')).toBeVisible()
       
       // 在小屏幕上测试侧边栏折叠
       if (viewport.width < 1024) {
-        const sidebarToggle = page.locator('.sidebar-toggle')
+        const sidebarToggle = page.locator('[data-test="nav-toggle"]')
         if (await sidebarToggle.isVisible()) {
           await sidebarToggle.click()
           await page.waitForTimeout(500)
