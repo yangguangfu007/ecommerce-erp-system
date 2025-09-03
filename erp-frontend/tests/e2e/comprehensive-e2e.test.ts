@@ -32,7 +32,8 @@ test.describe('ERP系统全面端到端测试', () => {
     
     // 验证登录成功，跳转到仪表板
     await expect(page).toHaveURL(/.*dashboard/, { timeout: 10000 })
-    await expect(page.locator('.page-title')).toContainText('仪表板')
+    // 使用实际的页面标题选择器
+    await expect(page.locator('h2.page-title')).toContainText('仪表板')
   })
 
   test('仪表板功能测试', async ({ page }) => {
@@ -44,7 +45,7 @@ test.describe('ERP系统全面端到端测试', () => {
     await expect(page).toHaveURL(/.*dashboard/, { timeout: 10000 })
     
     // 验证仪表板元素
-    await expect(page.locator('.page-title')).toContainText('仪表板')
+    await expect(page.locator('h2.page-title')).toContainText('仪表板')
     
     // 验证统计卡片
     const statCards = page.locator('.stat-card')
