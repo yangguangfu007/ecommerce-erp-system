@@ -17,51 +17,51 @@
     <description>ERP系统公共模块</description>
 
     <dependencies>
-        <!-- Spring Boot Web -->
+        <!-- Spring Boot Starter（仅基础功能） -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
         
-        <!-- MyBatis Plus -->
+        <!-- Spring Boot Configuration Processor（用于配置属性） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        
+        <!-- MyBatis Plus（可选依赖，各服务模块自行决定是否使用） -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
+            <optional>true</optional>
         </dependency>
         
-        <!-- FastJSON2 -->
+        <!-- FastJSON2（JSON处理工具） -->
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
         </dependency>
         
-        <!-- Lombok -->
+        <!-- Lombok（代码生成工具） -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
         
-        <!-- Jackson -->
+        <!-- Jackson Annotations（JSON注解） -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
 
         <!-- 测试依赖 -->
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 </project>

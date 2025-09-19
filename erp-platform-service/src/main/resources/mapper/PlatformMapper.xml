@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.platform.mapper.PlatformMapper">
+
+    <!-- 分页查询平台列表 -->
+    <select id="selectPlatformPage" resultType="com.erp.platform.entity.Platform">
+        SELECT * FROM platforms
+        WHERE deleted = 0
+        <if test="name != null and name != ''">
+            AND platform_name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="type != null and type != ''">
+            AND platform_type = #{type}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

@@ -5,6 +5,72 @@ CREATE DATABASE IF NOT EXISTS erp_platform DEFAULT CHARACTER SET utf8mb4 COLLATE
 
 USE erp_platform;
 
+-- 平台基础信息表
+CREATE TABLE IF NOT EXISTS platforms (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    platform_name VARCHAR(100) NOT NULL COMMENT '平台名称',
+    platform_type VARCHAR(50) NOT NULL COMMENT '平台类型',
+    platform_code VARCHAR(50) NOT NULL UNIQUE COMMENT '平台代码',
+    description VARCHAR(500) COMMENT '平台描述',
+    status VARCHAR(50) NOT NULL DEFAULT 'ACTIVE' COMMENT '平台状态',
+    official_url VARCHAR(200) COMMENT '平台官网地址',
+    api_base_url VARCHAR(200) COMMENT 'API基础地址',
+    supported_features JSON COMMENT '支持的功能列表(JSON格式)',
+    config_template JSON COMMENT '平台配置模板(JSON格式)',
+    enabled BOOLEAN NOT NULL DEFAULT TRUE COMMENT '是否启用',
+    sort_order INT DEFAULT 0 COMMENT '排序顺序',
+    last_updated DATETIME COMMENT '最后更新时间',
+    remarks VARCHAR(1000) COMMENT '备注信息',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    create_by BIGINT COMMENT '创建人ID',
+    update_by BIGINT COMMENT '更新人ID',
+    deleted INT DEFAULT 0 COMMENT '逻辑删除标志',
+    version INT DEFAULT 1 COMMENT '版本号',
+    INDEX idx_platform_type (platform_type),
+    INDEX idx_platform_code (platform_code),
+    INDEX idx_status (status),
+    INDEX idx_enabled (enabled),
+    INDEX idx_sort_order (sort_order),
+    INDEX idx_deleted (deleted)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='平台基础信息表';
+
+-- 平台配置表
+CREATE TABLE IF NOT EXISTS platform_configs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    platform_id BIGINT NOT NULL COMMENT '平台ID',
+    config_name VARCHAR(100) NOT NULL COMMENT '配置名称',
+    config_key VARCHAR(100) NOT NULL COMMENT '配置键',
+    config_value TEXT COMMENT '配置值',
+    config_type VARCHAR(50) NOT NULL COMMENT '配置类型',
+    encrypted BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否加密存储',
+    required BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否必填',
+    description VARCHAR(500) COMMENT '配置描述',
+    default_value VARCHAR(500) COMMENT '默认值',
+    validation_rule VARCHAR(200) COMMENT '验证规则(正则表达式)',
+    config_group VARCHAR(50) COMMENT '配置分组',
+    sort_order INT DEFAULT 0 COMMENT '排序顺序',
+    enabled BOOLEAN NOT NULL DEFAULT TRUE COMMENT '是否启用',
+    last_validated DATETIME COMMENT '最后验证时间',
+    validation_status VARCHAR(50) COMMENT '验证状态',
+    validation_error VARCHAR(500) COMMENT '验证错误信息',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    create_by BIGINT COMMENT '创建人ID',
+    update_by BIGINT COMMENT '更新人ID',
+    deleted INT DEFAULT 0 COMMENT '逻辑删除标志',
+    version INT DEFAULT 1 COMMENT '版本号',
+    INDEX idx_platform_id (platform_id),
+    INDEX idx_config_key (config_key),
+    INDEX idx_config_type (config_type),
+    INDEX idx_config_group (config_group),
+    INDEX idx_enabled (enabled),
+    INDEX idx_validation_status (validation_status),
+    INDEX idx_deleted (deleted),
+    UNIQUE KEY uk_platform_config (platform_id, config_key, deleted),
+    FOREIGN KEY (platform_id) REFERENCES platforms(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='平台配置表';
+
 -- 平台店铺表
 CREATE TABLE IF NOT EXISTS platform_stores (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
@@ -114,6 +180,32 @@ CREATE TABLE IF NOT EXISTS platform_api_call_logs (
     INDEX idx_success (success),
     FOREIGN KEY (store_id) REFERENCES platform_stores(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='平台API调用日志表';
+
+-- 插入平台基础数据
+INSERT INTO platforms (platform_name, platform_type, platform_code, description, status, official_url, api_base_url, supported_features, config_template, enabled, sort_order) VALUES
+('沃尔玛市场', 'WALMART', 'walmart', '沃尔玛全球电商平台，支持商品上传、订单管理、库存同步等功能', 'ACTIVE', 'https://marketplace.walmart.com', 'https://marketplace.walmartapis.com', '["product_upload", "order_sync", "inventory_sync", "price_update"]', '{"clientId":"", "clientSecret":"", "environment":"sandbox"}', TRUE, 1),
+('亚马逊', 'AMAZON', 'amazon', '亚马逊全球电商平台，支持多站点商品销售和管理', 'ACTIVE', 'https://sellercentral.amazon.com', 'https://mws.amazonservices.com', '["product_upload", "order_sync", "inventory_sync", "fba_management"]', '{"accessKey":"", "secretKey":"", "sellerId":"", "marketplaceId":""}', TRUE, 2),
+('eBay', 'EBAY', 'ebay', 'eBay全球在线拍卖及购物网站', 'ACTIVE', 'https://www.ebay.com', 'https://api.ebay.com', '["product_upload", "order_sync", "inventory_sync", "auction_management"]', '{"appId":"", "devId":"", "certId":"", "token":""}', TRUE, 3),
+('速卖通', 'ALIEXPRESS', 'aliexpress', '阿里巴巴旗下跨境电商平台', 'INACTIVE', 'https://www.aliexpress.com', 'https://gw.api.alibaba.com', '["product_upload", "order_sync", "inventory_sync"]', '{"appKey":"", "appSecret":"", "accessToken":""}', TRUE, 4);
+
+-- 插入平台配置数据
+INSERT INTO platform_configs (platform_id, config_name, config_key, config_value, config_type, encrypted, required, description, config_group, sort_order, enabled) VALUES
+-- 沃尔玛配置
+(1, '客户端ID', 'clientId', '', 'STRING', FALSE, TRUE, '沃尔玛API客户端ID', 'auth', 1, TRUE),
+(1, '客户端密钥', 'clientSecret', '', 'PASSWORD', TRUE, TRUE, '沃尔玛API客户端密钥', 'auth', 2, TRUE),
+(1, '环境设置', 'environment', 'sandbox', 'STRING', FALSE, TRUE, 'API环境：sandbox或production', 'auth', 3, TRUE),
+(1, '连接超时', 'connectTimeout', '30000', 'NUMBER', FALSE, FALSE, 'API连接超时时间（毫秒）', 'config', 4, TRUE),
+(1, '读取超时', 'readTimeout', '60000', 'NUMBER', FALSE, FALSE, 'API读取超时时间（毫秒）', 'config', 5, TRUE),
+-- 亚马逊配置
+(2, '访问密钥', 'accessKey', '', 'STRING', FALSE, TRUE, '亚马逊MWS访问密钥', 'auth', 1, TRUE),
+(2, '秘密密钥', 'secretKey', '', 'PASSWORD', TRUE, TRUE, '亚马逊MWS秘密密钥', 'auth', 2, TRUE),
+(2, '卖家ID', 'sellerId', '', 'STRING', FALSE, TRUE, '亚马逊卖家ID', 'auth', 3, TRUE),
+(2, '市场ID', 'marketplaceId', 'ATVPDKIKX0DER', 'STRING', FALSE, TRUE, '亚马逊市场ID', 'auth', 4, TRUE),
+-- eBay配置
+(3, '应用ID', 'appId', '', 'STRING', FALSE, TRUE, 'eBay应用ID', 'auth', 1, TRUE),
+(3, '开发者ID', 'devId', '', 'STRING', FALSE, TRUE, 'eBay开发者ID', 'auth', 2, TRUE),
+(3, '证书ID', 'certId', '', 'PASSWORD', TRUE, TRUE, 'eBay证书ID', 'auth', 3, TRUE),
+(3, '用户令牌', 'token', '', 'PASSWORD', TRUE, TRUE, 'eBay用户令牌', 'auth', 4, TRUE);
 
 -- 插入初始数据
 INSERT INTO platform_stores (store_name, platform_type, platform_store_id, api_credentials, status, config_data, created_by) VALUES

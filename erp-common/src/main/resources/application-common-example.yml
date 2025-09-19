@@ -1,0 +1,117 @@
+# ERP公共模块配置示例
+# 各服务模块可以参考此配置文件进行配置
+
+# MyBatis Plus 基础配置
+mybatis-plus:
+  # 配置扫描路径
+  mapper-locations: classpath*:mapper/**/*.xml
+  # 实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: com.erp.*.entity
+  # 配置
+  configuration:
+    # 是否开启自动驼峰命名规则映射
+    map-underscore-to-camel-case: true
+    # 开启Mybatis二级缓存，默认为 true
+    cache-enabled: false
+    # 日志实现（开发环境可开启，生产环境建议关闭）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # 全局配置
+  global-config:
+    # 数据库相关配置
+    db-config:
+      # 主键类型（AUTO:"数据库ID自增", INPUT:"用户输入ID", ID_WORKER:"全局唯一ID", UUID:"全局唯一ID"）
+      id-type: auto
+      # 逻辑删除字段
+      logic-delete-field: deleted
+      # 逻辑删除全局值（1表示已删除）
+      logic-delete-value: 1
+      # 逻辑未删除全局值（0表示未删除）
+      logic-not-delete-value: 0
+
+# MyBatis Plus 自定义配置
+mybatis-plus:
+  custom:
+    # 分页配置
+    page:
+      enabled: true           # 是否启用分页插件
+      max-limit: 1000        # 单页最大限制数量
+      overflow: false        # 溢出总页数后是否进行处理
+      optimize-join: true    # 是否优化JOIN查询
+      reasonable: true       # 是否启用合理化分页参数
+    
+    # 性能监控配置
+    performance:
+      enabled: false         # 是否启用性能监控（生产环境建议关闭）
+      slow-sql-threshold: 1000  # 慢SQL阈值（毫秒）
+      format-sql: true       # 是否格式化SQL
+      log-execution-time: true  # 是否记录执行时间
+    
+    # 安全配置
+    security:
+      block-attack: true     # 是否启用防止全表更新与删除
+      illegal-sql-check: true  # 是否启用非法SQL检查
+      sql-injection-check: true  # 是否启用SQL注入检查
+    
+    # 批量操作配置
+    batch:
+      default-batch-size: 1000  # 默认批次大小
+      max-batch-size: 5000      # 最大批次大小
+      insert-optimization: true  # 是否启用批量插入优化
+      update-optimization: true  # 是否启用批量更新优化
+
+# 日志配置示例
+logging:
+  level:
+    # MyBatis Plus SQL日志
+    com.baomidou.mybatisplus: debug
+    # 自定义Mapper日志
+    com.erp.*.mapper: debug
+    # 根日志级别
+    root: info
+  pattern:
+    # 控制台日志格式
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+    # 文件日志格式
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+
+# Spring配置示例
+spring:
+  # 数据源配置（各服务模块自行配置）
+  datasource:
+    # 数据源类型
+    type: com.zaxxer.hikari.HikariDataSource
+    # 数据库连接信息
+    url: jdbc:mysql://localhost:3306/your_database?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci&autoReconnect=true&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+    username: your_username
+    password: your_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    
+    # HikariCP连接池配置
+    hikari:
+      # 连接池名称
+      pool-name: ERP-HikariCP
+      # 最大连接数
+      maximum-pool-size: 20
+      # 最小空闲连接数
+      minimum-idle: 5
+      # 连接超时时间（毫秒）
+      connection-timeout: 30000
+      # 空闲超时时间（毫秒）
+      idle-timeout: 600000
+      # 连接最大生存时间（毫秒）
+      max-lifetime: 1800000
+      # 连接泄漏检测阈值（毫秒）
+      leak-detection-threshold: 60000
+      # 连接测试查询
+      connection-test-query: SELECT 1
+      # 验证超时时间（毫秒）
+      validation-timeout: 5000
+
+# 应用配置示例
+app:
+  # 应用名称
+  name: ERP System
+  # 应用版本
+  version: 1.0.0
+  # 应用描述
+  description: 电商ERP系统

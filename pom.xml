@@ -122,6 +122,14 @@
                 <version>${mybatis-plus.version}</version>
             </dependency>
             
+            <!-- MyBatis Plus Test -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter-test</artifactId>
+                <version>${mybatis-plus.version}</version>
+                <scope>test</scope>
+            </dependency>
+            
             <!-- 数据库连接池 -->
             <dependency>
                 <groupId>com.alibaba</groupId>

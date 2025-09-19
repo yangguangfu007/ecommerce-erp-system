@@ -5,17 +5,22 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * 数据库实体基类
- * 包含通用的审计字段
+ * 包含通用的审计字段和乐观锁支持
  *
  * @author ERP System
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
 public abstract class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,94 +48,54 @@ public abstract class BaseEntity implements Serializable {
     /**
      * 创建人ID
      */
-    @TableField(exist = false)
+    @TableField(value = "create_by", fill = FieldFill.INSERT)
     private Long createBy;
 
     /**
      * 更新人ID
      */
-    @TableField(exist = false)
+    @TableField(value = "update_by", fill = FieldFill.INSERT_UPDATE)
     private Long updateBy;
 
     /**
      * 逻辑删除标志（0：未删除，1：已删除）
      */
     @TableLogic
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(value = "deleted", fill = FieldFill.INSERT)
     private Integer deleted;
 
     /**
      * 版本号（用于乐观锁）
      */
-    @TableField(fill = FieldFill.INSERT)
+    @Version
+    @TableField(value = "version", fill = FieldFill.INSERT)
     private Integer version;
 
-    public Long getId() {
-        return id;
+    /**
+     * 获取实体描述信息
+     * 子类可以重写此方法提供更详细的描述
+     *
+     * @return 实体描述
+     */
+    public String getEntityDescription() {
+        return this.getClass().getSimpleName() + "(id=" + id + ")";
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    /**
+     * 检查实体是否为新实体（ID为空）
+     *
+     * @return true-新实体，false-已存在的实体
+     */
+    public boolean isNew() {
+        return this.id == null;
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Long getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(Long createBy) {
-        this.createBy = createBy;
-    }
-
-    public Long getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(Long updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseEntity{" +
-                "id=" + id +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", createBy=" + createBy +
-                ", updateBy=" + updateBy +
-                ", deleted=" + deleted +
-                ", version=" + version +
-                '}';
+    /**
+     * 检查实体是否已被逻辑删除
+     *
+     * @return true-已删除，false-未删除
+     */
+    public boolean isLogicallyDeleted() {
+        return this.deleted != null && this.deleted == 1;
     }
 }

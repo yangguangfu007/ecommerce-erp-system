@@ -7,10 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,7 +18,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -35,13 +34,17 @@ class OrderNotificationServiceImplTest {
     @Mock
     private OrderService orderService;
 
-    @InjectMocks
     private OrderNotificationServiceImpl orderNotificationService;
 
     private OrderDTO testOrder;
 
     @BeforeEach
     void setUp() {
+        // 手动创建服务实例并注入Mock依赖
+        orderNotificationService = new OrderNotificationServiceImpl(kafkaTemplate);
+        // 使用反射注入OrderService Mock对象
+        ReflectionTestUtils.setField(orderNotificationService, "orderService", orderService);
+        
         // 准备测试订单数据
         testOrder = new OrderDTO();
         testOrder.setId(1L);
@@ -74,7 +77,8 @@ class OrderNotificationServiceImplTest {
         // 验证Kafka消息发送
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> messageCaptor = ArgumentCaptor.forClass(Map.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> messageCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(kafkaTemplate).send(topicCaptor.capture(), keyCaptor.capture(), messageCaptor.capture());
 
@@ -113,7 +117,8 @@ class OrderNotificationServiceImplTest {
         // 验证Kafka消息发送
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> messageCaptor = ArgumentCaptor.forClass(Map.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> messageCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(kafkaTemplate).send(topicCaptor.capture(), keyCaptor.capture(), messageCaptor.capture());
 
@@ -152,7 +157,8 @@ class OrderNotificationServiceImplTest {
         // 验证Kafka消息发送
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> messageCaptor = ArgumentCaptor.forClass(Map.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> messageCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(kafkaTemplate).send(topicCaptor.capture(), keyCaptor.capture(), messageCaptor.capture());
 
@@ -191,7 +197,8 @@ class OrderNotificationServiceImplTest {
         // 验证Kafka消息发送
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> messageCaptor = ArgumentCaptor.forClass(Map.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> messageCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(kafkaTemplate).send(topicCaptor.capture(), keyCaptor.capture(), messageCaptor.capture());
 
@@ -230,7 +237,8 @@ class OrderNotificationServiceImplTest {
         // 验证Kafka消息发送
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> messageCaptor = ArgumentCaptor.forClass(Map.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> messageCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(kafkaTemplate).send(topicCaptor.capture(), keyCaptor.capture(), messageCaptor.capture());
 
@@ -267,7 +275,8 @@ class OrderNotificationServiceImplTest {
         // 验证Kafka消息发送
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> messageCaptor = ArgumentCaptor.forClass(Map.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> messageCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(kafkaTemplate).send(topicCaptor.capture(), keyCaptor.capture(), messageCaptor.capture());
 
@@ -346,7 +355,8 @@ class OrderNotificationServiceImplTest {
         // 验证Kafka消息发送
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> messageCaptor = ArgumentCaptor.forClass(Map.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> messageCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(kafkaTemplate).send(topicCaptor.capture(), keyCaptor.capture(), messageCaptor.capture());
 
@@ -380,7 +390,8 @@ class OrderNotificationServiceImplTest {
         // 验证Kafka消息发送
         ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> keyCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> messageCaptor = ArgumentCaptor.forClass(Map.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> messageCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(kafkaTemplate).send(topicCaptor.capture(), keyCaptor.capture(), messageCaptor.capture());
 

@@ -1,0 +1,102 @@
+package com.erp.platform.mapper;
+
+import com.erp.platform.entity.Platform;
+import com.erp.platform.entity.PlatformStatus;
+import com.erp.platform.entity.PlatformType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * 平台Mapper集成测试类
+ */
+@SpringBootTest
+@ActiveProfiles("test")
+@Transactional
+@Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+class PlatformMapperIntegrationTest {
+
+    @Autowired
+    private PlatformMapper platformMapper;
+
+    @Test
+    @DisplayName("集成测试：完整的平台管理流程")
+    void testCompleteWorkflow() {
+        // 1. 查询初始数据
+        List<Platform> initialPlatforms = platformMapper.selectByType(PlatformType.WALMART);
+        assertThat(initialPlatforms).hasSize(1);
+        
+        // 2. 创建新平台
+        Platform newPlatform = new Platform();
+        newPlatform.setPlatformName("新测试平台");
+        newPlatform.setPlatformType(PlatformType.AMAZON);
+        newPlatform.setStatus(PlatformStatus.ACTIVE);
+        newPlatform.setConfigTemplate("{\"apiKey\": \"test123\"}");
+        newPlatform.setCreateTime(LocalDateTime.now());
+        newPlatform.setUpdateTime(LocalDateTime.now());
+        
+        platformMapper.insert(newPlatform);
+        assertThat(newPlatform.getId()).isNotNull();
+        
+        // 3. 验证活跃平台数量增加
+        Long activeCount = platformMapper.countActivePlatforms();
+        assertThat(activeCount).isEqualTo(3L); // 原有2个 + 新增1个
+        
+        // 4. 查询Amazon类型平台
+        List<Platform> amazonPlatforms = platformMapper.selectByType(PlatformType.AMAZON);
+        assertThat(amazonPlatforms).hasSize(2); // 原有1个 + 新增1个
+        
+        // 5. 更新平台状态
+        newPlatform.setStatus(PlatformStatus.INACTIVE);
+        platformMapper.updateById(newPlatform);
+        
+        // 6. 验证活跃平台数量减少
+        Long updatedActiveCount = platformMapper.countActivePlatforms();
+        assertThat(updatedActiveCount).isEqualTo(2L); // 减少1个
+        
+        // 7. 删除测试平台
+        platformMapper.deleteById(newPlatform.getId());
+        
+        // 8. 验证删除成功
+        Platform deletedPlatform = platformMapper.selectById(newPlatform.getId());
+        assertThat(deletedPlatform).isNull();
+    }
+
+    @Test
+    @DisplayName("集成测试：批量操作")
+    void testBatchOperations() {
+        // 查询所有活跃平台
+        List<Platform> activePlatforms = platformMapper.selectList(null);
+        int initialCount = activePlatforms.size();
+        
+        // 批量创建平台
+        for (int i = 1; i <= 3; i++) {
+            Platform platform = new Platform();
+            platform.setPlatformName("批量平台" + i);
+            platform.setPlatformType(PlatformType.EBAY);
+            platform.setStatus(PlatformStatus.ACTIVE);
+            platform.setConfigTemplate("{\"batch\": " + i + "}");
+            platform.setCreateTime(LocalDateTime.now());
+            platform.setUpdateTime(LocalDateTime.now());
+            
+            platformMapper.insert(platform);
+        }
+        
+        // 验证批量创建结果
+        List<Platform> ebayPlatforms = platformMapper.selectByType(PlatformType.EBAY);
+        assertThat(ebayPlatforms).hasSize(3);
+        
+        // 验证总数增加
+        List<Platform> allPlatforms = platformMapper.selectList(null);
+        assertThat(allPlatforms).hasSize(initialCount + 3);
+    }
+}

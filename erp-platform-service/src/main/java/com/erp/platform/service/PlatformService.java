@@ -1,184 +1,80 @@
 package com.erp.platform.service;
 
-import com.erp.platform.dto.PlatformStoreDTO;
-import com.erp.platform.dto.StorePermissionDTO;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.erp.platform.dto.PlatformDTO;
+import com.erp.platform.dto.PlatformQueryDTO;
+import com.erp.platform.entity.Platform;
+import com.erp.platform.enums.PlatformStatus;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 平台服务接口
- *
- * @author ERP System
  */
 public interface PlatformService {
     
     /**
-     * 创建平台店铺
+     * 创建平台
+     * @param platformDTO 平台信息
+     * @return 创建的平台
      */
-    PlatformStoreDTO createStore(PlatformStoreDTO storeDTO);
+    Platform createPlatform(PlatformDTO platformDTO);
     
     /**
-     * 更新平台店铺
+     * 更新平台
+     * @param id 平台ID
+     * @param platformDTO 平台信息
+     * @return 更新的平台
      */
-    PlatformStoreDTO updateStore(Long storeId, PlatformStoreDTO storeDTO);
+    Platform updatePlatform(Long id, PlatformDTO platformDTO);
     
     /**
-     * 删除平台店铺
+     * 根据ID获取平台
+     * @param id 平台ID
+     * @return 平台信息
      */
-    void deleteStore(Long storeId);
+    Platform getPlatformById(Long id);
     
     /**
-     * 获取店铺详情
+     * 分页查询平台列表
+     * @param page 分页参数
+     * @param queryDTO 查询条件
+     * @return 分页结果
      */
-    PlatformStoreDTO getStore(Long storeId);
+    IPage<Platform> getPlatformPage(Page<Platform> page, PlatformQueryDTO queryDTO);
     
     /**
-     * 获取店铺列表
+     * 根据类型获取平台列表
+     * @param type 平台类型
+     * @return 平台列表
      */
-    List<PlatformStoreDTO> getStores(String platformType, String status);
+    List<Platform> getPlatformsByType(String type);
     
     /**
-     * 根据用户权限获取店铺列表
+     * 根据状态获取平台列表
+     * @param status 平台状态
+     * @return 平台列表
      */
-    List<PlatformStoreDTO> getStoresByUser(Long userId, String platformType, String status);
+    List<Platform> getPlatformsByStatus(PlatformStatus status);
     
     /**
-     * 测试店铺连接
+     * 删除平台
+     * @param id 平台ID
+     * @return 是否删除成功
      */
-    boolean testStoreConnection(Long storeId);
+    boolean deletePlatform(Long id);
     
     /**
-     * 验证店铺API凭证
+     * 同步平台数据
+     * @param id 平台ID
+     * @return 同步结果
      */
-    Map<String, Object> validateStoreCredentials(Long storeId);
+    boolean syncPlatform(Long id);
     
     /**
-     * 获取店铺状态
+     * 获取平台状态监控信息
+     * @return 状态监控信息
      */
-    Map<String, Object> getStoreStatus(Long storeId);
-    
-    /**
-     * 拉取订单
-     */
-    List<Map<String, Object>> fetchOrders(Long storeId, LocalDateTime fromDate, LocalDateTime toDate);
-    
-    /**
-     * 上传商品
-     */
-    boolean uploadProduct(Long storeId, Map<String, Object> productData);
-    
-    /**
-     * 批量上传商品
-     */
-    Map<String, Object> batchUploadProducts(Long storeId, List<Map<String, Object>> productsData);
-    
-    /**
-     * 同步库存
-     */
-    boolean syncInventory(Long storeId, String sku, Integer quantity);
-    
-    /**
-     * 更新订单状态
-     */
-    boolean updateOrderStatus(Long storeId, String orderId, String status, String trackingNumber);
-    
-    /**
-     * 检查所有店铺连接状态
-     */
-    void checkAllStoreConnections();
-    
-    // 店铺权限管理
-    
-    /**
-     * 分配店铺权限
-     */
-    StorePermissionDTO assignStorePermission(StorePermissionDTO permissionDTO);
-    
-    /**
-     * 更新店铺权限
-     */
-    StorePermissionDTO updateStorePermission(Long permissionId, StorePermissionDTO permissionDTO);
-    
-    /**
-     * 删除店铺权限
-     */
-    void removeStorePermission(Long permissionId);
-    
-    /**
-     * 获取用户的店铺权限列表
-     */
-    List<StorePermissionDTO> getUserStorePermissions(Long userId);
-    
-    /**
-     * 获取店铺的权限列表
-     */
-    List<StorePermissionDTO> getStorePermissions(Long storeId);
-    
-    /**
-     * 检查用户是否有店铺权限
-     */
-    boolean hasStorePermission(Long userId, Long storeId, String permissionType);
-    
-    // 数据隔离管理
-    
-    /**
-     * 配置店铺数据隔离
-     */
-    void configureDataIsolation(Long storeId, String dataType, String isolationLevel, Map<String, Object> configParams);
-    
-    /**
-     * 获取店铺数据隔离配置
-     */
-    Map<String, Object> getDataIsolationConfig(Long storeId);
-    
-    /**
-     * 检查数据访问权限
-     */
-    boolean checkDataAccess(Long userId, Long storeId, String dataType, String operation);
-    
-    // 多店铺数据统一管理
-    
-    /**
-     * 跨店铺数据查询
-     */
-    Map<String, Object> crossStoreDataQuery(Long userId, String dataType, Map<String, Object> queryParams);
-    
-    /**
-     * 店铺运营数据统计
-     */
-    Map<String, Object> getStoreOperationalStats(Long userId, List<Long> storeIds, String dateRange);
-    
-    /**
-     * 多店铺数据同步状态检查
-     */
-    Map<String, Object> checkMultiStoreDataSync(Long userId, List<Long> storeIds);
-    
-    /**
-     * 店铺数据一致性检查
-     */
-    Map<String, Object> checkStoreDataConsistency(Long userId, List<Long> storeIds, String dataType);
-    
-    // 店铺批量操作功能
-    
-    /**
-     * 批量商品管理
-     */
-    Map<String, Object> batchProductManagement(Long userId, List<Long> storeIds, String operation, List<Map<String, Object>> productData);
-    
-    /**
-     * 批量订单处理
-     */
-    Map<String, Object> batchOrderProcessing(Long userId, List<Long> storeIds, String operation, Map<String, Object> orderCriteria);
-    
-    /**
-     * 批量店铺配置更新
-     */
-    Map<String, Object> batchStoreConfigUpdate(Long userId, List<Long> storeIds, Map<String, Object> configUpdates);
-    
-    /**
-     * 批量库存同步
-     */
-    Map<String, Object> batchInventorySync(Long userId, List<Long> storeIds, List<Map<String, Object>> inventoryData);
+    Object getPlatformStatus();
 }
