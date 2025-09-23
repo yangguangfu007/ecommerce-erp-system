@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  *
  * @author ERP System
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.erp.logistics", "com.erp.common"})
 @EnableDiscoveryClient
 @EnableScheduling
 public class LogisticsServiceApplication {

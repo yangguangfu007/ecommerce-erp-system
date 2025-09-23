@@ -82,7 +82,7 @@ public class TemplateServiceImpl implements TemplateService {
             throw new BusinessException("模板语法错误");
         }
 
-        template.setStatus("ACTIVE");
+        template.setEnabled(true);
         templateMapper.insert(template);
 
         log.info("通知模板创建成功: templateId={}, templateCode={}", template.getId(), template.getTemplateCode());
@@ -125,8 +125,8 @@ public class TemplateServiceImpl implements TemplateService {
             return false;
         }
 
-        // 软删除：设置状态为INACTIVE
-        template.setStatus("INACTIVE");
+        // 软删除：设置状态为禁用
+        template.setEnabled(false);
         int updated = templateMapper.updateById(template);
         boolean success = updated > 0;
 

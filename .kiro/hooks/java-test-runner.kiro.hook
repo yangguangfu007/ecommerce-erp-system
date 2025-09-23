@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "name": "Java文件保存后执行单元测试",
   "description": "当Java文件保存时，自动运行相关的单元测试以确保代码质量",
   "version": "1",

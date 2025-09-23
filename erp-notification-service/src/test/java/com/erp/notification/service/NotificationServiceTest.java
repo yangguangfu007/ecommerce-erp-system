@@ -3,6 +3,7 @@ package com.erp.notification.service;
 import com.erp.notification.dto.NotificationRequest;
 import com.erp.notification.entity.NotificationRecord;
 import com.erp.notification.entity.NotificationTemplate;
+import com.erp.notification.enums.NotificationType;
 import com.erp.notification.mapper.NotificationRecordMapper;
 import com.erp.notification.mapper.NotificationTemplateMapper;
 import com.erp.notification.service.impl.NotificationServiceImpl;
@@ -76,10 +77,10 @@ class NotificationServiceTest {
         testTemplate.setId(1L);
         testTemplate.setTemplateCode("TEST_TEMPLATE");
         testTemplate.setTemplateName("测试模板");
-        testTemplate.setNotificationType("EMAIL");
+        testTemplate.setNotificationType(NotificationType.EMAIL);
         testTemplate.setTitle("测试标题：${title}");
         testTemplate.setContent("测试内容：${content}");
-        testTemplate.setStatus("ACTIVE");
+        testTemplate.setEnabled(true);
     }
 
     @Test

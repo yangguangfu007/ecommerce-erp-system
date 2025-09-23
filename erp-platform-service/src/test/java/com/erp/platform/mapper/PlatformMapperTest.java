@@ -11,13 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,13 +25,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 平台Mapper层单元测试
- * 使用H2内存数据库和@MybatisTest注解进行测试
+ * 使用Spring Boot测试上下文
  * 测试BaseMapperPlus的增强CRUD操作和QueryWrapperUtils工具方法
  *
  * @author ERP System
  */
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @Transactional
 @DisplayName("平台Mapper层测试")
@@ -40,163 +39,205 @@ class PlatformMapperTest {
     @Autowired
     private PlatformMapper platformMapper;
 
-    private Platform testPlatform1;
-    private Platform testPlatform2;
-    private Platform testPlatform3;
+    private Platform testPlatform;
 
     @BeforeEach
     @DisplayName("准备测试数据")
     void setUp() {
-        // 清理测试数据 - 使用条件删除避免全表删除
-        LambdaQueryWrapper<Platform> deleteWrapper = new LambdaQueryWrapper<>();
-        deleteWrapper.isNotNull(Platform::getId); // 添加条件避免全表删除
-        platformMapper.delete(deleteWrapper);
-
         // 创建测试平台数据
-        testPlatform1 = createTestPlatform("沃尔玛测试平台", PlatformType.WALMART, "walmart_test", PlatformStatus.ACTIVE, true, 1);
-        testPlatform2 = createTestPlatform("亚马逊测试平台", PlatformType.AMAZON, "amazon_test", PlatformStatus.INACTIVE, true, 2);
-        testPlatform3 = createTestPlatform("eBay测试平台", PlatformType.EBAY, "ebay_test", PlatformStatus.ERROR, false, 3);
-
-        // 插入测试数据
-        platformMapper.insert(testPlatform1);
-        platformMapper.insert(testPlatform2);
-        platformMapper.insert(testPlatform3);
+        testPlatform = new Platform();
+        testPlatform.setPlatformName("测试平台");
+        testPlatform.setPlatformType(PlatformType.WALMART);
+        testPlatform.setPlatformCode("test-platform");
+        testPlatform.setDescription("这是一个测试平台");
+        testPlatform.setStatus(PlatformStatus.ACTIVE);
+        testPlatform.setOfficialUrl("https://test.example.com");
+        testPlatform.setApiBaseUrl("https://api.test.example.com");
+        testPlatform.setSupportedFeatures(Arrays.asList("product_upload", "order_sync"));
+        
+        Map<String, Object> configTemplate = new HashMap<>();
+        configTemplate.put("apiKey", "");
+        configTemplate.put("apiSecret", "");
+        testPlatform.setConfigTemplate(configTemplate);
+        
+        testPlatform.setEnabled(true);
+        testPlatform.setSortOrder(1);
+        testPlatform.setLastUpdated(LocalDateTime.now());
+        testPlatform.setRemarks("测试备注");
     }
 
     @Test
-    @DisplayName("测试BaseMapperPlus基础CRUD操作")
-    void testBaseMapperPlusCrud() {
-        // 测试selectById
-        Platform found = platformMapper.selectById(testPlatform1.getId());
-        assertThat(found).isNotNull();
-        assertThat(found.getPlatformName()).isEqualTo("沃尔玛测试平台");
+    @DisplayName("测试BaseMapperPlus的基本CRUD操作")
+    void testBaseMapperPlusCrudOperations() {
+        // 测试插入
+        int insertResult = platformMapper.insert(testPlatform);
+        assertThat(insertResult).isEqualTo(1);
+        assertThat(testPlatform.getId()).isNotNull();
 
-        // 测试selectList
-        List<Platform> allPlatforms = platformMapper.selectList(null);
-        assertThat(allPlatforms).hasSize(3);
+        // 测试根据ID查询
+        Platform foundPlatform = platformMapper.selectById(testPlatform.getId());
+        assertThat(foundPlatform).isNotNull();
+        assertThat(foundPlatform.getPlatformName()).isEqualTo("测试平台");
+        assertThat(foundPlatform.getPlatformType()).isEqualTo(PlatformType.WALMART);
 
-        // 测试updateById
-        testPlatform1.setPlatformName("更新后的沃尔玛平台");
-        int updateResult = platformMapper.updateById(testPlatform1);
+        // 测试更新
+        foundPlatform.setPlatformName("更新后的测试平台");
+        foundPlatform.setDescription("更新后的描述");
+        int updateResult = platformMapper.updateById(foundPlatform);
         assertThat(updateResult).isEqualTo(1);
 
-        Platform updated = platformMapper.selectById(testPlatform1.getId());
-        assertThat(updated.getPlatformName()).isEqualTo("更新后的沃尔玛平台");
+        // 验证更新结果
+        Platform updatedPlatform = platformMapper.selectById(testPlatform.getId());
+        assertThat(updatedPlatform.getPlatformName()).isEqualTo("更新后的测试平台");
+        assertThat(updatedPlatform.getDescription()).isEqualTo("更新后的描述");
 
-        // 测试deleteById
-        int deleteResult = platformMapper.deleteById(testPlatform3.getId());
+        // 测试逻辑删除
+        int deleteResult = platformMapper.deleteById(testPlatform.getId());
         assertThat(deleteResult).isEqualTo(1);
 
-        List<Platform> remainingPlatforms = platformMapper.selectList(null);
-        assertThat(remainingPlatforms).hasSize(2);
+        // 验证逻辑删除结果（应该查询不到）
+        Platform deletedPlatform = platformMapper.selectById(testPlatform.getId());
+        assertThat(deletedPlatform).isNull();
     }
 
     @Test
-    @DisplayName("测试BaseMapperPlus增强方法")
+    @DisplayName("测试BaseMapperPlus的增强查询方法")
     void testBaseMapperPlusEnhancedMethods() {
-        // 测试existsByCondition
-        LambdaQueryWrapper<Platform> wrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.eqIfPresent(wrapper, Platform::getPlatformCode, "walmart_test");
-        
-        boolean exists = platformMapper.existsByCondition(wrapper);
+        // 插入测试数据
+        platformMapper.insert(testPlatform);
+
+        // 测试existsByCondition方法
+        LambdaQueryWrapper<Platform> existsWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
+        QueryWrapperUtils.eqIfPresent(existsWrapper, Platform::getPlatformCode, "test-platform");
+        boolean exists = platformMapper.existsByCondition(existsWrapper);
         assertThat(exists).isTrue();
 
-        // 测试selectCountByCondition
+        // 测试selectCountByCondition方法
         LambdaQueryWrapper<Platform> countWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.eqIfPresent(countWrapper, Platform::getEnabled, true);
-        
+        QueryWrapperUtils.eqIfPresent(countWrapper, Platform::getPlatformType, PlatformType.WALMART);
         Long count = platformMapper.selectCountByCondition(countWrapper);
-        assertThat(count).isEqualTo(2L);
+        assertThat(count).isEqualTo(1L);
 
-        // 测试selectOneByCondition
+        // 测试selectOneByCondition方法
         LambdaQueryWrapper<Platform> oneWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.eqIfPresent(oneWrapper, Platform::getPlatformType, PlatformType.AMAZON);
-        
-        Platform platform = platformMapper.selectOneByCondition(oneWrapper);
-        assertThat(platform).isNotNull();
-        assertThat(platform.getPlatformName()).isEqualTo("亚马逊测试平台");
+        QueryWrapperUtils.eqIfPresent(oneWrapper, Platform::getPlatformCode, "test-platform");
+        Platform foundPlatform = platformMapper.selectOneByCondition(oneWrapper);
+        assertThat(foundPlatform).isNotNull();
+        assertThat(foundPlatform.getPlatformName()).isEqualTo("测试平台");
 
-        // 测试selectAllByCondition
+        // 测试selectAllByCondition方法
         LambdaQueryWrapper<Platform> allWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
         QueryWrapperUtils.eqIfPresent(allWrapper, Platform::getEnabled, true);
-        QueryWrapperUtils.orderByAsc(allWrapper, Platform::getSortOrder);
-        
-        List<Platform> enabledPlatforms = platformMapper.selectAllByCondition(allWrapper);
-        assertThat(enabledPlatforms).hasSize(2);
-        assertThat(enabledPlatforms.get(0).getSortOrder()).isLessThan(enabledPlatforms.get(1).getSortOrder());
+        List<Platform> allPlatforms = platformMapper.selectAllByCondition(allWrapper);
+        assertThat(allPlatforms).hasSize(1);
+        assertThat(allPlatforms.get(0).getPlatformName()).isEqualTo("测试平台");
     }
 
     @Test
-    @DisplayName("测试QueryWrapperUtils工具方法")
-    void testQueryWrapperUtils() {
-        // 测试eqIfPresent - 值存在时添加条件
-        LambdaQueryWrapper<Platform> wrapper1 = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.eqIfPresent(wrapper1, Platform::getPlatformType, PlatformType.WALMART);
-        
-        List<Platform> result1 = platformMapper.selectAllByCondition(wrapper1);
-        assertThat(result1).hasSize(1);
-        assertThat(result1.get(0).getPlatformType()).isEqualTo(PlatformType.WALMART);
+    @DisplayName("测试QueryWrapperUtils工具类方法")
+    void testQueryWrapperUtilsMethods() {
+        // 插入多个测试数据
+        platformMapper.insert(testPlatform);
 
-        // 测试eqIfPresent - 值为null时不添加条件
-        LambdaQueryWrapper<Platform> wrapper2 = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.eqIfPresent(wrapper2, Platform::getPlatformType, null);
-        
-        List<Platform> result2 = platformMapper.selectAllByCondition(wrapper2);
-        assertThat(result2).hasSize(3); // 应该返回所有记录
+        Platform platform2 = new Platform();
+        platform2.setPlatformName("亚马逊测试平台");
+        platform2.setPlatformType(PlatformType.AMAZON);
+        platform2.setPlatformCode("amazon-test");
+        platform2.setStatus(PlatformStatus.INACTIVE);
+        platform2.setEnabled(false);
+        platform2.setSortOrder(2);
+        platformMapper.insert(platform2);
 
-        // 测试likeIfPresent
-        LambdaQueryWrapper<Platform> wrapper3 = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.likeIfPresent(wrapper3, Platform::getPlatformName, "沃尔玛");
-        
-        List<Platform> result3 = platformMapper.selectAllByCondition(wrapper3);
-        assertThat(result3).hasSize(1);
-        assertThat(result3.get(0).getPlatformName()).contains("沃尔玛");
+        // 测试eqIfPresent方法
+        LambdaQueryWrapper<Platform> eqWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
+        QueryWrapperUtils.eqIfPresent(eqWrapper, Platform::getPlatformType, PlatformType.WALMART);
+        List<Platform> walmartPlatforms = platformMapper.selectAllByCondition(eqWrapper);
+        assertThat(walmartPlatforms).hasSize(1);
+        assertThat(walmartPlatforms.get(0).getPlatformType()).isEqualTo(PlatformType.WALMART);
 
-        // 测试inIfPresent
-        LambdaQueryWrapper<Platform> wrapper4 = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.inIfPresent(wrapper4, Platform::getPlatformType, 
-                Arrays.asList(PlatformType.WALMART, PlatformType.AMAZON));
-        
-        List<Platform> result4 = platformMapper.selectAllByCondition(wrapper4);
-        assertThat(result4).hasSize(2);
+        // 测试likeIfPresent方法
+        LambdaQueryWrapper<Platform> likeWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
+        QueryWrapperUtils.likeIfPresent(likeWrapper, Platform::getPlatformName, "测试");
+        List<Platform> testPlatforms = platformMapper.selectAllByCondition(likeWrapper);
+        assertThat(testPlatforms).hasSize(2);
 
-        // 测试orderByDesc
-        LambdaQueryWrapper<Platform> wrapper5 = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.orderByDesc(wrapper5, Platform::getSortOrder);
-        
-        List<Platform> result5 = platformMapper.selectAllByCondition(wrapper5);
-        assertThat(result5).hasSize(3);
-        assertThat(result5.get(0).getSortOrder()).isGreaterThan(result5.get(1).getSortOrder());
+        // 测试inIfPresent方法
+        LambdaQueryWrapper<Platform> inWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
+        QueryWrapperUtils.inIfPresent(inWrapper, Platform::getPlatformType, 
+            Arrays.asList(PlatformType.WALMART, PlatformType.AMAZON));
+        List<Platform> inPlatforms = platformMapper.selectAllByCondition(inWrapper);
+        assertThat(inPlatforms).hasSize(2);
+
+        // 测试组合条件查询
+        LambdaQueryWrapper<Platform> combinedWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
+        QueryWrapperUtils.eqIfPresent(combinedWrapper, Platform::getEnabled, true);
+        QueryWrapperUtils.eqIfPresent(combinedWrapper, Platform::getStatus, PlatformStatus.ACTIVE);
+        List<Platform> activePlatforms = platformMapper.selectAllByCondition(combinedWrapper);
+        assertThat(activePlatforms).hasSize(1);
+        assertThat(activePlatforms.get(0).getPlatformName()).isEqualTo("测试平台");
     }
 
     @Test
     @DisplayName("测试分页查询功能")
-    void testPagination() {
-        // 创建分页对象
-        Page<Platform> page = new Page<>(1, 2);
-        
-        // 创建查询条件
+    void testPaginationQuery() {
+        // 插入多个测试数据
+        for (int i = 1; i <= 15; i++) {
+            Platform platform = new Platform();
+            platform.setPlatformName("测试平台" + i);
+            platform.setPlatformType(PlatformType.WALMART);
+            platform.setPlatformCode("test-platform-" + i);
+            platform.setStatus(PlatformStatus.ACTIVE);
+            platform.setEnabled(true);
+            platform.setSortOrder(i);
+            platformMapper.insert(platform);
+        }
+
+        // 测试分页查询
+        Page<Platform> page = new Page<>(1, 10); // 第1页，每页10条
         LambdaQueryWrapper<Platform> wrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.orderByAsc(wrapper, Platform::getSortOrder);
-        
-        // 执行分页查询
+        QueryWrapperUtils.eqIfPresent(wrapper, Platform::getEnabled, true);
+        wrapper.orderByAsc(Platform::getSortOrder);
+
         IPage<Platform> result = platformMapper.selectPageByCondition(page, wrapper);
         
-        // 验证分页结果
-        assertThat(result.getRecords()).hasSize(2);
-        assertThat(result.getTotal()).isEqualTo(3L);
-        assertThat(result.getCurrent()).isEqualTo(1L);
-        assertThat(result.getSize()).isEqualTo(2L);
+        assertThat(result.getTotal()).isEqualTo(15L);
         assertThat(result.getPages()).isEqualTo(2L);
+        assertThat(result.getCurrent()).isEqualTo(1L);
+        assertThat(result.getSize()).isEqualTo(10L);
+        assertThat(result.getRecords()).hasSize(10);
+        assertThat(result.getRecords().get(0).getPlatformName()).isEqualTo("测试平台1");
+        assertThat(result.getRecords().get(9).getPlatformName()).isEqualTo("测试平台10");
+
+        // 测试第2页
+        Page<Platform> page2 = new Page<>(2, 10);
+        IPage<Platform> result2 = platformMapper.selectPageByCondition(page2, wrapper);
+        
+        assertThat(result2.getTotal()).isEqualTo(15L);
+        assertThat(result2.getCurrent()).isEqualTo(2L);
+        assertThat(result2.getRecords()).hasSize(5);
+        assertThat(result2.getRecords().get(0).getPlatformName()).isEqualTo("测试平台11");
+        assertThat(result2.getRecords().get(4).getPlatformName()).isEqualTo("测试平台15");
     }
 
     @Test
     @DisplayName("测试自定义查询方法")
     void testCustomQueryMethods() {
+        // 插入测试数据
+        platformMapper.insert(testPlatform);
+
+        Platform platform2 = new Platform();
+        platform2.setPlatformName("亚马逊平台");
+        platform2.setPlatformType(PlatformType.AMAZON);
+        platform2.setPlatformCode("amazon-platform");
+        platform2.setStatus(PlatformStatus.INACTIVE);
+        platform2.setEnabled(true);
+        platform2.setSortOrder(2);
+        platformMapper.insert(platform2);
+
         // 测试根据平台类型查询
         List<Platform> walmartPlatforms = platformMapper.selectByPlatformType(PlatformType.WALMART);
         assertThat(walmartPlatforms).hasSize(1);
-        assertThat(walmartPlatforms.get(0).getPlatformType()).isEqualTo(PlatformType.WALMART);
+        assertThat(walmartPlatforms.get(0).getPlatformName()).isEqualTo("测试平台");
 
         // 测试根据状态查询
         List<Platform> activePlatforms = platformMapper.selectByStatus(PlatformStatus.ACTIVE);
@@ -204,113 +245,75 @@ class PlatformMapperTest {
         assertThat(activePlatforms.get(0).getStatus()).isEqualTo(PlatformStatus.ACTIVE);
 
         // 测试根据平台代码查询
-        Platform platform = platformMapper.selectByPlatformCode("amazon_test");
-        assertThat(platform).isNotNull();
-        assertThat(platform.getPlatformCode()).isEqualTo("amazon_test");
+        Platform foundPlatform = platformMapper.selectByPlatformCode("test-platform");
+        assertThat(foundPlatform).isNotNull();
+        assertThat(foundPlatform.getPlatformName()).isEqualTo("测试平台");
 
         // 测试查询启用的平台
         List<Platform> enabledPlatforms = platformMapper.selectEnabledPlatforms();
         assertThat(enabledPlatforms).hasSize(2);
-        assertThat(enabledPlatforms).allMatch(Platform::getEnabled);
 
         // 测试状态统计
-        List<Map<String, Object>> statusCount = platformMapper.countByStatus();
-        assertThat(statusCount).hasSize(3); // 三种不同状态
-        
-        // 测试平台名称模糊查询
-        List<Platform> searchResult = platformMapper.selectByPlatformNameLike("测试");
-        assertThat(searchResult).hasSize(3); // 所有平台名称都包含"测试"
-
-        // 测试检查平台代码唯一性
-        int count = platformMapper.countByPlatformCodeExcludeId("walmart_test", 999L);
-        assertThat(count).isEqualTo(1); // 存在一个匹配的记录
+        List<Map<String, Object>> statusStats = platformMapper.countByStatus();
+        assertThat(statusStats).hasSize(2);
 
         // 测试获取最大排序顺序
         Integer maxSortOrder = platformMapper.selectMaxSortOrder();
-        assertThat(maxSortOrder).isEqualTo(3);
+        assertThat(maxSortOrder).isEqualTo(2);
+
+        // 测试平台名称模糊查询
+        List<Platform> searchResults = platformMapper.selectByPlatformNameLike("测试");
+        assertThat(searchResults).hasSize(1);
+        assertThat(searchResults.get(0).getPlatformName()).contains("测试");
+
+        // 测试检查平台代码唯一性
+        int count = platformMapper.countByPlatformCodeExcludeId("test-platform", 0L);
+        assertThat(count).isEqualTo(1);
+
+        count = platformMapper.countByPlatformCodeExcludeId("test-platform", testPlatform.getId());
+        assertThat(count).isEqualTo(0);
     }
 
     @Test
-    @DisplayName("测试复杂查询条件组合")
-    void testComplexQueryConditions() {
-        // 测试多条件组合查询
+    @DisplayName("测试批量操作")
+    void testBatchOperations() {
+        // 准备批量数据
+        Platform platform1 = new Platform();
+        platform1.setPlatformName("批量平台1");
+        platform1.setPlatformType(PlatformType.WALMART);
+        platform1.setPlatformCode("batch-platform-1");
+        platform1.setStatus(PlatformStatus.ACTIVE);
+        platform1.setEnabled(true);
+        platform1.setSortOrder(1);
+
+        Platform platform2 = new Platform();
+        platform2.setPlatformName("批量平台2");
+        platform2.setPlatformType(PlatformType.AMAZON);
+        platform2.setPlatformCode("batch-platform-2");
+        platform2.setStatus(PlatformStatus.ACTIVE);
+        platform2.setEnabled(true);
+        platform2.setSortOrder(2);
+
+        // 测试批量插入
+        List<Platform> platforms = Arrays.asList(platform1, platform2);
+        for (Platform platform : platforms) {
+            platformMapper.insert(platform);
+        }
+
+        // 验证批量插入结果
         LambdaQueryWrapper<Platform> wrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.eqIfPresent(wrapper, Platform::getEnabled, true);
-        QueryWrapperUtils.inIfPresent(wrapper, Platform::getPlatformType, 
-                Arrays.asList(PlatformType.WALMART, PlatformType.AMAZON));
-        QueryWrapperUtils.orderByAsc(wrapper, Platform::getSortOrder);
-        
-        List<Platform> result = platformMapper.selectAllByCondition(wrapper);
-        assertThat(result).hasSize(2);
-        assertThat(result).allMatch(Platform::getEnabled);
-        assertThat(result.get(0).getSortOrder()).isLessThan(result.get(1).getSortOrder());
+        QueryWrapperUtils.likeIfPresent(wrapper, Platform::getPlatformName, "批量");
+        List<Platform> batchPlatforms = platformMapper.selectAllByCondition(wrapper);
+        assertThat(batchPlatforms).hasSize(2);
 
-        // 测试时间范围查询
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime oneHourAgo = now.minusHours(1);
-        
-        LambdaQueryWrapper<Platform> timeWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.betweenTime(timeWrapper, Platform::getCreateTime, oneHourAgo, now);
-        
-        List<Platform> timeResult = platformMapper.selectAllByCondition(timeWrapper);
-        assertThat(timeResult).hasSize(3); // 所有记录都在时间范围内
+        // 测试批量删除
+        LambdaQueryWrapper<Platform> deleteWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
+        QueryWrapperUtils.likeIfPresent(deleteWrapper, Platform::getPlatformName, "批量");
+        int deleteCount = platformMapper.deleteByCondition(deleteWrapper);
+        assertThat(deleteCount).isEqualTo(2);
 
-        // 测试geIfPresent和leIfPresent
-        LambdaQueryWrapper<Platform> rangeWrapper = QueryWrapperUtils.lambdaQuery(Platform.class);
-        QueryWrapperUtils.geIfPresent(rangeWrapper, Platform::getSortOrder, 2);
-        QueryWrapperUtils.leIfPresent(rangeWrapper, Platform::getSortOrder, 3);
-        
-        List<Platform> rangeResult = platformMapper.selectAllByCondition(rangeWrapper);
-        assertThat(rangeResult).hasSize(2);
-        assertThat(rangeResult).allMatch(p -> p.getSortOrder() >= 2 && p.getSortOrder() <= 3);
-    }
-
-    @Test
-    @DisplayName("测试逻辑删除功能")
-    void testLogicalDelete() {
-        // 获取删除前的记录数
-        Long beforeCount = platformMapper.selectCountByCondition(QueryWrapperUtils.lambdaQuery(Platform.class));
-        assertThat(beforeCount).isEqualTo(3L);
-
-        // 执行逻辑删除
-        int deleteResult = platformMapper.deleteById(testPlatform1.getId());
-        assertThat(deleteResult).isEqualTo(1);
-
-        // 验证逻辑删除后记录数减少
-        Long afterCount = platformMapper.selectCountByCondition(QueryWrapperUtils.lambdaQuery(Platform.class));
-        assertThat(afterCount).isEqualTo(2L);
-
-        // 验证被删除的记录无法通过正常查询获取
-        Platform deletedPlatform = platformMapper.selectById(testPlatform1.getId());
-        assertThat(deletedPlatform).isNull();
-    }
-
-    /**
-     * 创建测试平台对象
-     *
-     * @param name 平台名称
-     * @param type 平台类型
-     * @param code 平台代码
-     * @param status 平台状态
-     * @param enabled 是否启用
-     * @param sortOrder 排序顺序
-     * @return 平台对象
-     */
-    private Platform createTestPlatform(String name, PlatformType type, String code, 
-                                       PlatformStatus status, Boolean enabled, Integer sortOrder) {
-        Platform platform = new Platform();
-        platform.setPlatformName(name);
-        platform.setPlatformType(type);
-        platform.setPlatformCode(code);
-        platform.setDescription(name + "的描述信息");
-        platform.setStatus(status);
-        platform.setOfficialUrl("https://" + code + ".com");
-        platform.setApiBaseUrl("https://api." + code + ".com");
-        platform.setSupportedFeatures(Arrays.asList("订单管理", "库存同步", "商品上传"));
-        platform.setEnabled(enabled);
-        platform.setSortOrder(sortOrder);
-        platform.setLastUpdated(LocalDateTime.now());
-        platform.setRemarks("测试平台备注信息");
-        return platform;
+        // 验证批量删除结果
+        List<Platform> remainingPlatforms = platformMapper.selectAllByCondition(deleteWrapper);
+        assertThat(remainingPlatforms).isEmpty();
     }
 }

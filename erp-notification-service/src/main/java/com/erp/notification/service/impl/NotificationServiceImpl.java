@@ -160,7 +160,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         // 创建通知请求
         NotificationRequest request = new NotificationRequest();
-        request.setNotificationType(template.getNotificationType());
+        request.setNotificationType(template.getNotificationType().getCode());
         request.setRecipient(recipient);
         request.setTitle(title);
         request.setContent(content);

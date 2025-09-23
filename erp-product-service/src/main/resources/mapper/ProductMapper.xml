@@ -18,8 +18,8 @@
         <result column="attributes" property="attributes" jdbcType="VARCHAR" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
         <result column="status" property="status" jdbcType="VARCHAR"/>
         <result column="version" property="version" jdbcType="INTEGER"/>
-        <result column="created_at" property="createTime" jdbcType="TIMESTAMP"/>
-        <result column="updated_at" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="created_by" property="createBy" jdbcType="BIGINT"/>
         <result column="updated_by" property="updateBy" jdbcType="BIGINT"/>
         <result column="deleted" property="deleted" jdbcType="BOOLEAN"/>
@@ -79,7 +79,7 @@
                 </if>
             </when>
             <otherwise>
-                ORDER BY p.updated_at DESC
+                ORDER BY p.update_time DESC
             </otherwise>
         </choose>
     </select>
@@ -88,13 +88,13 @@
     <select id="selectByCategoryId" resultMap="BaseResultMap">
         SELECT * FROM products 
         WHERE category_id = #{categoryId} AND deleted = FALSE
-        ORDER BY updated_at DESC
+        ORDER BY update_time DESC
     </select>
 
     <!-- 批量更新商品状态 -->
     <update id="batchUpdateStatus">
         UPDATE products 
-        SET status = #{status}, updated_at = NOW()
+        SET status = #{status}, update_time = NOW()
         WHERE id IN
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}

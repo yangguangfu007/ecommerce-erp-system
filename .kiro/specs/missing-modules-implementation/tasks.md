@@ -99,10 +99,13 @@
   - 定义系统状态监控接口 `GET /api/system/status` 的文档
   - 包含完整的请求参数、响应示例和错误码说明
   - 完成后需要与团队成员进行接口设计评审
-  - _需求: 4.1_### 阶段
+  - _需求: 4.1_
+  
+### 阶段
+
 二：后端接口开发（包含单元测试和接口测试）
 
-- [ ] 2. 平台管理后端接口开发
+- [x] 2. 平台管理后端接口开发
   - 在erp-platform-service中实现平台管理相关的后端接口
   - 每个接口都要编写单元测试，确保功能正确性
   - 编写接口测试，验证API的正确性
@@ -121,7 +124,7 @@
   - 验证MyBatis Plus的自动建表、逻辑删除和自动填充功能
   - _需求: 1.1_
 
-- [ ] 2.2 平台管理Mapper层开发（基于erp-common）
+- [x] 2.2 平台管理Mapper层开发（基于erp-common）
   - 创建PlatformMapper接口，继承 `com.erp.common.mapper.BaseMapperPlus<Platform>`
   - 创建PlatformConfigMapper接口，继承BaseMapperPlus<PlatformConfig>
   - 使用 `com.erp.common.util.QueryWrapperUtils` 构建类型安全的查询条件
@@ -132,7 +135,7 @@
   - 启动MySQL服务验证erp-common配置的SQL日志输出和分页优化
   - _需求: 1.1_
 
-- [ ] 2.3 平台管理Service层开发（基于erp-common）
+- [x] 2.3 平台管理Service层开发（基于erp-common）
   - 创建PlatformService接口，继承 `com.erp.common.service.BaseServicePlus<Platform>`
   - 创建PlatformServiceImpl实现类，继承ServiceImpl<PlatformMapper, Platform>并实现BaseServicePlus接口
   - 使用 `com.erp.common.response.PageResult<T>` 统一分页响应格式
@@ -144,7 +147,7 @@
   - 测试BaseServicePlus提供的增强CRUD方法和PageResult分页封装
   - _需求: 1.1_
 
-- [ ] 2.4 平台管理Controller层开发
+- [x] 2.4 平台管理Controller层开发
   - 创建PlatformController类，实现REST API接口
   - 实现 `GET /api/platforms` 平台列表查询接口，返回PageResult<Platform>统一分页格式
   - 实现 `GET/POST/PUT /api/platforms/config` 平台配置接口，使用BaseServicePlus的saveOrUpdateEnhanced()方法
@@ -158,14 +161,14 @@
   - 使用curl测试BaseServicePlus的增强CRUD操作和PageResult分页功能
   - _需求: 1.1_
 
-- [ ] 3. 物流管理后端接口开发
+- [x] 3. 物流管理后端接口开发
   - 在erp-logistics-service中实现物流管理相关的后端接口
   - 每个接口都要编写单元测试，确保功能正确性
   - 编写接口测试，验证API的正确性
   - 完成后启动服务进行真实测试验证
   - _需求: 2.1_
 
-- [ ] 3.1 物流管理数据模型和实体类创建（基于erp-common）
+- [x] 3.1 物流管理数据模型和实体类创建（基于erp-common）
   - 创建LogisticsOrder实体类，继承 `com.erp.common.entity.BaseEntity`，使用@TableName("logistics_orders")
   - 创建ShippingLabel实体类，继承BaseEntity，使用@TableName("shipping_labels")
   - 创建Address实体类，继承BaseEntity，使用@TableName("addresses")
@@ -178,7 +181,7 @@
   - 验证erp-common的MyMetaObjectHandler自动填充、逻辑删除和乐观锁功能
   - _需求: 2.1_
 
-- [ ] 3.2 物流管理Mapper层开发（基于erp-common）
+- [x] 3.2 物流管理Mapper层开发（基于erp-common）
   - 创建LogisticsOrderMapper接口，继承 `com.erp.common.mapper.BaseMapperPlus<LogisticsOrder>`
   - 创建ShippingLabelMapper接口，继承BaseMapperPlus<ShippingLabel>
   - 创建AddressMapper接口，继承BaseMapperPlus<Address>
@@ -190,7 +193,7 @@
   - 启动MySQL服务验证erp-common配置的SQL执行日志和分页优化
   - _需求: 2.1_
 
-- [ ] 3.3 物流管理Service层开发（基于erp-common）
+- [x] 3.3 物流管理Service层开发（基于erp-common）
   - 创建LogisticsService接口，继承 `com.erp.common.service.BaseServicePlus<LogisticsOrder>`
   - 创建LogisticsServiceImpl实现类，继承ServiceImpl<LogisticsOrderMapper, LogisticsOrder>并实现BaseServicePlus接口
   - 使用 `com.erp.common.response.PageResult<T>` 统一分页响应格式
@@ -202,7 +205,7 @@
   - 测试BaseServicePlus的增强方法和PageResult分页封装
   - _需求: 2.1_
 
-- [ ] 3.4 物流管理Controller层开发
+- [x] 3.4 物流管理Controller层开发
   - 创建LogisticsController类，实现REST API接口
   - 实现 `GET /api/logistics/orders` 物流订单查询接口，返回PageResult<LogisticsOrder>统一分页格式
   - 实现 `POST /api/logistics/labels` 面单生成接口，使用BaseServicePlus的insertBatch()批量保存
@@ -214,8 +217,10 @@
   - 编写接口集成测试，验证BaseServicePlus的批量操作和PageResult分页响应
   - 使用 `./scripts/start-backend.sh start logistics` 启动物流服务
   - 使用curl测试BaseServicePlus的增强批量操作和PageResult分页功能
-  - _需求: 2.1_- [ ] 4.
- 通知中心后端接口开发
+  - _需求: 2.1_
+  
+
+- [x] 4.通知中心后端接口开发
   - 在erp-notification-service中实现通知管理相关的后端接口
   - 实现WebSocket实时通知推送功能
   - 每个接口都要编写单元测试，确保功能正确性
@@ -223,7 +228,7 @@
   - 完成后启动服务进行真实测试验证
   - _需求: 3.1_
 
-- [ ] 4.1 通知中心数据模型和实体类创建（基于erp-common）
+- [x] 4.1 通知中心数据模型和实体类创建（基于erp-common）
   - 创建Notification实体类，继承 `com.erp.common.entity.BaseEntity`，使用@TableName("notifications")
   - 创建NotificationTemplate实体类，继承BaseEntity，使用@TableName("notification_templates")
   - 创建NotificationRule实体类，继承BaseEntity，使用@TableName("notification_rules")
@@ -236,7 +241,7 @@
   - 验证erp-common的JsonTypeHandler和MyMetaObjectHandler自动填充功能
   - _需求: 3.1_
 
-- [ ] 4.2 通知中心Mapper层开发（基于erp-common）
+- [x] 4.2 通知中心Mapper层开发（基于erp-common）
   - 创建NotificationMapper接口，继承 `com.erp.common.mapper.BaseMapperPlus<Notification>`
   - 创建NotificationTemplateMapper接口，继承BaseMapperPlus<NotificationTemplate>
   - 创建NotificationRuleMapper接口，继承BaseMapperPlus<NotificationRule>
@@ -248,7 +253,7 @@
   - 启动MySQL服务验证erp-common的JsonTypeHandler和索引性能
   - _需求: 3.1_
 
-- [ ] 4.3 通知中心Service层开发（基于erp-common）
+- [x] 4.3 通知中心Service层开发（基于erp-common）
   - 创建NotificationService接口，继承 `com.erp.common.service.BaseServicePlus<Notification>`
   - 创建NotificationServiceImpl实现类，继承ServiceImpl<NotificationMapper, Notification>并实现BaseServicePlus接口
   - 使用 `com.erp.common.response.PageResult<T>` 实现通知列表分页查询
@@ -260,7 +265,7 @@
   - 测试BaseServicePlus的批量操作和PageResult分页封装功能
   - _需求: 3.1_
 
-- [ ] 4.4 通知中心Controller和WebSocket开发
+- [x] 4.4 通知中心Controller和WebSocket开发
   - 创建NotificationController类，实现REST API接口
   - 实现 `GET /api/notifications` 通知列表查询接口，返回PageResult<Notification>统一分页格式
   - 实现 `PUT /api/notifications/{id}/read` 通知标记已读接口，使用BaseServicePlus的updateById()
@@ -275,14 +280,25 @@
   - 使用curl测试erp-common的逻辑删除和BaseServicePlus的批量更新功能
   - _需求: 3.1_
 
-- [ ] 5. 系统设置后端接口开发
+- [x] 5. 系统设置后端接口开发 ✅
   - 在相应服务中实现系统设置相关的后端接口
   - 每个接口都要编写单元测试，确保功能正确性
   - 编写接口测试，验证API的正确性
   - 完成后启动服务进行真实测试验证
   - _需求: 4.1_
 
-- [ ] 5.1 系统设置数据模型和实体类创建（基于erp-common）
+**✅ 系统设置接口测试结果**:
+- ✅ `GET /api/system/config` - 系统配置查询接口（支持分类筛选）
+- ✅ `PUT /api/system/config` - 系统配置更新接口（使用BaseServicePlus的saveOrUpdateEnhanced()）
+- ✅ `GET /api/system/logs` - 系统日志查询接口（返回PageResult<SystemLog>分页格式）
+- ✅ `GET /api/system/status` - 系统状态监控接口（使用BaseServicePlus的统计查询）
+- ✅ 分类筛选功能正常（SYSTEM: 4条记录，BUSINESS: 2条记录）
+- ✅ 所有接口返回统一的Result格式
+- ✅ 分页功能正常工作
+- ✅ 数据库字段类型已修复（config_value: JSON → TEXT）
+- ✅ 单元测试已修复并通过编译
+
+- [x] 5.1 系统设置数据模型和实体类创建（基于erp-common）
   - 创建SystemConfig实体类，继承 `com.erp.common.entity.BaseEntity`，使用@TableName("system_configs")
   - 创建SystemLog实体类，继承BaseEntity，使用@TableName("system_logs")
   - 创建SystemStatus实体类，继承BaseEntity，使用@TableName("system_status")
@@ -295,7 +311,7 @@
   - 验证erp-common的JsonTypeHandler和索引优化效果
   - _需求: 4.1_
 
-- [ ] 5.2 系统设置Mapper层开发（基于erp-common）
+- [x] 5.2 系统设置Mapper层开发（基于erp-common）
   - 创建SystemConfigMapper接口，继承 `com.erp.common.mapper.BaseMapperPlus<SystemConfig>`
   - 创建SystemLogMapper接口，继承BaseMapperPlus<SystemLog>
   - 创建SystemStatusMapper接口，继承BaseMapperPlus<SystemStatus>
@@ -308,7 +324,7 @@
   - 启动MySQL服务验证erp-common的索引优化和查询性能
   - _需求: 4.1_
 
-- [ ] 5.3 系统设置Service层开发（基于erp-common）
+- [x] 5.3 系统设置Service层开发（基于erp-common）
   - 创建SystemService接口，继承 `com.erp.common.service.BaseServicePlus<SystemConfig>`
   - 创建SystemServiceImpl实现类，继承ServiceImpl<SystemConfigMapper, SystemConfig>并实现BaseServicePlus接口
   - 使用 `com.erp.common.response.PageResult<T>` 实现系统日志分页查询
@@ -320,7 +336,7 @@
   - 测试BaseServicePlus的缓存机制和事务管理
   - _需求: 4.1_
 
-- [ ] 5.4 系统设置Controller层开发
+- [x] 5.4 系统设置Controller层开发
   - 创建SystemController类，实现REST API接口
   - 实现 `GET /api/system/config` 系统配置查询接口，支持分类筛选
   - 实现 `PUT /api/system/config` 系统配置更新接口，使用BaseServicePlus的saveOrUpdateEnhanced()
@@ -332,7 +348,11 @@
   - 编写接口集成测试，验证PageResult分页查询和erp-common的JSON字段处理
   - 使用 `./scripts/start-backend.sh start system` 启动系统服务
   - 使用curl测试BaseServicePlus的条件查询和配置更新功能
-  - _需求: 4.1_### 阶段
+  - _需求: 4.1_
+  
+
+### 阶段
+
 三：前端页面开发（包含端到端测试）
 
 - [ ] 6. 导航菜单结构优化

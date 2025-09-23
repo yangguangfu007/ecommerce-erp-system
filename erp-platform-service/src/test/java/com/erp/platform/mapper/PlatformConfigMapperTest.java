@@ -2,14 +2,16 @@ package com.erp.platform.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.erp.common.util.QueryWrapperUtils;
+import com.erp.platform.entity.Platform;
 import com.erp.platform.entity.PlatformConfig;
 import com.erp.platform.enums.ConfigType;
+import com.erp.platform.enums.PlatformStatus;
+import com.erp.platform.enums.PlatformType;
 import com.erp.platform.enums.ValidationStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 平台配置Mapper层单元测试
- * 使用H2内存数据库和@MybatisTest注解进行测试
+ * 使用Spring Boot测试上下文
  * 测试BaseMapperPlus的增强CRUD操作和QueryWrapperUtils工具方法
  *
  * @author ERP System
  */
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @Transactional
 @DisplayName("平台配置Mapper层测试")
@@ -37,300 +38,302 @@ class PlatformConfigMapperTest {
     @Autowired
     private PlatformConfigMapper platformConfigMapper;
 
-    private static final Long TEST_PLATFORM_ID = 1L;
-    private PlatformConfig apiKeyConfig;
-    private PlatformConfig apiSecretConfig;
-    private PlatformConfig endpointConfig;
-    private PlatformConfig timeoutConfig;
+    @Autowired
+    private PlatformMapper platformMapper;
+
+    private Platform testPlatform;
+    private PlatformConfig testConfig;
 
     @BeforeEach
     @DisplayName("准备测试数据")
     void setUp() {
-        // 清理测试数据 - 先查询所有记录，然后逐个删除
-        // 注意：在测试环境中使用物理删除，生产环境应该使用逻辑删除
-        List<PlatformConfig> existingConfigs = platformConfigMapper.selectList(null);
-        for (PlatformConfig config : existingConfigs) {
-            platformConfigMapper.deleteById(config.getId());
-        }
+        // 创建测试平台
+        testPlatform = new Platform();
+        testPlatform.setPlatformName("测试平台");
+        testPlatform.setPlatformType(PlatformType.WALMART);
+        testPlatform.setPlatformCode("test-platform");
+        testPlatform.setStatus(PlatformStatus.ACTIVE);
+        testPlatform.setEnabled(true);
+        testPlatform.setSortOrder(1);
+        platformMapper.insert(testPlatform);
 
-        // 创建测试配置数据
-        apiKeyConfig = createTestConfig("API密钥", "api_key", "test_api_key_123", 
-                ConfigType.STRING, "认证", false, true, 1);
-        apiSecretConfig = createTestConfig("API密钥", "api_secret", "test_secret_456", 
-                ConfigType.PASSWORD, "认证", true, true, 2);
-        endpointConfig = createTestConfig("API端点", "endpoint", "https://api.test.com", 
-                ConfigType.URL, "连接", false, false, 1);
-        timeoutConfig = createTestConfig("超时时间", "timeout", "30", 
-                ConfigType.NUMBER, "连接", false, false, 2);
-
-        // 插入测试数据
-        platformConfigMapper.insert(apiKeyConfig);
-        platformConfigMapper.insert(apiSecretConfig);
-        platformConfigMapper.insert(endpointConfig);
-        platformConfigMapper.insert(timeoutConfig);
+        // 创建测试配置
+        testConfig = new PlatformConfig();
+        testConfig.setPlatformId(testPlatform.getId());
+        testConfig.setConfigName("API密钥");
+        testConfig.setConfigKey("apiKey");
+        testConfig.setConfigValue("test-api-key-value");
+        testConfig.setConfigType(ConfigType.STRING);
+        testConfig.setEncrypted(false);
+        testConfig.setRequired(true);
+        testConfig.setDescription("平台API访问密钥");
+        testConfig.setDefaultValue("");
+        testConfig.setValidationRule("^[a-zA-Z0-9]{10,50}$");
+        testConfig.setConfigGroup("auth");
+        testConfig.setSortOrder(1);
+        testConfig.setEnabled(true);
+        testConfig.setValidationStatus(ValidationStatus.VALID);
     }
 
     @Test
-    @DisplayName("测试BaseMapperPlus基础CRUD操作")
-    void testBaseMapperPlusCrud() {
-        // 测试selectById
-        PlatformConfig found = platformConfigMapper.selectById(apiKeyConfig.getId());
-        assertThat(found).isNotNull();
-        assertThat(found.getConfigName()).isEqualTo("API密钥");
+    @DisplayName("测试BaseMapperPlus的基本CRUD操作")
+    void testBaseMapperPlusCrudOperations() {
+        // 测试插入
+        int insertResult = platformConfigMapper.insert(testConfig);
+        assertThat(insertResult).isEqualTo(1);
+        assertThat(testConfig.getId()).isNotNull();
 
-        // 测试selectList
-        List<PlatformConfig> allConfigs = platformConfigMapper.selectList(null);
-        assertThat(allConfigs).hasSize(4);
+        // 测试根据ID查询
+        PlatformConfig foundConfig = platformConfigMapper.selectById(testConfig.getId());
+        assertThat(foundConfig).isNotNull();
+        assertThat(foundConfig.getConfigName()).isEqualTo("API密钥");
+        assertThat(foundConfig.getConfigKey()).isEqualTo("apiKey");
+        assertThat(foundConfig.getConfigValue()).isEqualTo("test-api-key-value");
 
-        // 测试updateById
-        apiKeyConfig.setConfigValue("updated_api_key");
-        int updateResult = platformConfigMapper.updateById(apiKeyConfig);
+        // 测试更新
+        foundConfig.setConfigValue("updated-api-key-value");
+        foundConfig.setDescription("更新后的API密钥描述");
+        int updateResult = platformConfigMapper.updateById(foundConfig);
         assertThat(updateResult).isEqualTo(1);
 
-        PlatformConfig updated = platformConfigMapper.selectById(apiKeyConfig.getId());
-        assertThat(updated.getConfigValue()).isEqualTo("updated_api_key");
+        // 验证更新结果
+        PlatformConfig updatedConfig = platformConfigMapper.selectById(testConfig.getId());
+        assertThat(updatedConfig.getConfigValue()).isEqualTo("updated-api-key-value");
+        assertThat(updatedConfig.getDescription()).isEqualTo("更新后的API密钥描述");
 
-        // 测试deleteById
-        int deleteResult = platformConfigMapper.deleteById(timeoutConfig.getId());
+        // 测试逻辑删除
+        int deleteResult = platformConfigMapper.deleteById(testConfig.getId());
         assertThat(deleteResult).isEqualTo(1);
 
-        List<PlatformConfig> remainingConfigs = platformConfigMapper.selectList(null);
-        assertThat(remainingConfigs).hasSize(3);
+        // 验证逻辑删除结果（应该查询不到）
+        PlatformConfig deletedConfig = platformConfigMapper.selectById(testConfig.getId());
+        assertThat(deletedConfig).isNull();
     }
 
     @Test
-    @DisplayName("测试BaseMapperPlus增强方法")
+    @DisplayName("测试BaseMapperPlus的增强查询方法")
     void testBaseMapperPlusEnhancedMethods() {
-        // 测试existsByCondition
-        LambdaQueryWrapper<PlatformConfig> wrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.eqIfPresent(wrapper, PlatformConfig::getConfigKey, "api_key");
-        
-        boolean exists = platformConfigMapper.existsByCondition(wrapper);
+        // 插入测试数据
+        platformConfigMapper.insert(testConfig);
+
+        // 测试existsByCondition方法
+        LambdaQueryWrapper<PlatformConfig> existsWrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
+        QueryWrapperUtils.eqIfPresent(existsWrapper, PlatformConfig::getConfigKey, "apiKey");
+        boolean exists = platformConfigMapper.existsByCondition(existsWrapper);
         assertThat(exists).isTrue();
 
-        // 测试selectCountByCondition
+        // 测试selectCountByCondition方法
         LambdaQueryWrapper<PlatformConfig> countWrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.eqIfPresent(countWrapper, PlatformConfig::getRequired, true);
-        
+        QueryWrapperUtils.eqIfPresent(countWrapper, PlatformConfig::getPlatformId, testPlatform.getId());
         Long count = platformConfigMapper.selectCountByCondition(countWrapper);
-        assertThat(count).isEqualTo(2L); // api_key和api_secret都是必填
+        assertThat(count).isEqualTo(1L);
 
-        // 测试selectOneByCondition
+        // 测试selectOneByCondition方法
         LambdaQueryWrapper<PlatformConfig> oneWrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.eqIfPresent(oneWrapper, PlatformConfig::getConfigType, ConfigType.URL);
-        
-        PlatformConfig config = platformConfigMapper.selectOneByCondition(oneWrapper);
-        assertThat(config).isNotNull();
-        assertThat(config.getConfigKey()).isEqualTo("endpoint");
-
-        // 测试selectAllByCondition
-        LambdaQueryWrapper<PlatformConfig> allWrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.eqIfPresent(allWrapper, PlatformConfig::getConfigGroup, "认证");
-        QueryWrapperUtils.orderByAsc(allWrapper, PlatformConfig::getSortOrder);
-        
-        List<PlatformConfig> authConfigs = platformConfigMapper.selectAllByCondition(allWrapper);
-        assertThat(authConfigs).hasSize(2);
-        assertThat(authConfigs.get(0).getSortOrder()).isLessThan(authConfigs.get(1).getSortOrder());
+        QueryWrapperUtils.eqIfPresent(oneWrapper, PlatformConfig::getConfigKey, "apiKey");
+        PlatformConfig foundConfig = platformConfigMapper.selectOneByCondition(oneWrapper);
+        assertThat(foundConfig).isNotNull();
+        assertThat(foundConfig.getConfigName()).isEqualTo("API密钥");
     }
 
     @Test
-    @DisplayName("测试QueryWrapperUtils工具方法")
-    void testQueryWrapperUtils() {
-        // 测试eqIfPresent
-        LambdaQueryWrapper<PlatformConfig> wrapper1 = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.eqIfPresent(wrapper1, PlatformConfig::getPlatformId, TEST_PLATFORM_ID);
-        QueryWrapperUtils.eqIfPresent(wrapper1, PlatformConfig::getConfigType, ConfigType.PASSWORD);
-        
-        List<PlatformConfig> result1 = platformConfigMapper.selectAllByCondition(wrapper1);
-        assertThat(result1).hasSize(1);
-        assertThat(result1.get(0).getConfigType()).isEqualTo(ConfigType.PASSWORD);
+    @DisplayName("测试QueryWrapperUtils工具类方法")
+    void testQueryWrapperUtilsMethods() {
+        // 插入多个测试配置
+        platformConfigMapper.insert(testConfig);
 
-        // 测试likeIfPresent
-        LambdaQueryWrapper<PlatformConfig> wrapper2 = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.likeIfPresent(wrapper2, PlatformConfig::getConfigName, "API");
-        
-        List<PlatformConfig> result2 = platformConfigMapper.selectAllByCondition(wrapper2);
-        assertThat(result2).hasSize(3); // API密钥、API密钥、API端点
+        PlatformConfig config2 = new PlatformConfig();
+        config2.setPlatformId(testPlatform.getId());
+        config2.setConfigName("API密钥");
+        config2.setConfigKey("apiSecret");
+        config2.setConfigValue("test-secret-value");
+        config2.setConfigType(ConfigType.PASSWORD);
+        config2.setEncrypted(true);
+        config2.setRequired(true);
+        config2.setConfigGroup("auth");
+        config2.setSortOrder(2);
+        config2.setEnabled(true);
+        config2.setValidationStatus(ValidationStatus.NOT_VALIDATED);
+        platformConfigMapper.insert(config2);
 
-        // 测试geIfPresent和leIfPresent
-        LambdaQueryWrapper<PlatformConfig> wrapper3 = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.geIfPresent(wrapper3, PlatformConfig::getSortOrder, 1);
-        QueryWrapperUtils.leIfPresent(wrapper3, PlatformConfig::getSortOrder, 2);
-        
-        List<PlatformConfig> result3 = platformConfigMapper.selectAllByCondition(wrapper3);
-        assertThat(result3).hasSize(4); // 所有配置的排序都在1-2之间
+        // 测试eqIfPresent方法
+        LambdaQueryWrapper<PlatformConfig> eqWrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
+        QueryWrapperUtils.eqIfPresent(eqWrapper, PlatformConfig::getConfigType, ConfigType.STRING);
+        List<PlatformConfig> stringConfigs = platformConfigMapper.selectAllByCondition(eqWrapper);
+        assertThat(stringConfigs).hasSize(1);
+        assertThat(stringConfigs.get(0).getConfigType()).isEqualTo(ConfigType.STRING);
 
-        // 测试orderByDesc
-        LambdaQueryWrapper<PlatformConfig> wrapper4 = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.eqIfPresent(wrapper4, PlatformConfig::getConfigGroup, "连接");
-        QueryWrapperUtils.orderByDesc(wrapper4, PlatformConfig::getSortOrder);
-        
-        List<PlatformConfig> result4 = platformConfigMapper.selectAllByCondition(wrapper4);
-        assertThat(result4).hasSize(2);
-        assertThat(result4.get(0).getSortOrder()).isGreaterThan(result4.get(1).getSortOrder());
+        // 测试likeIfPresent方法
+        LambdaQueryWrapper<PlatformConfig> likeWrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
+        QueryWrapperUtils.likeIfPresent(likeWrapper, PlatformConfig::getConfigName, "API");
+        List<PlatformConfig> apiConfigs = platformConfigMapper.selectAllByCondition(likeWrapper);
+        assertThat(apiConfigs).hasSize(2);
+
+        // 测试组合条件查询
+        LambdaQueryWrapper<PlatformConfig> combinedWrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
+        QueryWrapperUtils.eqIfPresent(combinedWrapper, PlatformConfig::getRequired, true);
+        QueryWrapperUtils.eqIfPresent(combinedWrapper, PlatformConfig::getConfigGroup, "auth");
+        List<PlatformConfig> requiredAuthConfigs = platformConfigMapper.selectAllByCondition(combinedWrapper);
+        assertThat(requiredAuthConfigs).hasSize(2);
     }
 
     @Test
     @DisplayName("测试自定义查询方法")
     void testCustomQueryMethods() {
+        // 插入多个测试配置
+        platformConfigMapper.insert(testConfig);
+
+        // 创建不同分组的配置
+        PlatformConfig configConfig = new PlatformConfig();
+        configConfig.setPlatformId(testPlatform.getId());
+        configConfig.setConfigName("连接超时");
+        configConfig.setConfigKey("connectTimeout");
+        configConfig.setConfigValue("30000");
+        configConfig.setConfigType(ConfigType.NUMBER);
+        configConfig.setEncrypted(false);
+        configConfig.setRequired(false);
+        configConfig.setConfigGroup("config");
+        configConfig.setSortOrder(1);
+        configConfig.setEnabled(true);
+        configConfig.setValidationStatus(ValidationStatus.VALID);
+        platformConfigMapper.insert(configConfig);
+
         // 测试根据平台ID查询配置列表
-        List<PlatformConfig> configs = platformConfigMapper.selectByPlatformId(TEST_PLATFORM_ID);
-        assertThat(configs).hasSize(4);
+        List<PlatformConfig> platformConfigs = platformConfigMapper.selectByPlatformId(testPlatform.getId());
+        assertThat(platformConfigs).hasSize(2);
 
         // 测试根据平台ID和配置键查询
-        PlatformConfig config = platformConfigMapper.selectByPlatformIdAndKey(TEST_PLATFORM_ID, "api_key");
-        assertThat(config).isNotNull();
-        assertThat(config.getConfigKey()).isEqualTo("api_key");
+        PlatformConfig foundConfig = platformConfigMapper.selectByPlatformIdAndKey(testPlatform.getId(), "apiKey");
+        assertThat(foundConfig).isNotNull();
+        assertThat(foundConfig.getConfigName()).isEqualTo("API密钥");
 
         // 测试根据平台ID和配置分组查询
-        List<PlatformConfig> authConfigs = platformConfigMapper.selectByPlatformIdAndGroup(TEST_PLATFORM_ID, "认证");
-        assertThat(authConfigs).hasSize(2);
-        assertThat(authConfigs).allMatch(c -> "认证".equals(c.getConfigGroup()));
+        List<PlatformConfig> authConfigs = platformConfigMapper.selectByPlatformIdAndGroup(testPlatform.getId(), "auth");
+        assertThat(authConfigs).hasSize(1);
+        assertThat(authConfigs.get(0).getConfigGroup()).isEqualTo("auth");
 
         // 测试查询必填配置
-        List<PlatformConfig> requiredConfigs = platformConfigMapper.selectRequiredByPlatformId(TEST_PLATFORM_ID);
-        assertThat(requiredConfigs).hasSize(2);
-        assertThat(requiredConfigs).allMatch(PlatformConfig::getRequired);
+        List<PlatformConfig> requiredConfigs = platformConfigMapper.selectRequiredByPlatformId(testPlatform.getId());
+        assertThat(requiredConfigs).hasSize(1);
+        assertThat(requiredConfigs.get(0).getRequired()).isTrue();
 
         // 测试查询启用的配置
-        List<PlatformConfig> enabledConfigs = platformConfigMapper.selectEnabledByPlatformId(TEST_PLATFORM_ID);
-        assertThat(enabledConfigs).hasSize(4);
-        assertThat(enabledConfigs).allMatch(PlatformConfig::getEnabled);
+        List<PlatformConfig> enabledConfigs = platformConfigMapper.selectEnabledByPlatformId(testPlatform.getId());
+        assertThat(enabledConfigs).hasSize(2);
 
         // 测试根据配置类型查询
-        List<PlatformConfig> stringConfigs = platformConfigMapper.selectByPlatformIdAndType(TEST_PLATFORM_ID, ConfigType.STRING);
+        List<PlatformConfig> stringConfigs = platformConfigMapper.selectByPlatformIdAndType(testPlatform.getId(), ConfigType.STRING);
         assertThat(stringConfigs).hasSize(1);
         assertThat(stringConfigs.get(0).getConfigType()).isEqualTo(ConfigType.STRING);
 
         // 测试根据验证状态查询
-        List<PlatformConfig> notValidatedConfigs = platformConfigMapper.selectByPlatformIdAndValidationStatus(
-                TEST_PLATFORM_ID, ValidationStatus.NOT_VALIDATED);
-        assertThat(notValidatedConfigs).hasSize(4); // 所有配置都是未验证状态
+        List<PlatformConfig> validConfigs = platformConfigMapper.selectByPlatformIdAndValidationStatus(testPlatform.getId(), ValidationStatus.VALID);
+        assertThat(validConfigs).hasSize(2);
 
-        // 测试验证状态统计
-        List<Map<String, Object>> statusCount = platformConfigMapper.countByValidationStatus(TEST_PLATFORM_ID);
-        assertThat(statusCount).hasSize(1); // 只有一种状态：NOT_VALIDATED
-        
-        Map<String, Object> statusInfo = statusCount.get(0);
-        assertThat(statusInfo.get("validation_status")).isEqualTo("NOT_VALIDATED");
-        assertThat(statusInfo.get("count")).isEqualTo(4L);
+        // 测试配置统计
+        List<Map<String, Object>> validationStats = platformConfigMapper.countByValidationStatus(testPlatform.getId());
+        assertThat(validationStats).hasSize(1);
 
-        // 测试检查配置键唯一性
-        int count = platformConfigMapper.countByPlatformIdAndKeyExcludeId(TEST_PLATFORM_ID, "api_key", 999L);
-        assertThat(count).isEqualTo(1);
-
-        // 测试获取分组最大排序顺序
-        Integer maxSortOrder = platformConfigMapper.selectMaxSortOrderByGroup(TEST_PLATFORM_ID, "认证");
-        assertThat(maxSortOrder).isEqualTo(2);
-
-        // 测试查询加密配置
-        List<PlatformConfig> encryptedConfigs = platformConfigMapper.selectEncryptedByPlatformId(TEST_PLATFORM_ID);
-        assertThat(encryptedConfigs).hasSize(1);
-        assertThat(encryptedConfigs.get(0).getConfigKey()).isEqualTo("api_secret");
+        // 测试获取最大排序顺序
+        Integer maxSortOrder = platformConfigMapper.selectMaxSortOrderByGroup(testPlatform.getId(), "auth");
+        assertThat(maxSortOrder).isEqualTo(1);
 
         // 测试配置名称模糊查询
-        List<PlatformConfig> searchResult = platformConfigMapper.selectByPlatformIdAndNameLike(TEST_PLATFORM_ID, "API");
-        assertThat(searchResult).hasSize(3);
+        List<PlatformConfig> searchResults = platformConfigMapper.selectByPlatformIdAndNameLike(testPlatform.getId(), "API");
+        assertThat(searchResults).hasSize(1);
+        assertThat(searchResults.get(0).getConfigName()).contains("API");
+
+        // 测试检查配置键唯一性
+        int count = platformConfigMapper.countByPlatformIdAndKeyExcludeId(testPlatform.getId(), "apiKey", 0L);
+        assertThat(count).isEqualTo(1);
+
+        count = platformConfigMapper.countByPlatformIdAndKeyExcludeId(testPlatform.getId(), "apiKey", testConfig.getId());
+        assertThat(count).isEqualTo(0);
     }
 
     @Test
     @DisplayName("测试批量更新验证状态")
     void testBatchUpdateValidationStatus() {
-        // 执行批量更新
+        // 插入多个测试配置
+        platformConfigMapper.insert(testConfig);
+
+        PlatformConfig config2 = new PlatformConfig();
+        config2.setPlatformId(testPlatform.getId());
+        config2.setConfigName("API密钥");
+        config2.setConfigKey("apiSecret");
+        config2.setConfigValue("test-secret");
+        config2.setConfigType(ConfigType.PASSWORD);
+        config2.setConfigGroup("auth");
+        config2.setSortOrder(2);
+        config2.setEnabled(true);
+        config2.setValidationStatus(ValidationStatus.NOT_VALIDATED);
+        platformConfigMapper.insert(config2);
+
+        // 测试批量更新验证状态
         LocalDateTime now = LocalDateTime.now();
         int updateCount = platformConfigMapper.updateValidationStatusByPlatformId(
-                TEST_PLATFORM_ID, ValidationStatus.VALID, null, now);
-        
-        assertThat(updateCount).isEqualTo(4);
+            testPlatform.getId(), 
+            ValidationStatus.INVALID, 
+            "验证失败", 
+            now
+        );
+        assertThat(updateCount).isEqualTo(2);
 
         // 验证更新结果
-        List<PlatformConfig> validConfigs = platformConfigMapper.selectByPlatformIdAndValidationStatus(
-                TEST_PLATFORM_ID, ValidationStatus.VALID);
-        assertThat(validConfigs).hasSize(4);
-        assertThat(validConfigs).allMatch(c -> c.getValidationStatus() == ValidationStatus.VALID);
+        List<PlatformConfig> updatedConfigs = platformConfigMapper.selectByPlatformId(testPlatform.getId());
+        assertThat(updatedConfigs).hasSize(2);
+        for (PlatformConfig config : updatedConfigs) {
+            assertThat(config.getValidationStatus()).isEqualTo(ValidationStatus.INVALID);
+            assertThat(config.getValidationError()).isEqualTo("验证失败");
+            assertThat(config.getLastValidated()).isNotNull();
+        }
     }
 
     @Test
-    @DisplayName("测试复杂查询条件组合")
-    void testComplexQueryConditions() {
-        // 测试多条件组合查询
-        LambdaQueryWrapper<PlatformConfig> wrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.eqIfPresent(wrapper, PlatformConfig::getPlatformId, TEST_PLATFORM_ID);
-        QueryWrapperUtils.eqIfPresent(wrapper, PlatformConfig::getEnabled, true);
-        QueryWrapperUtils.eqIfPresent(wrapper, PlatformConfig::getRequired, true);
-        QueryWrapperUtils.orderByAsc(wrapper, PlatformConfig::getConfigGroup);
-        QueryWrapperUtils.orderByAsc(wrapper, PlatformConfig::getSortOrder);
-        
-        List<PlatformConfig> result = platformConfigMapper.selectAllByCondition(wrapper);
-        assertThat(result).hasSize(2);
-        assertThat(result).allMatch(c -> c.getEnabled() && c.getRequired());
+    @DisplayName("测试加密配置查询")
+    void testEncryptedConfigQuery() {
+        // 插入普通配置
+        platformConfigMapper.insert(testConfig);
 
-        // 测试分组查询 - 使用简单的分组条件查询替代GROUP BY
-        LambdaQueryWrapper<PlatformConfig> groupWrapper = QueryWrapperUtils.lambdaQuery(PlatformConfig.class);
-        QueryWrapperUtils.eqIfPresent(groupWrapper, PlatformConfig::getPlatformId, TEST_PLATFORM_ID);
-        QueryWrapperUtils.eqIfPresent(groupWrapper, PlatformConfig::getConfigGroup, "认证");
-        
-        List<PlatformConfig> groupResult = platformConfigMapper.selectAllByCondition(groupWrapper);
-        assertThat(groupResult).hasSize(2); // 认证分组有2个配置
+        // 插入加密配置
+        PlatformConfig encryptedConfig = new PlatformConfig();
+        encryptedConfig.setPlatformId(testPlatform.getId());
+        encryptedConfig.setConfigName("API密钥");
+        encryptedConfig.setConfigKey("apiSecret");
+        encryptedConfig.setConfigValue("encrypted-secret-value");
+        encryptedConfig.setConfigType(ConfigType.PASSWORD);
+        encryptedConfig.setEncrypted(true);
+        encryptedConfig.setRequired(true);
+        encryptedConfig.setConfigGroup("auth");
+        encryptedConfig.setSortOrder(2);
+        encryptedConfig.setEnabled(true);
+        platformConfigMapper.insert(encryptedConfig);
+
+        // 测试查询加密配置
+        List<PlatformConfig> encryptedConfigs = platformConfigMapper.selectEncryptedByPlatformId(testPlatform.getId());
+        assertThat(encryptedConfigs).hasSize(1);
+        assertThat(encryptedConfigs.get(0).getEncrypted()).isTrue();
+        assertThat(encryptedConfigs.get(0).getConfigKey()).isEqualTo("apiSecret");
     }
 
     @Test
-    @DisplayName("测试逻辑删除功能")
-    void testLogicalDelete() {
-        // 获取删除前的记录数
-        Long beforeCount = platformConfigMapper.selectCountByCondition(
-                QueryWrapperUtils.lambdaQuery(PlatformConfig.class));
-        assertThat(beforeCount).isEqualTo(4L);
+    @DisplayName("测试配置业务方法")
+    void testConfigBusinessMethods() {
+        // 设置加密配置
+        testConfig.setEncrypted(true);
+        testConfig.setConfigValue("secret-value");
+        platformConfigMapper.insert(testConfig);
 
-        // 执行逻辑删除 - 删除timeout配置避免唯一约束冲突
-        int deleteResult = platformConfigMapper.deleteById(timeoutConfig.getId());
-        assertThat(deleteResult).isEqualTo(1);
+        PlatformConfig foundConfig = platformConfigMapper.selectById(testConfig.getId());
+        
+        // 测试业务方法
+        assertThat(foundConfig.isValid()).isTrue();
+        assertThat(foundConfig.checkRequired()).isTrue();
+        assertThat(foundConfig.checkEncrypted()).isTrue();
+        assertThat(foundConfig.getDisplayValue()).isEqualTo("******"); // 加密字段显示掩码
 
-        // 验证逻辑删除后记录数减少
-        Long afterCount = platformConfigMapper.selectCountByCondition(
-                QueryWrapperUtils.lambdaQuery(PlatformConfig.class));
-        assertThat(afterCount).isEqualTo(3L);
-
-        // 验证被删除的记录无法通过正常查询获取
-        PlatformConfig deletedConfig = platformConfigMapper.selectById(timeoutConfig.getId());
-        assertThat(deletedConfig).isNull();
-
-        // 验证通过平台ID查询时也不包含被删除的记录
-        List<PlatformConfig> configs = platformConfigMapper.selectByPlatformId(TEST_PLATFORM_ID);
-        assertThat(configs).hasSize(3);
-        assertThat(configs).noneMatch(c -> c.getId().equals(timeoutConfig.getId()));
-    }
-
-    /**
-     * 创建测试配置对象
-     *
-     * @param name 配置名称
-     * @param key 配置键
-     * @param value 配置值
-     * @param type 配置类型
-     * @param group 配置分组
-     * @param encrypted 是否加密
-     * @param required 是否必填
-     * @param sortOrder 排序顺序
-     * @return 配置对象
-     */
-    private PlatformConfig createTestConfig(String name, String key, String value, 
-                                          ConfigType type, String group, boolean encrypted, 
-                                          boolean required, int sortOrder) {
-        PlatformConfig config = new PlatformConfig();
-        config.setPlatformId(TEST_PLATFORM_ID);
-        config.setConfigName(name);
-        config.setConfigKey(key);
-        config.setConfigValue(value);
-        config.setConfigType(type);
-        config.setEncrypted(encrypted);
-        config.setRequired(required);
-        config.setDescription(name + "的配置描述");
-        config.setDefaultValue(encrypted ? null : value);
-        config.setConfigGroup(group);
-        config.setSortOrder(sortOrder);
-        config.setEnabled(true);
-        config.setValidationStatus(ValidationStatus.NOT_VALIDATED);
-        return config;
+        // 测试非加密配置
+        foundConfig.setEncrypted(false);
+        assertThat(foundConfig.getDisplayValue()).isEqualTo("secret-value"); // 非加密字段显示原值
     }
 }

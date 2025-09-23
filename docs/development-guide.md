@@ -29,6 +29,7 @@
 ```bash
 git clone https://github.com/yangguangfu007/ecommerce-erp-system.git
 cd ecommerce-erp-system
+git checkout develop
 ```
 
 ### 1.5 快速启动（推荐）

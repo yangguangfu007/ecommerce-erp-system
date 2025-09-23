@@ -1,0 +1,48 @@
+server:
+  port: 0  # 随机端口
+
+spring:
+  application:
+    name: erp-logistics-service-test
+    
+  datasource:
+    url: jdbc:mysql://localhost:3306/erp_logistics_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&createDatabaseIfNotExist=true
+    username: root
+    password: root123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    
+  # 禁用Nacos配置中心
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+        
+  # 禁用JPA自动DDL
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+# MyBatis Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  mapper-locations: classpath*:mapper/**/*.xml
+
+# 日志配置
+logging:
+  level:
+    com.erp.logistics: DEBUG
+    com.baomidou.mybatisplus: DEBUG
+    org.springframework.transaction: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
