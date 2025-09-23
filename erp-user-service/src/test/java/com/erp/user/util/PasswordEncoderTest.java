@@ -16,15 +16,24 @@ public class PasswordEncoderTest {
 
     @Test
     public void generatePasswordHash() {
-        String password = "admin123";
-        String encodedPassword = passwordEncoder.encode(password);
+        // 生成所有用户的密码哈希
+        String[] passwords = {"admin123", "manager123", "user123"};
+        String[] usernames = {"admin", "manager", "user"};
         
-        System.out.println("原始密码: " + password);
-        System.out.println("BCrypt哈希: " + encodedPassword);
-        
-        // 验证密码是否正确
-        boolean matches = passwordEncoder.matches(password, encodedPassword);
-        System.out.println("密码验证结果: " + matches);
+        for (int i = 0; i < passwords.length; i++) {
+            String password = passwords[i];
+            String username = usernames[i];
+            String encodedPassword = passwordEncoder.encode(password);
+            
+            System.out.println("用户: " + username);
+            System.out.println("原始密码: " + password);
+            System.out.println("BCrypt哈希: " + encodedPassword);
+            
+            // 验证密码是否正确
+            boolean matches = passwordEncoder.matches(password, encodedPassword);
+            System.out.println("密码验证结果: " + matches);
+            System.out.println("---");
+        }
     }
 
     @Test

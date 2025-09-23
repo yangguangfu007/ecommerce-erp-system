@@ -154,8 +154,21 @@ export function useNavigation() {
       id: 'platform-management',
       title: '平台管理',
       icon: 'Connection',
-      path: '/platforms',
-      permissions: ['platform:view']
+      permissions: ['platform:view'],
+      children: [
+        {
+          id: 'platform-list',
+          title: '平台列表',
+          path: '/platforms',
+          permissions: ['platform:view']
+        },
+        {
+          id: 'platform-config',
+          title: '平台配置',
+          path: '/platforms/config',
+          permissions: ['platform:config']
+        }
+      ]
     },
     {
       id: 'notification-management',
@@ -208,8 +221,21 @@ export function useNavigation() {
       id: 'system-settings',
       title: '系统设置',
       icon: 'Setting',
-      path: '/settings',
-      permissions: ['system:setting']
+      permissions: ['system:setting'],
+      children: [
+        {
+          id: 'system-config',
+          title: '系统配置',
+          path: '/settings',
+          permissions: ['system:setting']
+        },
+        {
+          id: 'system-logs',
+          title: '系统日志',
+          path: '/settings/logs',
+          permissions: ['system:log']
+        }
+      ]
     }
   ]
 
@@ -377,9 +403,110 @@ export function useNavigation() {
 
   // 获取菜单徽章
   const getMenuBadge = (item: NavigationItem) => {
-    // 这里可以根据业务逻辑动态计算徽章数量
-    // 例如：未读通知数量、待处理订单数量等
-    return item.badge
+    // 根据业务逻辑动态计算徽章数量
+    switch (item.id) {
+      case 'platform-management':
+        // 平台管理：显示连接异常的平台数量
+        return getPlatformErrorCount()
+      case 'platform-config':
+        // 平台配置：显示需要配置的平台数量
+        return getPlatformConfigNeededCount()
+      case 'platform-list':
+        // 平台列表：显示连接状态异常的平台数量
+        return getPlatformConnectionIssueCount()
+      case 'logistics-management':
+        // 物流管理：显示物流异常数量
+        return getLogisticsExceptionCount()
+      case 'shipping-labels':
+        // 面单管理：显示待处理面单数量
+        return getPendingShippingLabelsCount()
+      case 'logistics-list':
+        // 物流列表：显示物流异常数量
+        return getLogisticsIssueCount()
+      case 'system-settings':
+        // 系统设置：显示系统异常数量
+        return getSystemExceptionCount()
+      case 'system-logs':
+        // 系统日志：显示系统错误日志数量
+        return getSystemErrorLogCount()
+      case 'system-config':
+        // 系统配置：显示需要配置的系统项数量
+        return getSystemConfigNeededCount()
+      default:
+        return item.badge
+    }
+  }
+
+  // 获取平台连接异常数量
+  const getPlatformErrorCount = () => {
+    // 这里应该从store或API获取实际数据
+    // 暂时返回模拟数据 - 模拟有1个平台连接异常
+    const errorCount = 1
+    return errorCount > 0 ? errorCount : undefined
+  }
+
+  // 获取需要配置的平台数量
+  const getPlatformConfigNeededCount = () => {
+    // 这里应该从store或API获取实际数据
+    // 暂时返回模拟数据 - 模拟有2个平台需要配置
+    const configNeededCount = 2
+    return configNeededCount > 0 ? configNeededCount : undefined
+  }
+
+  // 获取平台连接状态异常数量
+  const getPlatformConnectionIssueCount = () => {
+    // 这里应该从store或API获取实际数据
+    // 暂时返回模拟数据 - 模拟有1个平台连接异常
+    const issueCount = 1
+    return issueCount > 0 ? issueCount : undefined
+  }
+
+  // 获取物流异常数量
+  const getLogisticsExceptionCount = () => {
+    // 这里应该从store或API获取实际数据
+    // 暂时返回模拟数据 - 模拟有3个物流异常
+    const exceptionCount = 3
+    return exceptionCount > 0 ? exceptionCount : undefined
+  }
+
+  // 获取待处理面单数量
+  const getPendingShippingLabelsCount = () => {
+    // 这里应该从store或API获取实际数据
+    // 暂时返回模拟数据 - 模拟有5个待处理面单
+    const pendingCount = 5
+    return pendingCount > 0 ? pendingCount : undefined
+  }
+
+  // 获取物流问题数量
+  const getLogisticsIssueCount = () => {
+    // 这里应该从store或API获取实际数据
+    // 暂时返回模拟数据 - 模拟有2个物流问题
+    const issueCount = 2
+    return issueCount > 0 ? issueCount : undefined
+  }
+
+  // 获取系统异常数量
+  const getSystemExceptionCount = () => {
+    // 这里应该从store或API获取实际数据
+    // 暂时返回模拟数据 - 模拟有1个系统异常
+    const exceptionCount = 1
+    return exceptionCount > 0 ? exceptionCount : undefined
+  }
+
+  // 获取系统错误日志数量
+  const getSystemErrorLogCount = () => {
+    // 这里应该从store或API获取实际数据
+    // 暂时返回模拟数据 - 模拟有8个错误日志
+    const errorLogCount = 8
+    return errorLogCount > 0 ? errorLogCount : undefined
+  }
+
+  // 获取需要配置的系统项数量
+  const getSystemConfigNeededCount = () => {
+    // 这里应该从store或API获取实际数据
+    // 暂时返回模拟数据 - 模拟有3个配置项需要设置
+    const configNeededCount = 3
+    return configNeededCount > 0 ? configNeededCount : undefined
   }
 
   // 初始化导航状态

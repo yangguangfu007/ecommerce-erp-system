@@ -71,13 +71,14 @@
               :href="item.path" 
               class="nav-link" 
               :data-menu-id="item.id"
+              :data-testid="`menu-${item.id}`"
               @click.prevent="handleMenuClick(item)"
             >
               <el-icon v-if="item.icon">
                 <component :is="item.icon" />
               </el-icon>
               <span>{{ item.title }}</span>
-              <span v-if="item.badge" class="nav-badge">{{ item.badge }}</span>
+              <span v-if="navigation.getMenuBadge(item)" class="nav-badge">{{ navigation.getMenuBadge(item) }}</span>
             </a>
             
             <!-- 有子菜单的项 -->
@@ -86,13 +87,14 @@
               href="#" 
               class="nav-link" 
               :data-menu-id="item.id"
+              :data-testid="`menu-${item.id}`"
               @click.prevent="toggleSubmenu(item.id)"
             >
               <el-icon v-if="item.icon">
                 <component :is="item.icon" />
               </el-icon>
               <span>{{ item.title }}</span>
-              <span v-if="item.badge" class="nav-badge">{{ item.badge }}</span>
+              <span v-if="navigation.getMenuBadge(item)" class="nav-badge">{{ navigation.getMenuBadge(item) }}</span>
               <el-icon class="submenu-arrow">
                 <ArrowDown />
               </el-icon>
@@ -104,11 +106,12 @@
                 <a 
                   :href="child.path" 
                   :data-submenu-id="child.id"
+                  :data-testid="`menu-${child.id}`"
                   :class="{ active: isActiveRoute(child) }"
                   @click.prevent="handleMenuClick(child)"
                 >
                   {{ child.title }}
-                  <span v-if="child.badge" class="nav-badge">{{ child.badge }}</span>
+                  <span v-if="navigation.getMenuBadge(child)" class="nav-badge">{{ navigation.getMenuBadge(child) }}</span>
                 </a>
               </li>
             </ul>

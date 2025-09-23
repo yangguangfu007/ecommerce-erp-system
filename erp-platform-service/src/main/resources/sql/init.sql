@@ -95,6 +95,47 @@ CREATE TABLE IF NOT EXISTS platform_stores (
     INDEX idx_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='平台店铺表';
 
+-- 店铺权限表
+CREATE TABLE IF NOT EXISTS store_permissions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    user_id BIGINT NOT NULL COMMENT '用户ID',
+    store_id BIGINT NOT NULL COMMENT '店铺ID',
+    permission_type ENUM('OWNER', 'ADMIN', 'OPERATOR', 'VIEWER') NOT NULL COMMENT '权限类型',
+    can_read BOOLEAN NOT NULL DEFAULT TRUE COMMENT '是否可读',
+    can_write BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否可写',
+    can_delete BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否可删除',
+    can_manage BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否可管理',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    created_by VARCHAR(50) COMMENT '创建人',
+    updated_by VARCHAR(50) COMMENT '更新人',
+    INDEX idx_user_id (user_id),
+    INDEX idx_store_id (store_id),
+    INDEX idx_permission_type (permission_type),
+    UNIQUE KEY uk_user_store (user_id, store_id),
+    FOREIGN KEY (store_id) REFERENCES platform_stores(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='店铺权限表';
+
+-- 店铺数据隔离配置表
+CREATE TABLE IF NOT EXISTS store_data_isolation (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    store_id BIGINT NOT NULL COMMENT '店铺ID',
+    data_type ENUM('ORDER', 'PRODUCT', 'INVENTORY', 'CUSTOMER', 'REPORT') NOT NULL COMMENT '数据类型',
+    isolation_level ENUM('STRICT', 'MODERATE', 'LOOSE') NOT NULL COMMENT '隔离级别',
+    enabled BOOLEAN NOT NULL DEFAULT TRUE COMMENT '是否启用',
+    config_params TEXT COMMENT '配置参数(JSON格式)',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    created_by VARCHAR(50) COMMENT '创建人',
+    updated_by VARCHAR(50) COMMENT '更新人',
+    INDEX idx_store_id (store_id),
+    INDEX idx_data_type (data_type),
+    INDEX idx_isolation_level (isolation_level),
+    INDEX idx_enabled (enabled),
+    UNIQUE KEY uk_store_data_type (store_id, data_type),
+    FOREIGN KEY (store_id) REFERENCES platform_stores(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='店铺数据隔离配置表';
+
 -- 平台订单同步记录表
 CREATE TABLE IF NOT EXISTS platform_order_sync_logs (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
@@ -206,71 +247,6 @@ INSERT INTO platform_configs (platform_id, config_name, config_key, config_value
 (3, '开发者ID', 'devId', '', 'STRING', FALSE, TRUE, 'eBay开发者ID', 'auth', 2, TRUE),
 (3, '证书ID', 'certId', '', 'PASSWORD', TRUE, TRUE, 'eBay证书ID', 'auth', 3, TRUE),
 (3, '用户令牌', 'token', '', 'PASSWORD', TRUE, TRUE, 'eBay用户令牌', 'auth', 4, TRUE);
-
--- 插入初始数据
-INSERT INTO platform_stores (store_name, platform_type, platform_store_id, api_credentials, status, config_data, created_by) VALUES
-('沃尔玛测试店铺', 'WALMART', 'walmart-test-store-001', '{"clientId":"test-client-id","clientSecret":"test-client-secret"}', 'ACTIVE', '{"autoSync":true,"syncInterval":600}', 'system'),
-('亚马逊测试店铺', 'AMAZON', 'amazon-test-store-001', '{"accessKey":"test-access-key","secretKey":"test-secret-key","sellerId":"test-seller-id"}', 'INACTIVE', '{"autoSync":false,"syncInterval":1800}', 'system');
-
--- 插入初始权限数据
-INSERT INTO store_permissions (user_id, store_id, permission_type, can_read, can_write, can_delete, can_manage, created_by) VALUES
-(1, 1, 'OWNER', TRUE, TRUE, TRUE, TRUE, 'system'),
-(1, 2, 'OWNER', TRUE, TRUE, TRUE, TRUE, 'system'),
-(2, 1, 'ADMIN', TRUE, TRUE, FALSE, TRUE, 'system'),
-(3, 1, 'OPERATOR', TRUE, TRUE, FALSE, FALSE, 'system'),
-(4, 1, 'VIEWER', TRUE, FALSE, FALSE, FALSE, 'system');
-
--- 插入初始数据隔离配置
-INSERT INTO store_data_isolation (store_id, data_type, isolation_level, enabled, config_params, created_by) VALUES
-(1, 'ORDER', 'STRICT', TRUE, '{"allowCrossStoreView":false,"auditAccess":true}', 'system'),
-(1, 'PRODUCT', 'MODERATE', TRUE, '{"allowCrossStoreView":true,"auditAccess":false}', 'system'),
-(1, 'INVENTORY', 'STRICT', TRUE, '{"allowCrossStoreView":false,"auditAccess":true}', 'system'),
-(1, 'CUSTOMER', 'STRICT', TRUE, '{"allowCrossStoreView":false,"auditAccess":true}', 'system'),
-(1, 'REPORT', 'LOOSE', TRUE, '{"allowCrossStoreView":true,"auditAccess":false}', 'system'),
-(2, 'ORDER', 'STRICT', TRUE, '{"allowCrossStoreView":false,"auditAccess":true}', 'system'),
-(2, 'PRODUCT', 'MODERATE', TRUE, '{"allowCrossStoreView":true,"auditAccess":false}', 'system'),
-(2, 'INVENTORY', 'STRICT', TRUE, '{"allowCrossStoreView":false,"auditAccess":true}', 'system');
-
--- 店铺权限表
-CREATE TABLE IF NOT EXISTS store_permissions (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
-    user_id BIGINT NOT NULL COMMENT '用户ID',
-    store_id BIGINT NOT NULL COMMENT '店铺ID',
-    permission_type ENUM('OWNER', 'ADMIN', 'OPERATOR', 'VIEWER') NOT NULL COMMENT '权限类型',
-    can_read BOOLEAN NOT NULL DEFAULT TRUE COMMENT '是否可读',
-    can_write BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否可写',
-    can_delete BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否可删除',
-    can_manage BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否可管理',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    created_by VARCHAR(50) COMMENT '创建人',
-    updated_by VARCHAR(50) COMMENT '更新人',
-    INDEX idx_user_id (user_id),
-    INDEX idx_store_id (store_id),
-    INDEX idx_permission_type (permission_type),
-    UNIQUE KEY uk_user_store (user_id, store_id),
-    FOREIGN KEY (store_id) REFERENCES platform_stores(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='店铺权限表';
-
--- 店铺数据隔离配置表
-CREATE TABLE IF NOT EXISTS store_data_isolation (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
-    store_id BIGINT NOT NULL COMMENT '店铺ID',
-    data_type ENUM('ORDER', 'PRODUCT', 'INVENTORY', 'CUSTOMER', 'REPORT') NOT NULL COMMENT '数据类型',
-    isolation_level ENUM('STRICT', 'MODERATE', 'LOOSE') NOT NULL COMMENT '隔离级别',
-    enabled BOOLEAN NOT NULL DEFAULT TRUE COMMENT '是否启用',
-    config_params TEXT COMMENT '配置参数(JSON格式)',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    created_by VARCHAR(50) COMMENT '创建人',
-    updated_by VARCHAR(50) COMMENT '更新人',
-    INDEX idx_store_id (store_id),
-    INDEX idx_data_type (data_type),
-    INDEX idx_isolation_level (isolation_level),
-    INDEX idx_enabled (enabled),
-    UNIQUE KEY uk_store_data_type (store_id, data_type),
-    FOREIGN KEY (store_id) REFERENCES platform_stores(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='店铺数据隔离配置表';
 
 -- 创建索引优化查询性能
 CREATE INDEX idx_platform_stores_composite ON platform_stores(platform_type, status, last_sync_time);

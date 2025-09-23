@@ -14,6 +14,10 @@ dist-ssr
 coverage
 *.local
 
+# Test reports and results
+/test-reports/
+/test-results/
+/playwright-report/
 /cypress/videos/
 /cypress/screenshots/
 

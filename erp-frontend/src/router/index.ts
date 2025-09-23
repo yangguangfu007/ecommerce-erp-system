@@ -199,10 +199,21 @@ const routes: RouteRecordRaw[] = [
         name: 'PlatformManagement',
         component: () => import('@/views/platforms/PlatformManagement.vue'),
         meta: {
-          title: '平台管理',
+          title: '平台列表',
           icon: 'Connection',
           requiresAuth: true,
           permissions: ['platform:view']
+        }
+      },
+      {
+        path: '/platforms/config',
+        name: 'PlatformConfig',
+        component: () => import('@/views/platforms/PlatformConfig.vue'),
+        meta: {
+          title: '平台配置',
+          requiresAuth: true,
+          permissions: ['platform:config'],
+          hideInMenu: true
         }
       },
       // 通知管理
@@ -270,10 +281,22 @@ const routes: RouteRecordRaw[] = [
         name: 'SystemSettings',
         component: () => import('@/views/settings/SystemSettings.vue'),
         meta: {
-          title: '系统设置',
+          title: '系统配置',
           icon: 'Setting',
           requiresAuth: true,
           permissions: ['system:setting']
+        }
+      },
+      {
+        path: '/settings/logs',
+        name: 'SystemLogs',
+        component: () => import('@/views/settings/SystemLogs.vue'),
+        meta: {
+          title: '系统日志',
+          icon: 'Document',
+          requiresAuth: true,
+          permissions: ['system:log'],
+          hideInMenu: true
         }
       }
     ]
