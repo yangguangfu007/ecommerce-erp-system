@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "name": "自动Git提交",
   "description": "监听项目文件变化，在任务完成后自动执行git add和commit操作",
   "version": "1",

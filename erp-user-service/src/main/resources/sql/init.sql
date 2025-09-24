@@ -242,6 +242,7 @@ INSERT INTO sys_permission (id, permission_code, permission_name, type, parent_i
 -- 系统管理
 (110, 'system:monitor', '系统监控', 3, 0, '/api/system', '查看系统监控信息', 1, 110, '', 1),
 (111, 'system:setting', '系统设置', 3, 0, '/api/system', '修改系统设置', 1, 111, '', 1),
+(112, 'system:log', '系统日志', 3, 0, '/api/system/logs', '查看系统日志', 1, 112, '', 1),
 
 -- 商品导入
 (120, 'product:import', '商品导入', 3, 0, '/api/products', '导入商品数据', 1, 120, '', 1)
@@ -270,7 +271,7 @@ INSERT INTO sys_role_permission (id, role_id, permission_id, create_by) VALUES
 (80, 1, 80, 1), (81, 1, 81, 1), (82, 1, 82, 1), (83, 1, 83, 1),
 (90, 1, 90, 1), (91, 1, 91, 1), (92, 1, 92, 1),
 (100, 1, 100, 1), (101, 1, 101, 1), (102, 1, 102, 1),
-(110, 1, 110, 1), (111, 1, 111, 1),
+(110, 1, 110, 1), (111, 1, 111, 1), (112, 1, 112, 1),
 (120, 1, 120, 1),
 
 -- 业务经理权限（全面业务管理权限）
